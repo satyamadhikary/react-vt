@@ -1,0 +1,106 @@
+.embla {
+    max-width: 100%;
+    --slide-height: 19rem;
+    --slide-spacing: 1rem;
+    --slide-size: 100%;
+  }
+  .embla__viewport {
+    overflow: hidden;
+  }
+  .embla__container {
+    display: flex;
+    touch-action: pan-y pinch-zoom;
+    margin-left: calc(var(--slide-spacing) * -1);
+  }
+  .embla__slide {
+    transform: translate3d(0, 0, 0);
+    flex: 0 0 var(--slide-size);
+    min-width: 0;
+    padding-left: var(--slide-spacing);
+  }
+  .embla__slide__number {
+    box-shadow: inset 0 0 0 0.2rem var(--detail-medium-contrast);
+    border-radius: 1.8rem;
+    font-size: 4rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--slide-height);
+    user-select: none;
+  }
+
+  .embla-img{
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
+    margin: 0 auto;
+    border-radius: 10px;
+  }
+
+  .embla:hover .embla-audio{
+    opacity: 1;
+    transition: 1s all ease-in-out;
+  }
+
+  .embla-audio{
+    transition: .5s all ease-in-out;
+    opacity: 0;
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+  }
+
+  .custom-audio-player {
+    padding: 10px 30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .play-pause-button {
+    background: none;
+    padding-right: 10px;
+    border: none;
+    color: #fff; /* Icon color */
+    font-size: 20px; /* Icon size */
+    cursor: pointer;
+    font-weight: 300;
+  }
+  
+  .seek-bar {
+    flex: 1;
+    margin-right: 15px;
+    appearance: none;
+    height: 3px;
+    border-radius: 3px;
+    background: #8a8a8a;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .custom-audio-player:hover .seek-bar::-webkit-slider-thumb{
+    display: block;
+  }
+  
+  .seek-bar::-webkit-slider-thumb {
+    display: none;
+    appearance: none;
+    width: 10px;
+    height: 10px;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+  }
+  
+  .seek-bar::-moz-range-thumb {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+  }
+  
+  

@@ -1,0 +1,8 @@
+.previous-btn button{
+    padding: 10px;
+    background-color: #000000;
+    color: #fff;
+    position: fixed;
+    border-radius: 50%;
+    font-size: 20px;
+}
