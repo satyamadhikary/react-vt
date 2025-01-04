@@ -9,5 +9,7 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  base: process.env.NODE_ENV === 'production' ? 'https://react-vt-qpa2.vercel.app/' : '/',
+  build: {
+    outDir: 'dist', // Ensure this matches Vercel's output directory
+  },
 });
