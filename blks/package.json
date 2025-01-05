@@ -1,13 +1,13 @@
 {
-  "name": "blks",
+  "name": "vite-react",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "start": "vite preview",
-    "lint": "eslint ."
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.2",
