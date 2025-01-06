@@ -47,7 +47,7 @@ export default function Page() {
               
               <DrawerContent>
                 <DrawerHeader>
-                  <DrawerTitle>Are you absolutely sure?</DrawerTitle>
+                  <DrawerTitle>Song Viewer</DrawerTitle>
                   <DrawerDescription>This action cannot be undone.</DrawerDescription>
                 </DrawerHeader>
                 <DrawerFooter>
