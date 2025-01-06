@@ -61,7 +61,7 @@ export default function Page() {
             </Drawer>
 
         <SidebarInset>
-          <header style={{ borderBottom: '1px solid rgb(33 33 33)', position: 'sticky', top: '0', zIndex: '11', background: ' rgba( 255, 255, 255, 0.25 )', boxShadow: '0px 16px 40px 0px rgba( 31, 38, 135, 0.37 )', backdropFilter: ' blur( 10px )' }} className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+          <header style={{ borderBottom: '1px solid rgb(33 33 33)', position: 'sticky', top: '0', zIndex: '11', background: ' rgba( 255, 255, 255, 0.25 )', boxShadow: '0px 16px 40px 0px rgba( 31, 38, 135, 0.37 )', backdropFilter: ' blur( 10px )' , WebkitBackdropFilter: ' blur( 10px )'}} className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
             <div className="flex items-center gap-2 px-4">
               <SidebarTrigger className="-ml-1" />
               <Separator orientation="vertical" className="mr-2 h-4" />
