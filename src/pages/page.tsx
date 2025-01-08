@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import { AppSidebar } from "@/components/app-sidebar";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import "../css/drawer.css";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -46,6 +47,12 @@ export default function Page() {
               </DrawerTrigger>
               
               <DrawerContent>
+                <div className="drawer-img">
+                  <DrawerHeader>
+                    <img src="https://c.saavncdn.com/901/E-Hawa-Bengali-2022-20220723033156-500x500.jpg" alt="Album Cover"/>  
+                  </DrawerHeader>
+                </div>
+               
                 <DrawerHeader>
                   <DrawerTitle>Song Viewer</DrawerTitle>
                   <DrawerDescription>This action cannot be undone.</DrawerDescription>

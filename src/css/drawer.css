@@ -1,0 +1,20 @@
+.drawer-img{
+    display: none;
+}
+.drawer-img img{
+    width: 70%; 
+    height: 300px; 
+    margin: 0 auto; 
+    object-fit: contain;
+}
+
+@media screen and (max-width: 768px) {
+    .drawer-img{
+        display: block;
+    }
+}
+@media  screen and (max-width: 375px) {
+    .drawer-img img{
+        height: 180px;
+    }
+}
