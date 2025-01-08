@@ -1,3 +1,8 @@
+//React Icons
+import { MdSkipPrevious, MdSkipNext } from "react-icons/md";
+import { IoMdPlay , IoMdPause} from "react-icons/io";
+
+
 import { Outlet } from "react-router-dom";
 import { AppSidebar } from "@/components/app-sidebar";
 import { useNavigate } from "react-router-dom";
@@ -29,9 +34,17 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer"
 import { RiPlayList2Line } from "react-icons/ri";
+import { useState } from "react";
 
+ 
 
 export default function Page() {
+
+  const [isVisible, setIsVisible] = useState(false);
+
+  const toggleVisibility = () => {
+    setIsVisible(!isVisible);
+  };
   const navigate = useNavigate();
 
   return (
@@ -47,6 +60,7 @@ export default function Page() {
               </DrawerTrigger>
               
               <DrawerContent>
+
                 <div className="drawer-img">
                   <DrawerHeader>
                     <img src="https://c.saavncdn.com/901/E-Hawa-Bengali-2022-20220723033156-500x500.jpg" alt="Album Cover"/>  
@@ -54,11 +68,24 @@ export default function Page() {
                 </div>
                
                 <DrawerHeader>
-                  <DrawerTitle>Song Viewer</DrawerTitle>
-                  <DrawerDescription>This action cannot be undone.</DrawerDescription>
+                  <DrawerTitle>E Hawa</DrawerTitle>
+                  <DrawerDescription>By Meghdol</DrawerDescription>
                 </DrawerHeader>
-                <DrawerFooter>
-                  <Button>Submit</Button>
+                <DrawerFooter className="pt-0">
+                  <div className="control-btns">
+                    <div className="previous-btn">
+                      <MdSkipPrevious/>
+                    </div> 
+                    <div className="play-btn" onClick={toggleVisibility}>
+                    {isVisible ? <IoMdPause /> : <IoMdPlay />}
+                      
+                    </div> 
+                    <div className="next-btn">
+                      <MdSkipNext/>
+                    </div>
+
+                    
+                  </div>
                   <DrawerClose>
                     <Button variant="outline">Cancel</Button>
                   </DrawerClose>

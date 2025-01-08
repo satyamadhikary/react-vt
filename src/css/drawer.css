@@ -2,10 +2,23 @@
     display: none;
 }
 .drawer-img img{
+    padding-top: 10px;
     width: 70%; 
     height: 300px; 
     margin: 0 auto; 
     object-fit: contain;
+}
+
+.control-btns{
+    display:flex;
+    align-items: center;
+    margin: auto;
+    font-size: 30px;
+    gap: 25px;
+    padding-bottom: 20px;
+}
+.control-btns div{
+    cursor: pointer;
 }
 
 @media screen and (max-width: 768px) {
