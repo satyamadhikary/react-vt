@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { AppSidebar } from "@/components/app-sidebar";
 import { Button } from "@/components/ui/button";
