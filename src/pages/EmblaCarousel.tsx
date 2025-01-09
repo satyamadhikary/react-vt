@@ -10,8 +10,7 @@ type PropType = {
   options?: EmblaOptionsType;
 };
 
-const EmblaCarousel: React.FC<PropType> = (props) => {
-  const { images = [{ imageSrc: '' }], audio = [], options } = props;
+const EmblaCarousel: React.FC<PropType> = ({ images = [{ imageSrc: '' }], audio = [], options }) => {
   const [emblaRef] = useEmblaCarousel(options);
 
   return (
@@ -20,14 +19,7 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
         <div className="embla__container">
           {images.map((image, index) => (
             <div className="embla__slide" key={index}>
-              {/* Image */}
-              <img
-                src={image.imageSrc}
-                alt={`Slide ${index + 1}`}
-                className="embla-img"
-              />
-
-              {/* Custom Audio Player */}
+              <img src={image.imageSrc} alt={`Slide ${index + 1}`} className="embla-img" />
               {audio[index] && <CustomAudioPlayer src={audio[index]} />}
             </div>
           ))}
@@ -40,85 +32,61 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
 const CustomAudioPlayer: React.FC<{ src: string }> = ({ src }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const seekBarRef = useRef<HTMLInputElement | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false); // State to toggle play/pause
+  const [isPlaying, setIsPlaying] = useState(false);
 
-  const updateSeekBarBackground = (percentage: number) => {
-    if (seekBarRef.current) {
-      seekBarRef.current.style.background = `linear-gradient(to right, #fff ${percentage}%, #8a8a8a ${percentage}%)`;
+  const togglePlayPause = () => {
+    if (!audioRef.current) return;
+    audioRef.current.paused ? audioRef.current.play() : audioRef.current.pause();
+  };
+
+  const updateSeekBar = () => {
+    if (audioRef.current && seekBarRef.current) {
+      const progress = (audioRef.current.currentTime / audioRef.current.duration) * 100 || 0;
+      seekBarRef.current.value = progress.toString();
+      seekBarRef.current.style.background = `linear-gradient(to right, #fff ${progress}%, #8a8a8a ${progress}%)`;
+    }
+  };
+
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = (parseFloat(e.target.value) / 100) * (audioRef.current.duration || 1);
     }
   };
 
   useEffect(() => {
     const audio = audioRef.current;
-    const seekBar = seekBarRef.current;
+    if (!audio) return;
 
-    if (audio && seekBar) {
-      const handleTimeUpdate = () => {
-        const percentage = (audio.currentTime / audio.duration) * 100;
-        seekBar.value = percentage.toString();
-        updateSeekBarBackground(percentage);
-      };
+    const onPlayPause = () => setIsPlaying(!audio.paused);
+    audio.addEventListener('timeupdate', updateSeekBar);
+    audio.addEventListener('play', onPlayPause);
+    audio.addEventListener('pause', onPlayPause);
 
-      const handleSeek = () => {
-        const newTime = (parseFloat(seekBar.value) / 100) * audio.duration;
-        audio.currentTime = newTime;
-        updateSeekBarBackground(parseFloat(seekBar.value));
-      };
-
-      const handlePlayPause = () => setIsPlaying(!audio.paused);
-
-      // Add event listeners
-      audio.addEventListener('timeupdate', handleTimeUpdate);
-      audio.addEventListener('play', handlePlayPause);
-      audio.addEventListener('pause', handlePlayPause);
-      seekBar.addEventListener('input', handleSeek);
-
-      // Cleanup event listeners
-      return () => {
-        audio.removeEventListener('timeupdate', handleTimeUpdate);
-        audio.removeEventListener('play', handlePlayPause);
-        audio.removeEventListener('pause', handlePlayPause);
-        seekBar.removeEventListener('input', handleSeek);
-      };
-    }
+    return () => {
+      audio.removeEventListener('timeupdate', updateSeekBar);
+      audio.removeEventListener('play', onPlayPause);
+      audio.removeEventListener('pause', onPlayPause);
+    };
   }, []);
-
-  const togglePlayPause = () => {
-    if (audioRef.current) {
-      if (audioRef.current.paused) {
-        audioRef.current.play();
-      } else {
-        audioRef.current.pause();
-      }
-    }
-  };
 
   return (
     <div className="embla-audio">
       <div className="custom-audio-player">
-        {/* Play/Pause Button */}
-        <button
-          onClick={togglePlayPause}
-          className="play-pause-button"
-          aria-label={isPlaying ? "Pause" : "Play"}
-        >
-          {isPlaying ? <IoIosPause /> : <IoIosPlay />}
-        </button>
-
-        {/* Seek Bar */}
-        <input
-          ref={seekBarRef}
-          type="range"
-          className="seek-bar"
-          min="0"
-          max="100"
-          step="0.1"
-          defaultValue="0"
-        />
-
-        {/* Hidden Audio Element */}
-        <audio ref={audioRef} src={src} preload="auto"></audio>
-      </div>
+      <button onClick={togglePlayPause} aria-label={isPlaying ? "Pause" : "Play"} className="play-pause-button">
+        {isPlaying ? <IoIosPause /> : <IoIosPlay />}
+      </button>
+      <input
+        ref={seekBarRef}
+        type="range"
+        className="seek-bar"
+        min="0"
+        max="100"
+        step="0.1"
+        defaultValue="0"
+        onChange={handleSeek}
+      />  
+      <audio ref={audioRef} src={src} preload="auto" />
+    </div>
     </div>
   );
 };
