@@ -134,7 +134,7 @@ export default function Page() {
               </DrawerHeader>
             </div>
 
-            <DrawerHeader className="pt-0">
+            <DrawerHeader>
               <DrawerTitle className="song-title">E Hawa</DrawerTitle>
               <DrawerDescription className="song-artist">By Meghdol</DrawerDescription>
             </DrawerHeader>
