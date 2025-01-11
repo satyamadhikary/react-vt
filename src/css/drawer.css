@@ -82,6 +82,7 @@
 @media  screen and (max-width: 375px) {
     .drawer-img img{
         height: 180px;
+        width: auto;
     }
     .song-title{
         font-size: 25px;
