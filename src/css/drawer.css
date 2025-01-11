@@ -2,11 +2,17 @@
     display: none;
 }
 .drawer-img img{
-    padding-top: 10px;
-    width: 70%; 
+    width: 300px; 
     height: 300px; 
     margin: 0 auto; 
-    object-fit: contain;
+    object-fit: cover;
+    
+}
+
+
+.album-cover{
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgb(120,120,120);
 }
 
 .control-btns{
@@ -21,13 +27,67 @@
     cursor: pointer;
 }
 
+.time-display{
+    display: flex;
+    gap: 10px;
+    padding:0 20px;
+    align-items: center;
+}
+
+.seekbar-drawer {
+    flex: 1;
+    height: 4px;
+    border-radius: 3px;
+    background: linear-gradient(to right, #cd7a7a 0%, #8a8a8a 0%);
+    cursor: pointer;
+    appearance: none; 
+}
+
+.seekbar-drawer::-webkit-slider-thumb {
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.5);
+}
+
+.seekbar-drawer::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.5);
+}
+
+.seekbar-drawer::-ms-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.5);
+}
+
+
+
 @media screen and (max-width: 768px) {
     .drawer-img{
         display: block;
+        margin-top: 10px;
     }
 }
 @media  screen and (max-width: 375px) {
     .drawer-img img{
         height: 180px;
+    }
+    .song-title{
+        font-size: 25px;
+    }
+    .song-artist{
+        margin-top: 5px;
+        font-size: 20px;
     }
 }
