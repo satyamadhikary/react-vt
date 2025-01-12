@@ -1,12 +1,59 @@
-.drawer-img{
-    display: none;
+.drawer-content{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding: 0 20px;
 }
+
+.fullscreen-btn{
+    margin-left: auto;
+    margin-right: 0;
+    cursor: pointer;
+    padding: 0 20px;
+}
+
+/* .drawer-bg.hidden {
+    display: none;
+ }
+  .drawer-bg.visible {
+    display: block;
+  } */
+
+  
+   
+  .drawer-bg {
+    position: absolute;
+    height: 100%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    bottom: 0 ;
+    z-index: -1;
+    object-fit: fill;
+    border-radius: 10px 10px 0 0;
+    transition: opacity 0.3s ease-in-out;
+    pointer-events: none; /* Prevent interaction when hidden */
+  }
+  .drawer-bg.active {
+    opacity: 1;
+    pointer-events: auto; /* Enable interaction when visible */
+  }
+  
+
+.song-details{
+    height: 100%;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content: flex-end;
+    margin-top: auto;
+}
+
 .drawer-img img{
-    width: 300px; 
+    width: 400px; 
     height: 300px; 
     margin: 0 auto; 
     object-fit: cover;
-    
 }
 
 
@@ -30,7 +77,6 @@
 .time-display{
     display: flex;
     gap: 10px;
-    padding:0 20px;
     align-items: center;
 }
 
@@ -72,14 +118,54 @@
 }
 
 
+/* Add this to your CSS */
+video::-webkit-media-controls {
+    display: none !important;
+  }
+  
+  video::-moz-media-controls {
+    display: none !important;
+  }
+  
+  video::-ms-media-controls {
+    display: none !important;
+  }
+  
+  /* Hide controls when in fullscreen */
+  video:fullscreen::-webkit-media-controls {
+    display: none !important;
+  }
+  
 
 @media screen and (max-width: 768px) {
     .drawer-img{
         display: block;
         margin-top: 10px;
     }
+    .drawer-img img{
+        width: 300px; 
+    }
+    .drawer-content{
+        display: block;
+        padding: 0;
+    }
+    .song-title{
+        text-align: center;
+    }
+    .song-artist{
+        text-align: center;
+    }
+    .time-display{
+        padding: 0 20px;
+    }
 }
 @media  screen and (max-width: 375px) {
+    .drawer-img img{
+        width: 300px; 
+    }
+    .drawer-content{
+        display: block;
+    }
     .drawer-img img{
         height: 180px;
         width: auto;
@@ -88,7 +174,6 @@
         font-size: 25px;
     }
     .song-artist{
-      
         font-size: 20px;
     }
 }

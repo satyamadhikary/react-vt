@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { AppSidebar } from "@/components/app-sidebar";
+import { BsArrowsFullscreen } from "react-icons/bs";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -16,15 +17,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { ThemeProvider } from "@/components/theme-provider";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-  DrawerDescription,
-} from "@/components/ui/drawer";
+import { Drawer, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger, DrawerDescription } from "@/components/ui/drawer";
 import { RiPlayList2Line } from "react-icons/ri";
 import { MdSkipPrevious, MdSkipNext } from "react-icons/md";
 import { IoMdPlay, IoMdPause } from "react-icons/io";
@@ -34,56 +27,105 @@ export default function Page() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [, setIsFullscreen] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const seekBarRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (audioRef.current) {
-      const updateTime = () => {
-        setCurrentTime(audioRef.current?.currentTime || 0);
-        updateSeekBar();
-      };
-
-      const updateSeekBar = () => {
-        if (audioRef.current && seekBarRef.current) {
-          const progress =
-            (audioRef.current.currentTime / audioRef.current.duration) * 100 || 0;
-          seekBarRef.current.value = progress.toString();
-          seekBarRef.current.style.background = `linear-gradient(to right,rgb(255, 147, 123) ${progress}%, #8a8a8a ${progress}%)`;
-        }
-      };
-      
+    const audio = audioRef.current;
+    const video = videoRef.current;
   
-      audioRef.current.addEventListener("timeupdate", updateTime);
-      audioRef.current.addEventListener("loadedmetadata", () => {
-        setDuration(audioRef.current?.duration || 0);
-      });
+    const updateCurrentTime = () => {
+      if (audio && video) {
+        const current = audio.currentTime || 0;
+        setCurrentTime(current);
+        updateSeekBar(current, audio.duration);
+  
+        if (video.readyState >= 5) {
+          video.currentTime = current; // Sync video with audio
+        }
+      }
+    };
+  
+    const updateSeekBar = (current: number, duration: number) => {
+      if (audio && seekBarRef.current) {
+        const progress = (current / duration) * 100 || 0;
+        seekBarRef.current.value = progress.toString();
+        seekBarRef.current.style.background = `linear-gradient(to right, rgb(253, 145, 121) ${progress}%, #8a8a8a ${progress}%)`;
+      }
+    };
+  
+    const setMediaDuration = () => {
+      if (audio) {
+        setDuration(audio.duration || 0);
+      }
+    };
+  
+    if (audio) {
+      audio.addEventListener("timeupdate", updateCurrentTime);
+      audio.addEventListener("loadedmetadata", setMediaDuration);
+      audio.addEventListener("canplaythrough", setMediaDuration);
   
       return () => {
-        audioRef.current?.removeEventListener("timeupdate", updateTime);
+        audio.removeEventListener("timeupdate", updateCurrentTime);
+        audio.removeEventListener("loadedmetadata", setMediaDuration);
+        audio.removeEventListener("canplaythrough", setMediaDuration);
       };
     }
   }, []);
   
 
-  const togglePlayPause = () => {
-    if (audioRef.current) {
-      if (audioRef.current.paused) {
-        audioRef.current.play();
-        setIsPlaying(true);
-      } else {
-        audioRef.current.pause();
-        setIsPlaying(false);
-      }
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTime = (parseFloat(e.target.value) / 100) * duration;
+    const audio = audioRef.current;
+    const video = videoRef.current;
+
+    if (audio && video) {
+      audio.currentTime = newTime;
+      video.currentTime = newTime;
+      setCurrentTime(newTime);
     }
   };
 
-  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newTime = (parseFloat(e.target.value) / 100) * duration;
-    if (audioRef.current) {
-      audioRef.current.currentTime = newTime;
-      setCurrentTime(newTime);
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      // Check if the video is in fullscreen mode
+      if (document.fullscreenElement === videoRef.current) {
+        setIsFullscreen(true); // Enter fullscreen
+      } else {
+        setIsFullscreen(false); // Exit fullscreen
+      }
+    };
+  
+    // Listen for fullscreen changes
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+  
+    return () => {
+      // Clean up the event listener
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, []);
+  
+
+
+  const togglePlayPause = () => {
+    const audio = audioRef.current;
+    const video = videoRef.current;
+
+    if (audio && video) {
+      if (audio.paused) {
+        video.currentTime = audio.currentTime;  // Sync video with the current audio time
+        audio.play();
+        video.play();
+        setIsPlaying(true);
+        video.style.display = "block";
+      } else {
+        audio.pause();
+        video.pause();
+        setIsPlaying(false);
+      }
     }
   };
 
@@ -91,6 +133,53 @@ export default function Page() {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  };
+
+  const handleFullscreen = () => {
+    const video = videoRef.current;
+    const audio = audioRef.current;
+
+    if (video && audio) {
+      video.currentTime = audio.currentTime;
+      video.style.display = "block";
+      if (video.requestFullscreen) {
+        video.requestFullscreen().then(() => {
+          video.style.opacity = "1";
+          setIsPlaying(true);
+          video.play();
+          audio.play();
+        }).catch((err) => {
+          console.error("Fullscreen request failed:", err);
+        });
+      }
+    }
+  };
+
+  // Function to exit fullscreen on double-click
+  const handleDoubleClick = () => {
+    const video = videoRef.current;
+  
+    if (document.exitFullscreen) {
+      document.exitFullscreen()
+        .then(() => {
+          setIsFullscreen(false);
+        })
+        .catch((err) => {
+          console.error("Error exiting fullscreen:", err);
+        });
+    }
+  
+    if (video) {
+      video.style.opacity = "0.5";
+      video.pause();
+      
+    }
+  };
+  
+
+  const handleSingleClick = () => {
+    togglePlayPause();
+   
   };
 
   return (
@@ -101,7 +190,6 @@ export default function Page() {
         <audio
           ref={audioRef}
           src="https://firebasestorage.googleapis.com/v0/b/storage-bucket-575e1.appspot.com/o/music%2Fin-y2mate.com%20-%20E%20Hawa%20%20Meghdol%20X%20Hawa%20Film%20%20Aluminium%20Er%20Dana.mp3?alt=media&token=3724b578-ea7e-45c9-8ada-9dd5db28fca9"
-          preload="auto"
           style={{ display: "none" }}
         />
 
@@ -118,63 +206,82 @@ export default function Page() {
                 padding: "10px",
                 borderRadius: "50%",
                 zIndex: "50",
+                cursor: "pointer",
               }}
             >
               <RiPlayList2Line />
             </button>
           </DrawerTrigger>
 
-          <DrawerContent>
-            <div className="drawer-img">
-              <DrawerHeader>
-                <img className="album-cover"
-                  src="https://c.saavncdn.com/901/E-Hawa-Bengali-2022-20220723033156-500x500.jpg"
-                  alt="Album Cover"
-                />
-              </DrawerHeader>
-            </div>
+          <DrawerContent>        
+              <div className="fullscreen-btn" onClick={handleFullscreen}>
+                <BsArrowsFullscreen />
+              </div>
 
-            <DrawerHeader>
-              <DrawerTitle className="song-title">E Hawa</DrawerTitle>
-              <DrawerDescription className="song-artist">By Meghdol</DrawerDescription>
-            </DrawerHeader>
 
-            <DrawerFooter className="pt-0">
-              <div className="seekbar">
-                <div className="time-display">
-                  <span>{formatTime(currentTime)}</span>
-                  <input
-                    ref={seekBarRef}
-                    className="seekbar-drawer"
-                    type="range"
-                    min="0"
-                    max="100"
-                    value={(currentTime / duration) * 100 || 0}
-                    step="0.1"
-                    onChange={handleSeek}
-                    style={{
-                    width: "100%",
-                    height: "4px",
-                    }}
+            <div className="drawer-content">
+              <div className="drawer-img">
+                <DrawerHeader>
+                  <img
+                    className="album-cover"
+                    src="https://c.saavncdn.com/901/E-Hawa-Bengali-2022-20220723033156-500x500.jpg"
+                    alt="Album Cover"
                   />
-                  <span>{formatTime(duration)}</span>
-                </div>
+                </DrawerHeader>
               </div>
 
-              <div className="control-btns">
-                <div className="previous-btn">
-                  <MdSkipPrevious />
-                </div>
-                <div className="play-btn" onClick={togglePlayPause}>
-                  {isPlaying ? <IoMdPause /> : <IoMdPlay />}
-                </div>
-                <div className="next-btn">
-                  <MdSkipNext />
-                </div>
-              </div>
+              <div className="song-details">
+                <video
+                  style={{ display: "none" }}
+                  ref={videoRef}
+                  src="https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/new%2FEhawa.mp4?alt=media&token=644187c2-d4e8-4f5c-a343-377041975704"
+                  preload="auto"
+                  className="drawer-bg"
+                  muted
+                  onClick={handleSingleClick}
+                  onDoubleClick={handleDoubleClick}  // Added double-click event handler
+                />
+                <DrawerHeader>
+                  <DrawerTitle className="song-title">E Hawa</DrawerTitle>
+                  <DrawerDescription className="song-artist">By Meghdol</DrawerDescription>
+                </DrawerHeader>
 
-      
-            </DrawerFooter>
+                <DrawerFooter className="pt-0">
+                  <div className="seekbar">
+                    <div className="time-display">
+                      <span>{formatTime(currentTime)}</span>
+                      <input
+                        ref={seekBarRef}
+                        className="seekbar-drawer"
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={(currentTime / duration) * 100 || 0}
+                        step="0.1"
+                        onChange={handleSeek}
+                        style={{
+                          width: "100%",
+                          height: "4px",
+                        }}
+                      />
+                      <span>{formatTime(duration)}</span>
+                    </div>
+                  </div>
+
+                  <div className="control-btns">
+                    <div className="previous-btn">
+                      <MdSkipPrevious />
+                    </div>
+                    <div className="play-btn" onClick={togglePlayPause}>
+                      {isPlaying ? <IoMdPause /> : <IoMdPlay />}
+                    </div>
+                    <div className="next-btn">
+                      <MdSkipNext />
+                    </div>
+                  </div>
+                </DrawerFooter>
+              </div>
+            </div>
           </DrawerContent>
         </Drawer>
 
@@ -185,10 +292,10 @@ export default function Page() {
               position: "sticky",
               top: "0",
               zIndex: "11",
-              background: "rgba( 255, 255, 255, 0.25 )",
-              boxShadow: "0px 16px 40px 0px rgba( 31, 38, 135, 0.37 )",
-              backdropFilter: "blur( 10px )",
-              WebkitBackdropFilter: "blur( 10px )",
+              background: "rgba(255, 255, 255, 0.25)",
+              boxShadow: "0px 16px 40px 0px rgba(31, 38, 135, 0.37)",
+              backdropFilter: "blur(10px)",
+              WebkitBackdropFilter: "blur(10px)",
             }}
             className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12"
           >
@@ -200,8 +307,7 @@ export default function Page() {
                   <BreadcrumbItem>
                     <BreadcrumbLink
                       style={{ cursor: "pointer" }}
-                      onClick={() => navigate("/")}
-                    >
+                      onClick={() => navigate("/")}>
                       Building Your Application
                     </BreadcrumbLink>
                   </BreadcrumbItem>
@@ -209,8 +315,7 @@ export default function Page() {
                   <BreadcrumbItem>
                     <BreadcrumbPage
                       style={{ cursor: "pointer" }}
-                      onClick={() => navigate("/About")}
-                    >
+                      onClick={() => navigate("/About")}>
                       Data Fetching
                     </BreadcrumbPage>
                   </BreadcrumbItem>
