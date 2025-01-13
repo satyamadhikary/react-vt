@@ -36,19 +36,19 @@ export default function Page() {
   useEffect(() => {
     const audio = audioRef.current;
     const video = videoRef.current;
-  
+
     const updateCurrentTime = () => {
       if (audio) {
         const current = audio.currentTime || 0;
         setCurrentTime(current);
         updateSeekBar(current, audio.duration);
-  
+
         if (video && video.readyState >= 5) {
-          video.currentTime = current; 
+          video.currentTime = current;
         }
       }
     };
-  
+
     const updateSeekBar = (current: number, duration: number) => {
       if (seekBarRef.current) {
         const progress = (current / (duration || 1)) * 100;
@@ -56,18 +56,18 @@ export default function Page() {
         seekBarRef.current.style.background = `linear-gradient(to right, rgb(253, 145, 121) ${progress}%, #8a8a8a ${progress}%)`;
       }
     };
-  
+
     const setMediaDuration = () => {
       if (audio) {
         setDuration(audio.duration || 0);
       }
     };
-  
+
     if (audio) {
       audio.addEventListener("timeupdate", updateCurrentTime);
       audio.addEventListener("loadedmetadata", setMediaDuration);
       audio.addEventListener("canplaythrough", setMediaDuration);
-  
+
       return () => {
         audio.removeEventListener("timeupdate", updateCurrentTime);
         audio.removeEventListener("loadedmetadata", setMediaDuration);
@@ -75,8 +75,8 @@ export default function Page() {
       };
     }
   }, []);
-  
-  
+
+
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTime = (parseFloat(e.target.value) / 100) * duration;
@@ -94,7 +94,7 @@ export default function Page() {
     const handleFullscreenChange = () => {
       const video = videoRef.current;
       const audio = audioRef.current;
-  
+
       if (!document.fullscreenElement && video) {
         video.pause();
         video.style.display = "none";
@@ -102,15 +102,15 @@ export default function Page() {
         setIsFullscreen(false);
       }
     };
-  
+
     document.addEventListener("fullscreenchange", handleFullscreenChange);
-  
+
     return () => {
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
     };
   }, []);
-  
-  
+
+
 
 
   const togglePlayPause = () => {
@@ -119,7 +119,7 @@ export default function Page() {
 
     if (audio && video) {
       if (audio.paused) {
-        video.currentTime = audio.currentTime; 
+        video.currentTime = audio.currentTime;
         audio.play();
         video.play();
         setIsPlaying(true);
@@ -140,12 +140,12 @@ export default function Page() {
   const handleFullscreen = () => {
     const video = videoRef.current;
     const audio = audioRef.current;
-  
+
     if (video && audio) {
       video.currentTime = audio.currentTime;
-  
+
       if (video.requestFullscreen) {
-        video.style.display = "block"; 
+        video.style.display = "block";
         video.requestFullscreen()
           .then(() => {
             setIsPlaying(true);
@@ -155,7 +155,7 @@ export default function Page() {
           })
           .catch((err) => {
             console.error("Fullscreen request failed:", err);
-            video.style.display = "none"; 
+            video.style.display = "none";
           });
       } else if ((video as any).webkitEnterFullscreen) {
         video.style.display = "block";
@@ -167,15 +167,15 @@ export default function Page() {
       }
     }
   };
-  
-  
+
+
   const handleDoubleClick = () => {
     if (document.exitFullscreen) {
       document.exitFullscreen()
         .then(() => {
           setIsFullscreen(false);
           if (videoRef.current) {
-            videoRef.current.style.display = "none"; 
+            videoRef.current.style.display = "none";
             videoRef.current.pause();
           }
         })
@@ -184,12 +184,12 @@ export default function Page() {
         });
     }
   };
-  
-  
+
+
 
   const handleSingleClick = () => {
     togglePlayPause();
-   
+
   };
 
   return (
@@ -223,10 +223,10 @@ export default function Page() {
             </button>
           </DrawerTrigger>
 
-          <DrawerContent>        
-              <div className="fullscreen-btn" onClick={handleFullscreen}>
-                <BsArrowsFullscreen />
-              </div>
+          <DrawerContent>
+            <div className="fullscreen-btn" onClick={handleFullscreen}>
+              <BsArrowsFullscreen />
+            </div>
 
 
             <div className="drawer-content">
@@ -246,9 +246,7 @@ export default function Page() {
                   ref={videoRef}
                   src="https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/new%2FEhawa.mp4?alt=media&token=644187c2-d4e8-4f5c-a343-377041975704"
                   preload="auto"
-                 
                   muted
-                  controls={false}
                   playsInline
                   disableRemotePlayback
                   onClick={handleSingleClick}
