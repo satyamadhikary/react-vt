@@ -51,7 +51,7 @@ export default function Page() {
   
     const updateSeekBar = (current: number, duration: number) => {
       if (audio && seekBarRef.current) {
-        const progress = (current / duration) * 100 || 0;
+        const progress = (current / (duration || 1)) * 100; 
         seekBarRef.current.value = progress.toString();
         seekBarRef.current.style.background = `linear-gradient(to right, rgb(253, 145, 121) ${progress}%, #8a8a8a ${progress}%)`;
       }
