@@ -38,20 +38,20 @@ export default function Page() {
     const video = videoRef.current;
   
     const updateCurrentTime = () => {
-      if (audio && video) {
+      if (audio) {
         const current = audio.currentTime || 0;
         setCurrentTime(current);
         updateSeekBar(current, audio.duration);
   
-        if (video.readyState >= 5) {
+        if (video && video.readyState >= 5) {
           video.currentTime = current; // Sync video with audio
         }
       }
     };
   
     const updateSeekBar = (current: number, duration: number) => {
-      if (audio && seekBarRef.current) {
-        const progress = (current / (duration || 1)) * 100; 
+      if (seekBarRef.current) {
+        const progress = (current / (duration || 1)) * 100;
         seekBarRef.current.value = progress.toString();
         seekBarRef.current.style.background = `linear-gradient(to right, rgb(253, 145, 121) ${progress}%, #8a8a8a ${progress}%)`;
       }
@@ -75,6 +75,7 @@ export default function Page() {
       };
     }
   }, []);
+  
   
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
