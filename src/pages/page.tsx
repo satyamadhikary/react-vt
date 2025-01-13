@@ -234,6 +234,7 @@ export default function Page() {
               <div className="song-details">
                 <video
                   style={{ display: "none" }}
+                  controls={false}
                   ref={videoRef}
                   src="https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/new%2FEhawa.mp4?alt=media&token=644187c2-d4e8-4f5c-a343-377041975704"
                   preload="auto"
