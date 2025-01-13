@@ -1,3 +1,4 @@
+import ReactPlayer from "react-player";
 import { useEffect, useState, useRef } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { AppSidebar } from "@/components/app-sidebar";
@@ -23,112 +24,71 @@ import { MdSkipPrevious, MdSkipNext } from "react-icons/md";
 import { IoMdPlay, IoMdPause } from "react-icons/io";
 import "../css/drawer.css";
 
+
 export default function Page() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [, setIsFullscreen] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false); // State for drawer
+  const playerRef = useRef<ReactPlayer | null>(null);
   const seekBarRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const audio = audioRef.current;
-    const video = videoRef.current;
-
-    const updateCurrentTime = () => {
-      if (audio) {
-        const current = audio.currentTime || 0;
-        setCurrentTime(current);
-        updateSeekBar(current, audio.duration);
-
-        if (video && video.readyState >= 5) {
-          video.currentTime = current;
-        }
-      }
-    };
-
-    const updateSeekBar = (current: number, duration: number) => {
-      if (seekBarRef.current) {
-        const progress = (current / (duration || 1)) * 100;
-        seekBarRef.current.value = progress.toString();
-        seekBarRef.current.style.background = `linear-gradient(to right, rgb(253, 145, 121) ${progress}%, #8a8a8a ${progress}%)`;
-      }
-    };
-
-    const setMediaDuration = () => {
-      if (audio) {
-        setDuration(audio.duration || 0);
-      }
-    };
-
-    if (audio) {
-      audio.addEventListener("timeupdate", updateCurrentTime);
-      audio.addEventListener("loadedmetadata", setMediaDuration);
-      audio.addEventListener("canplaythrough", setMediaDuration);
-
-      return () => {
-        audio.removeEventListener("timeupdate", updateCurrentTime);
-        audio.removeEventListener("loadedmetadata", setMediaDuration);
-        audio.removeEventListener("canplaythrough", setMediaDuration);
-      };
-    }
-  }, []);
-
-
-
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTime = (parseFloat(e.target.value) / 100) * duration;
-    const audio = audioRef.current;
-    const video = videoRef.current;
-
-    if (audio && video) {
-      audio.currentTime = newTime;
-      video.currentTime = newTime;
+    if (playerRef.current) {
+      playerRef.current.seekTo(newTime, "seconds");
       setCurrentTime(newTime);
     }
   };
 
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      const video = videoRef.current;
-      const audio = audioRef.current;
+  const handleProgress = (state: { playedSeconds: number; played: number }) => {
+    setCurrentTime(state.playedSeconds);
+    if (seekBarRef.current) {
+      const progress = state.played * 100;
+      seekBarRef.current.value = progress.toString();
+      seekBarRef.current.style.background = `linear-gradient(to right, rgb(253, 145, 121) ${progress}%, #8a8a8a ${progress}%)`;
+    }
+  };
 
-      if (!document.fullscreenElement && video) {
-        video.pause();
-        video.style.display = "none";
-        video.currentTime = audio?.currentTime || 0;
-        setIsFullscreen(false);
+  const handleDuration = (dur: number) => {
+    setDuration(dur);
+  };
+
+  const handleFullscreen = () => {
+    const videoContainer = playerRef.current?.getInternalPlayer();
+    if (!isFullscreen) {
+      if (videoContainer?.requestFullscreen) {
+        videoContainer.requestFullscreen().then(() => setIsFullscreen(true));
+      } else {
+        console.error("Fullscreen API is not supported in this browser.");
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen().then(() => setIsFullscreen(false));
+      } else {
+        console.error("Fullscreen exit is not supported in this browser.");
+      }
+    }
+  };
+
+  useEffect(() => {
+    const onFullscreenChange = () => {
+      if (!document.fullscreenElement) {
+        setIsFullscreen(false); // Exit fullscreen mode
       }
     };
 
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    document.addEventListener("fullscreenchange", onFullscreenChange);
 
     return () => {
-      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+      document.removeEventListener("fullscreenchange", onFullscreenChange);
     };
   }, []);
 
-
-
-
   const togglePlayPause = () => {
-    const audio = audioRef.current;
-    const video = videoRef.current;
-
-    if (audio && video) {
-      if (audio.paused) {
-        video.currentTime = audio.currentTime;
-        audio.play();
-        video.play();
-        setIsPlaying(true);
-      } else {
-        audio.pause();
-        video.pause();
-        setIsPlaying(false);
-      }
-    }
+    setIsPlaying((prev) => !prev);
   };
 
   const formatTime = (time: number) => {
@@ -137,73 +97,35 @@ export default function Page() {
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
-  const handleFullscreen = () => {
-    const video = videoRef.current;
-    const audio = audioRef.current;
-
-    if (video && audio) {
-      video.currentTime = audio.currentTime;
-
-      if (video.requestFullscreen) {
-        video.style.display = "block";
-        video.requestFullscreen()
-          .then(() => {
-            setIsPlaying(true);
-            video.style.opacity = "1";
-            video.play();
-            audio.play();
-          })
-          .catch((err) => {
-            console.error("Fullscreen request failed:", err);
-            video.style.display = "none";
-          });
-      } else if ((video as any).webkitEnterFullscreen) {
-        video.style.display = "block";
-        (video as any).webkitEnterFullscreen();
-        video.play();
-        audio.play();
-      } else {
-        console.error("Fullscreen is not supported by this browser.");
-      }
-    }
-  };
-
-
-  const handleDoubleClick = () => {
-    if (document.exitFullscreen) {
-      document.exitFullscreen()
-        .then(() => {
-          setIsFullscreen(false);
-          if (videoRef.current) {
-            videoRef.current.style.display = "none";
-            videoRef.current.pause();
-          }
-        })
-        .catch((err) => {
-          console.error("Error exiting fullscreen:", err);
-        });
-    }
-  };
-
-
-
-  const handleSingleClick = () => {
-    togglePlayPause();
-
-  };
-
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <SidebarProvider>
         <AppSidebar />
 
-        <audio
-          ref={audioRef}
-          src="https://firebasestorage.googleapis.com/v0/b/storage-bucket-575e1.appspot.com/o/music%2Fin-y2mate.com%20-%20E%20Hawa%20%20Meghdol%20X%20Hawa%20Film%20%20Aluminium%20Er%20Dana.mp3?alt=media&token=3724b578-ea7e-45c9-8ada-9dd5db28fca9"
-          style={{ display: "none" }}
+        {/* ReactPlayer mounted outside the Drawer */}
+       <div className="player-wrapper"
+                  style={{
+                    display: isFullscreen ? "block" : "none", 
+                    width: "100%",
+                    height: "100vh",
+                  }}
+                  onDoubleClick={handleFullscreen}
+                  onClick={() => isFullscreen && togglePlayPause()}
+                >
+        <ReactPlayer
+          ref={playerRef}
+          url="https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/new%2FEhawa.mp4?alt=media&token=644187c2-d4e8-4f5c-a343-377041975704"
+          playing={isPlaying}
+          controls={false}
+          width="0"
+          height="0"
+          onProgress={handleProgress}
+          onDuration={handleDuration}
+          style={{ display: isFullscreen ? "block" : "none",}}
         />
+        </div>
 
-        <Drawer>
+        <Drawer open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
           <DrawerTrigger>
             <button
               style={{
@@ -218,6 +140,7 @@ export default function Page() {
                 zIndex: "50",
                 cursor: "pointer",
               }}
+              onClick={() => setIsDrawerOpen(true)}
             >
               <RiPlayList2Line />
             </button>
@@ -227,7 +150,6 @@ export default function Page() {
             <div className="fullscreen-btn" onClick={handleFullscreen}>
               <BsArrowsFullscreen />
             </div>
-
 
             <div className="drawer-content">
               <div className="drawer-img">
@@ -241,19 +163,6 @@ export default function Page() {
               </div>
 
               <div className="song-details">
-                <video
-                  style={{ display: "none" }}
-                  ref={videoRef}
-                  src="https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/new%2FEhawa.mp4?alt=media&token=644187c2-d4e8-4f5c-a343-377041975704"
-                  preload="auto"
-                  muted
-                  playsInline
-                  disableRemotePlayback
-                  onClick={handleSingleClick}
-                  onDoubleClick={handleDoubleClick}
-                  onTouchStart={(e) => e.preventDefault()}
-                  onTouchEnd={(e) => e.preventDefault()}
-                />
                 <DrawerHeader>
                   <DrawerTitle className="song-title">E Hawa</DrawerTitle>
                   <DrawerDescription className="song-artist">By Meghdol</DrawerDescription>
@@ -320,7 +229,8 @@ export default function Page() {
                   <BreadcrumbItem>
                     <BreadcrumbLink
                       style={{ cursor: "pointer" }}
-                      onClick={() => navigate("/")}>
+                      onClick={() => navigate("/")}
+                    >
                       Building Your Application
                     </BreadcrumbLink>
                   </BreadcrumbItem>
@@ -328,7 +238,8 @@ export default function Page() {
                   <BreadcrumbItem>
                     <BreadcrumbPage
                       style={{ cursor: "pointer" }}
-                      onClick={() => navigate("/About")}>
+                      onClick={() => navigate("/About")}
+                    >
                       Data Fetching
                     </BreadcrumbPage>
                   </BreadcrumbItem>
