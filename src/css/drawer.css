@@ -135,6 +135,17 @@ video::-webkit-media-controls {
   video:fullscreen::-webkit-media-controls {
     display: none !important;
   }
+
+  video::-webkit-media-controls {
+    display: none !important;
+  }
+  video::-webkit-media-controls-overlay-play-button {
+    display: none !important;
+  }
+  video::-webkit-media-controls-start-playback-button {
+    display: none !important;
+  }
+  
   
 
 @media screen and (max-width: 768px) {
