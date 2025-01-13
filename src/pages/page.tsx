@@ -44,7 +44,7 @@ export default function Page() {
         updateSeekBar(current, audio.duration);
   
         if (video && video.readyState >= 5) {
-          video.currentTime = current; // Sync video with audio
+          video.currentTime = current; 
         }
       }
     };
@@ -92,22 +92,24 @@ export default function Page() {
 
   useEffect(() => {
     const handleFullscreenChange = () => {
-      // Check if the video is in fullscreen mode
-      if (document.fullscreenElement === videoRef.current) {
-        setIsFullscreen(true); // Enter fullscreen
-      } else {
-        setIsFullscreen(false); // Exit fullscreen
+      const video = videoRef.current;
+      const audio = audioRef.current;
+  
+      if (!document.fullscreenElement && video) {
+        video.pause();
+        video.style.display = "none";
+        video.currentTime = audio?.currentTime || 0;
+        setIsFullscreen(false);
       }
     };
   
-    // Listen for fullscreen changes
     document.addEventListener("fullscreenchange", handleFullscreenChange);
   
     return () => {
-      // Clean up the event listener
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
     };
   }, []);
+  
   
 
 
@@ -117,11 +119,10 @@ export default function Page() {
 
     if (audio && video) {
       if (audio.paused) {
-        video.currentTime = audio.currentTime;  // Sync video with the current audio time
+        video.currentTime = audio.currentTime; 
         audio.play();
         video.play();
         setIsPlaying(true);
-        video.style.display = "block";
       } else {
         audio.pause();
         video.pause();
@@ -142,19 +143,23 @@ export default function Page() {
   
     if (video && audio) {
       video.currentTime = audio.currentTime;
-      video.style.display = "block";
   
       if (video.requestFullscreen) {
-        video.requestFullscreen().then(() => {
-          video.style.opacity = "1";
-          setIsPlaying(true);
-          video.play();
-          audio.play();
-        }).catch((err) => {
-          console.error("Fullscreen request failed:", err);
-        });
+        video.style.display = "block"; 
+        video.requestFullscreen()
+          .then(() => {
+            setIsPlaying(true);
+            video.style.opacity = "1";
+            video.play();
+            audio.play();
+          })
+          .catch((err) => {
+            console.error("Fullscreen request failed:", err);
+            video.style.display = "none"; 
+          });
       } else if ((video as any).webkitEnterFullscreen) {
-        (video as any).webkitEnterFullscreen(); // Type assertion here
+        video.style.display = "block";
+        (video as any).webkitEnterFullscreen();
         video.play();
         audio.play();
       } else {
@@ -163,27 +168,23 @@ export default function Page() {
     }
   };
   
-
-  // Function to exit fullscreen on double-click
-  const handleDoubleClick = () => {
-    const video = videoRef.current;
   
+  const handleDoubleClick = () => {
     if (document.exitFullscreen) {
       document.exitFullscreen()
         .then(() => {
           setIsFullscreen(false);
+          if (videoRef.current) {
+            videoRef.current.style.display = "none"; 
+            videoRef.current.pause();
+          }
         })
         .catch((err) => {
           console.error("Error exiting fullscreen:", err);
         });
     }
-  
-    if (video) {
-      video.style.opacity = "0.5";
-      video.pause();
-      
-    }
   };
+  
   
 
   const handleSingleClick = () => {
@@ -245,7 +246,7 @@ export default function Page() {
                   ref={videoRef}
                   src="https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/new%2FEhawa.mp4?alt=media&token=644187c2-d4e8-4f5c-a343-377041975704"
                   preload="auto"
-                  className="drawer-bg"
+                 
                   muted
                   controls={false}
                   playsInline

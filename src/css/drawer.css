@@ -12,33 +12,7 @@
     padding: 0 20px;
 }
 
-/* .drawer-bg.hidden {
-    display: none;
- }
-  .drawer-bg.visible {
-    display: block;
-  } */
 
-  
-   
-  .drawer-bg {
-    position: absolute;
-    height: 100%;
-    top: 0;
-    left: 0;
-    width: 100%;
-    bottom: 0 ;
-    z-index: -1;
-    object-fit: fill;
-    border-radius: 10px 10px 0 0;
-    transition: opacity 0.3s ease-in-out;
-    pointer-events: none; /* Prevent interaction when hidden */
-  }
-  .drawer-bg.active {
-    opacity: 1;
-    pointer-events: auto; /* Enable interaction when visible */
-  }
-  
 
 .song-details{
     height: 100%;
