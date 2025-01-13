@@ -139,10 +139,11 @@ export default function Page() {
   const handleFullscreen = () => {
     const video = videoRef.current;
     const audio = audioRef.current;
-
+  
     if (video && audio) {
       video.currentTime = audio.currentTime;
       video.style.display = "block";
+  
       if (video.requestFullscreen) {
         video.requestFullscreen().then(() => {
           video.style.opacity = "1";
@@ -152,9 +153,16 @@ export default function Page() {
         }).catch((err) => {
           console.error("Fullscreen request failed:", err);
         });
+      } else if ((video as any).webkitEnterFullscreen) {
+        (video as any).webkitEnterFullscreen(); // Type assertion here
+        video.play();
+        audio.play();
+      } else {
+        console.error("Fullscreen is not supported by this browser.");
       }
     }
   };
+  
 
   // Function to exit fullscreen on double-click
   const handleDoubleClick = () => {
