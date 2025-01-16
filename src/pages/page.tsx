@@ -231,7 +231,7 @@ export default function Page() {
                       style={{ cursor: "pointer" }}
                       onClick={() => navigate("/")}
                     >
-                      Building Your Application
+                      Home
                     </BreadcrumbLink>
                   </BreadcrumbItem>
                   <BreadcrumbSeparator />
