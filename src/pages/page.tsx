@@ -24,16 +24,16 @@ import { MdSkipPrevious, MdSkipNext } from "react-icons/md";
 import { IoMdPlay, IoMdPause } from "react-icons/io";
 import "../css/drawer.css";
 
-
 export default function Page() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false); // State for drawer
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const playerRef = useRef<ReactPlayer | null>(null);
   const seekBarRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
+  const isiOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTime = (parseFloat(e.target.value) / 100) * duration;
@@ -57,39 +57,54 @@ export default function Page() {
   };
 
   const handleFullscreen = () => {
-    const videoContainer = playerRef.current?.getInternalPlayer();
-    if (!isFullscreen) {
-      if (videoContainer?.requestFullscreen) {
-        videoContainer.requestFullscreen().then(() => setIsFullscreen(true));
-      } else {
-        console.error("Fullscreen API is not supported in this browser.");
-      }
-    } else {
+    const videoElement = playerRef.current?.getInternalPlayer();
+    if (isFullscreen) {
       if (document.exitFullscreen) {
         document.exitFullscreen().then(() => setIsFullscreen(false));
-      } else {
-        console.error("Fullscreen exit is not supported in this browser.");
+      }
+    } else {
+      if (videoElement) {
+        if (isiOS && videoElement.webkitEnterFullscreen) {
+          videoElement.webkitEnterFullscreen(); // iOS-specific fullscreen
+        } else if (!isiOS && videoElement.requestFullscreen) {
+          videoElement.requestFullscreen().then(() => setIsFullscreen(true)); // Standard fullscreen
+        } else if (!isiOS && videoElement.requestFullscreen) {
+          videoElement.requestFullscreen().then(() => setIsFullscreen(true)); // Standard fullscreen
+        } else {
+          console.error("Fullscreen API is not supported in this browser.");
+        }
       }
     }
   };
 
+
   useEffect(() => {
     const onFullscreenChange = () => {
-      if (!document.fullscreenElement) {
-        setIsFullscreen(false); // Exit fullscreen mode
+      const isFullscreenActive = Boolean(
+        document.fullscreenElement
+      );
+
+      if (!isFullscreenActive) {
+        // Exit fullscreen mode
+        setIsFullscreen(false);
+      } else {
+        // Enter fullscreen mode
+        setIsFullscreen(true);
       }
     };
 
     document.addEventListener("fullscreenchange", onFullscreenChange);
+    document.addEventListener("webkitfullscreenchange", onFullscreenChange);
 
     return () => {
       document.removeEventListener("fullscreenchange", onFullscreenChange);
+      document.removeEventListener("webkitfullscreenchange", onFullscreenChange);
     };
   }, []);
 
   const togglePlayPause = () => {
     setIsPlaying((prev) => !prev);
-  };  
+  };
 
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
@@ -103,7 +118,8 @@ export default function Page() {
         <AppSidebar />
 
         {/* ReactPlayer mounted outside the Drawer */}
-        <div className="player-wrapper"
+        <div
+          className="player-wrapper"
           style={{
             display: isFullscreen ? "block" : "none",
             width: "100%",
@@ -124,13 +140,14 @@ export default function Page() {
             config={{
               file: {
                 attributes: {
-                  playsInline: true, // Prevents fullscreen autoplay
+                  playsInline: true,
                 },
               },
             }}
             style={{ display: isFullscreen ? "block" : "none" }}
           />
         </div>
+
 
         <Drawer open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
           <DrawerTrigger>
