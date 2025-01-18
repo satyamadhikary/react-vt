@@ -89,7 +89,7 @@ export default function Page() {
 
   const togglePlayPause = () => {
     setIsPlaying((prev) => !prev);
-  };
+  };  
 
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
@@ -103,26 +103,33 @@ export default function Page() {
         <AppSidebar />
 
         {/* ReactPlayer mounted outside the Drawer */}
-       <div className="player-wrapper"
-                  style={{
-                    display: isFullscreen ? "block" : "none", 
-                    width: "100%",
-                    height: "100vh",
-                  }}
-                  onDoubleClick={handleFullscreen}
-                  onClick={() => isFullscreen && togglePlayPause()}
-                >
-        <ReactPlayer
-          ref={playerRef}
-          url="https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/new%2FEhawa.mp4?alt=media&token=644187c2-d4e8-4f5c-a343-377041975704"
-          playing={isPlaying}
-          controls={false}
-          width="0"
-          height="0"
-          onProgress={handleProgress}
-          onDuration={handleDuration}
-          style={{ display: isFullscreen ? "block" : "none",}}
-        />
+        <div className="player-wrapper"
+          style={{
+            display: isFullscreen ? "block" : "none",
+            width: "100%",
+            height: "100vh",
+          }}
+          onDoubleClick={handleFullscreen}
+          onClick={() => isFullscreen && togglePlayPause()}
+        >
+          <ReactPlayer
+            ref={playerRef}
+            url="https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/new%2FEhawa.mp4?alt=media&token=644187c2-d4e8-4f5c-a343-377041975704"
+            playing={isPlaying}
+            controls={false}
+            width="100%"
+            height="100%"
+            onProgress={handleProgress}
+            onDuration={handleDuration}
+            config={{
+              file: {
+                attributes: {
+                  playsInline: true, // Prevents fullscreen autoplay
+                },
+              },
+            }}
+            style={{ display: isFullscreen ? "block" : "none" }}
+          />
         </div>
 
         <Drawer open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
