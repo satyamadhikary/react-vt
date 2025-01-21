@@ -2,7 +2,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { useNavigate } from "react-router-dom";
 import "../css/songlist.css"
 import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
-import { IoMdPlay, IoMdPause } from "react-icons/io";
+import { IoMdPlay } from "react-icons/io";
 
 
 
@@ -31,7 +31,7 @@ const Songlist = () => {
 
 
 
-        {Array.from({ length: 12 }).map((_, index) => (
+        {Array.from({ length: 12 }).map(() => (
           <div className="song-container">
             <div className="play-pause-btn">
               <IoMdPlay />
