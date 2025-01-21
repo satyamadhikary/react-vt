@@ -16,7 +16,7 @@ const Songlist = () => {
         <button onClick={() => navigate("/")}><MdKeyboardDoubleArrowLeft /></button>
       </div>
 
-      <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+      <div className="flex flex-1 flex-col gap-4 p-2 pt-0">
 
 
 

@@ -1,7 +1,6 @@
 .previous-btn button {
     margin: 10px 0;
     padding: 10px;
-    color: #fff;
     border-radius: 50%;
     font-size: 20px;
     height: max-content;
@@ -33,6 +32,7 @@
     padding: 10px;
     border-radius: 50%;
     margin-right:10px;
+    font-size: 17px;
 }
 
 .play-pause-btn:hover {
