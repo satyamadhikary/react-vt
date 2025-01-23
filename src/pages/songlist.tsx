@@ -10,6 +10,7 @@ import { IoMdPlay, IoMdPause } from "react-icons/io";
 const Songlist = () => {
   const navigate = useNavigate();
   return (
+    <div className="songlist-container overflow-y-auto">
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
 
       <div style={{ display: 'flex', height: '3rem', alignItems: 'center'}} className="previous-btn">
@@ -42,6 +43,7 @@ const Songlist = () => {
       </div>
 
     </ThemeProvider>
+    </div>
   )
 }
 
