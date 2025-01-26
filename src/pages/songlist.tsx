@@ -1,5 +1,4 @@
 import { ThemeProvider } from "@/components/theme-provider";
-import { useNavigate } from "react-router-dom";
 import "../css/songlist.css"
 import { IoMdPlay } from "react-icons/io";
 import { motion } from "motion/react"
