@@ -1,15 +1,22 @@
 import { ThemeProvider } from "@/components/theme-provider";
 import { useNavigate } from "react-router-dom";
 import "../css/songlist.css"
-import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
 import { IoMdPlay } from "react-icons/io";
-
-
+import { motion } from "motion/react"
+import { MdKeyboardDoubleArrowLeft } from "react-icons/md"
 
 
 const Songlist = () => {
   const navigate = useNavigate();
   return (
+
+    <motion.div
+      initial={{opacity: 0 , translateY: 50}}
+      animate={{opacity: 1 , translateY: 0}}
+      transition={{duration:.3}}
+      exit={{opacity: 0, translateY:100}}
+    >
+    <div className="songlist-container overflow-y-auto">
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
 
       <div style={{ display: 'flex', height: '3rem', alignItems: 'center'}} className="previous-btn">
@@ -42,6 +49,8 @@ const Songlist = () => {
       </div>
 
     </ThemeProvider>
+    </div>
+    </motion.div>
   )
 }
 
