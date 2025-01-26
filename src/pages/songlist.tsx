@@ -9,7 +9,6 @@ import { MdKeyboardDoubleArrowLeft } from "react-icons/md"
 const Songlist = () => {
   const navigate = useNavigate();
   return (
-
     <motion.div
       initial={{opacity: 0 , translateY: 50}}
       animate={{opacity: 1 , translateY: 0}}
