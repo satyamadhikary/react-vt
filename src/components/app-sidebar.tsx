@@ -28,12 +28,10 @@ import { useTheme } from "@/components/theme-provider"
 import { NavMain } from "@/components/nav-main"
 import { NavProjects } from "@/components/nav-projects"
 import { NavUser } from "@/components/nav-user"
-import { TeamSwitcher } from "@/components/team-switcher"
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
 
@@ -172,16 +170,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
 <> 
     <Sidebar style={{display:"flex"}} collapsible="icon" {...props}>
-    <SidebarHeader>
-    <TeamSwitcher teams={data.teams} />
-    </SidebarHeader>
 
     <div style={{padding:"6px", textAlign:"left"}}>
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon">
+        <Button variant="outline" size="icon" style={{background:"transparent", border:"none"}}>
           <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+          <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"/>
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>

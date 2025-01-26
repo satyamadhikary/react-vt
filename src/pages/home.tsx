@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "../index.css";
 import EmblaCarousel from "./EmblaCarousel";
 import { EmblaOptionsType } from "embla-carousel";
-
+import { motion } from "motion/react"
 
 
 
@@ -26,6 +26,12 @@ const Home = () => {
     
   ];
     return ( 
+      <motion.div
+      initial={{opacity: 0 , translateY: 50}}
+      animate={{opacity: 1 , translateY: 0}}
+      transition={{duration:.3}}
+      exit={{opacity: 0, translateY:100}}
+    >
        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
 
       <div onClick={() => navigate("/songlist")}  className="header-content">
@@ -35,6 +41,7 @@ const Home = () => {
 
       <EmblaCarousel options={options} images={CarouselData} audio={CarouselData.map((item) => item.audioSrc)}/>
       </ThemeProvider>
+      </motion.div>
     )
   }
   

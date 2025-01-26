@@ -44,6 +44,7 @@ export default function Page() {
     }
   };
 
+
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTime = (parseFloat(e.target.value) / 100) * duration;
     if (playerRef.current) {
@@ -231,13 +232,16 @@ export default function Page() {
               top: "0",
               zIndex: "11",
               background: "rgba(255, 255, 255, 0.25)",
-              boxShadow: "0px 16px 40px 0px rgba(31, 38, 135, 0.37)",
+              boxShadow: "0px 16px 40px 0px rgba(68, 70, 94, 0.37)",
               backdropFilter: "blur(10px)",
               WebkitBackdropFilter: "blur(10px)",
+              padding:"10px 0px",
             }}
-            className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12"
+            
           >
             <div className="flex items-center gap-2 px-4">
+              <button style={{fontSize:"20px", margin:"0 2px"}} onClick={handleBack}><MdKeyboardDoubleArrowLeft /></button>
+              <Separator orientation="vertical" className="mr-2 h-4" />
               <SidebarTrigger className="-ml-1" />
               <Separator orientation="vertical" className="mr-2 h-4" />
               <Breadcrumb className="d-flex align-items-center">

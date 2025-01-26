@@ -9,6 +9,7 @@ import { MdKeyboardDoubleArrowLeft } from "react-icons/md"
 const Songlist = () => {
   const navigate = useNavigate();
   return (
+
     <motion.div
       initial={{opacity: 0 , translateY: 50}}
       animate={{opacity: 1 , translateY: 0}}
@@ -18,11 +19,7 @@ const Songlist = () => {
     <div className="songlist-container overflow-y-auto">
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
 
-      <div style={{ display: 'flex', height: '3rem', alignItems: 'center'}} className="previous-btn">
-        <button onClick={() => navigate("/")}><MdKeyboardDoubleArrowLeft /></button>
-      </div>
-
-      <div className="flex flex-1 flex-col gap-4 p-2 pt-0">
+      <div className="flex flex-1 flex-col gap-4 p-2 pt-5">
 
 
 
