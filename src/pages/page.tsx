@@ -36,14 +36,24 @@ export default function Page() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  useEffect(() => {
+    const homeButton = document.getElementById("home");
+    if (homeButton) {
+      if (location.pathname === "/") {
+        homeButton.style.color = "#8a8a8a";
+      } else {
+        homeButton.style.color = "";
+      }
+    }
+  }, [location.pathname]);
+
   const handleBack = () => {
     if (location.pathname === "/") {
-      console.log("You are at the homepage")
+      return;
     } else {
       navigate(-1);
     }
   };
-
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTime = (parseFloat(e.target.value) / 100) * duration;
@@ -240,7 +250,7 @@ export default function Page() {
             
           >
             <div className="flex items-center gap-2 px-4">
-              <button style={{fontSize:"20px", margin:"0 2px"}} onClick={handleBack}><MdKeyboardDoubleArrowLeft /></button>
+              <button id="home" style={{ cursor: "pointer", color: "#fff", fontSize: "20px"}} onClick={handleBack}><MdKeyboardDoubleArrowLeft /></button>
               <Separator orientation="vertical" className="mr-2 h-4" />
               <SidebarTrigger className="-ml-1" />
               <Separator orientation="vertical" className="mr-2 h-4" />
