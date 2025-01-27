@@ -103,5 +103,15 @@
     cursor: pointer;
   }
   
-  
+@media screen and (max-width: 1440px) {
+  .embla-img{
+    height: 400px;
+  }
+}
+
+@media screen and (max-width: 425px) {
+  .embla-img{
+    height: 300px;
+  }
+}
   

@@ -183,7 +183,7 @@ export default function Page() {
                 <DrawerHeader>
                   <img
                     className="album-cover"
-                    src="https://c.saavncdn.com/901/E-Hawa-Bengali-2022-20220723033156-500x500.jpg"
+                    src="https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Album%20Images%2FEhawaAlbum.jpeg?alt=media&token=d522d410-2b6b-4896-bd00-7a44b8a0df0f"
                     alt="Album Cover"
                   />
                 </DrawerHeader>
@@ -228,7 +228,7 @@ export default function Page() {
                       <MdSkipNext />
                     </div>
                   </div>
-                </DrawerFooter>
+                </DrawerFooter> 
               </div>
             </div>
           </DrawerContent>

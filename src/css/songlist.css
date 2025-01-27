@@ -40,3 +40,21 @@
     padding: 10px;
     background-color: hsl(0deg 0% 22.99%);
 }
+
+.song-image{
+    margin-right: 10px;
+    height: 45px;
+    width: 45px;
+    object-fit: cover;
+    border-radius: 15%;
+    box-shadow: 0px 0px 10px rgb(120, 120, 120);
+}
+
+.song-name{
+    margin-left: 10px;
+    margin-bottom: 0;
+    font-family: "PT Serif", serif;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 1.75rem;
+}
