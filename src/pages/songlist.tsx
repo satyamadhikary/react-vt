@@ -3,7 +3,7 @@ import "../css/songlist.css";
 import { IoMdPlay, IoMdPause } from "react-icons/io";
 import { motion } from "motion/react";
 import { useState, useRef } from "react";
-import { songsData } from "../arrays/songsData"; // Import the data
+import { songsData } from "../arrays/songsData";
 
 const Songlist = () => {
   const [currentSongIndex, setCurrentSongIndex] = useState<number | null>(null); // Track the current playing song index
@@ -52,10 +52,10 @@ const Songlist = () => {
                     <IoMdPlay />
                   )}
                 </div>
-                <img className="song-image" src={song.image} alt={song.name} />
+                <img className="song-image" src={song.imageSrc} alt={song.name} />
                 <audio
                   ref={(el) => (audioRefs.current[index] = el)}
-                  src={song.audio}
+                  src={song.audioSrc}
                 ></audio>
                 <h1 className="song-name">{song.name}</h1>
               </div>
