@@ -6,6 +6,8 @@ import Page from "./pages/page";
 import Home from "./pages/home";
 import About from "./pages/About";
 import Songlist from "./pages/songlist";
+import { Provider } from "react-redux";
+import { store } from "./app/store";
 
 function AppRoutes() {
   const location = useLocation();
@@ -15,6 +17,7 @@ function AppRoutes() {
   }, [location.pathname]);
 
   return (
+     <Provider store={store}>
     <Routes>
       <Route
         path="/"
@@ -31,6 +34,7 @@ function AppRoutes() {
         <Route path="/About" element={<About />} />
       </Route>
     </Routes>
+    </Provider>
   );
 }
 

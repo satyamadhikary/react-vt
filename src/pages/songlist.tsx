@@ -2,60 +2,73 @@ import { ThemeProvider } from "@/components/theme-provider";
 import "../css/songlist.css";
 import { IoMdPlay, IoMdPause } from "react-icons/io";
 import { motion } from "motion/react";
-import { useState, useRef } from "react";
+import { useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../app/store";
+import { setAudio } from "../features/audio/audioSlice";
 import { songsData } from "../arrays/songsData";
+import { Audio } from "../features/audio/types";
+import { stopAudio } from "../features/audio/audioSlice";
+import { updateCurrentTime } from "../features/audio/audioSlice";
 
 const Songlist = () => {
-  const [currentSongIndex, setCurrentSongIndex] = useState<number | null>(null); // Track the current playing song index
-  const audioRefs = useRef<(HTMLAudioElement | null)[]>([]); // Reference to all audio elements
+  const dispatch = useDispatch();
+  const currentAudio = useSelector((state: RootState) => state.audio.currentAudio);
+  const isPlaying = useSelector((state: RootState) => state.audio.isPlaying);
+  const currentTime = useSelector((state: RootState) => state.audio.currentTime);
+  const audioRefs = useRef<(HTMLAudioElement | null)[]>([]);
 
-  const togglePlayPause = (index: number) => {
-    // Pause all other audios
-    audioRefs.current.forEach((audio, i) => {
-      if (audio && i !== index) {
-        audio.pause();
-      }
-    });
+  const togglePlayPause = (index: number, song: Audio) => {
+    const currentAudioElement = audioRefs.current[index];
 
-    // Toggle play/pause for the selected audio
-    const currentAudio = audioRefs.current[index];
-    if (currentAudio) {
-      if (currentSongIndex === index && !currentAudio.paused) {
-        currentAudio.pause();
-        setCurrentSongIndex(null);
+    if (currentAudioElement) {
+      if (currentAudio?.name === song.name && isPlaying) {
+        currentAudioElement.pause();
+        currentAudioElement.muted = true;
+        dispatch(stopAudio());
       } else {
-        currentAudio.play();
-        setCurrentSongIndex(index);
+        audioRefs.current.forEach((audio, i) => {
+          if (audio && i !== index) {
+            audio.pause();
+            currentAudioElement.muted = true;
+          }
+        });
+
+        dispatch(setAudio(song)); // Set current audio in Redux
+
+        // Restore playback position
+        if (currentAudio?.name === song.name) {
+          currentAudioElement.currentTime = currentTime;
+        }
+
+        currentAudioElement.play();
       }
     }
   };
 
+  // Track playback progress and store in Redux
+  const handleTimeUpdate = (index: number) => {
+    const currentAudioElement = audioRefs.current[index];
+    if (currentAudioElement) {
+      dispatch(updateCurrentTime(currentAudioElement.currentTime));
+    }
+  };
+
   return (
-    <motion.div
-      initial={{ opacity: 0, translateY: 50 }}
-      animate={{ opacity: 1, translateY: 0 }}
-      transition={{ duration: 0.3 }}
-      exit={{ opacity: 0, translateY: 100 }}
-    >
+    <motion.div>
       <div className="songlist-container overflow-y-auto">
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
           <div className="flex flex-1 flex-col gap-4 p-2 pt-5">
             {songsData.map((song, index) => (
               <div key={index} className="song-container">
-                <div
-                  className="play-pause-btn"
-                  onClick={() => togglePlayPause(index)}
-                >
-                  {currentSongIndex === index && audioRefs.current[index] && !audioRefs.current[index]?.paused ? (
-                    <IoMdPause />
-                  ) : (
-                    <IoMdPlay />
-                  )}
+                <div className="play-pause-btn" onClick={() => togglePlayPause(index, song)}>
+                  {currentAudio?.name === song.name && isPlaying ? <IoMdPause /> : <IoMdPlay />}
                 </div>
                 <img className="song-image" src={song.imageSrc} alt={song.name} />
                 <audio
                   ref={(el) => (audioRefs.current[index] = el)}
                   src={song.audioSrc}
+                  onTimeUpdate={() => handleTimeUpdate(index)}
                 ></audio>
                 <h1 className="song-name">{song.name}</h1>
               </div>
@@ -68,3 +81,5 @@ const Songlist = () => {
 };
 
 export default Songlist;
+
+

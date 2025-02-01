@@ -1,80 +1,60 @@
 import ReactPlayer from "react-player";
 import { useEffect, useState, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../app/store";
+import { togglePlayPause } from "../features/audio/audioSlice";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { AppSidebar } from "@/components/app-sidebar";
-import { BsArrowsFullscreen } from "react-icons/bs";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Drawer, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger, DrawerDescription } from "@/components/ui/drawer";
 import { RiPlayList2Line } from "react-icons/ri";
-import { MdSkipPrevious, MdSkipNext } from "react-icons/md";
+import { MdSkipPrevious, MdSkipNext, MdKeyboardDoubleArrowLeft } from "react-icons/md";
 import { IoMdPlay, IoMdPause } from "react-icons/io";
 import "../css/drawer.css";
-import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
 
 export default function Page() {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
+  const dispatch = useDispatch();
+  const { currentAudio} = useSelector((state: RootState) => state.audio);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false); // State for drawer
   const playerRef = useRef<ReactPlayer | null>(null);
-  const seekBarRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const isPlaying = useSelector((state: RootState) => state.audio.isPlaying);
+  const audioRefs = useRef<(HTMLAudioElement | null)[]>([]);
 
-  useEffect(() => {
-    const homeButton = document.getElementById("home");
-    if (homeButton) {
-      if (location.pathname === "/") {
-        homeButton.style.color = "#8a8a8a";
-      } else {
-        homeButton.style.color = "";
-      }
+const handlePlayPause = () => {
+  if (currentAudio) {
+    dispatch(togglePlayPause());
+    const playingAudio = audioRefs.current.find((audio) => audio?.src === currentAudio.audioSrc);
+    if (playingAudio) {
+      isPlaying ? playingAudio.pause() : playingAudio.play();
     }
-  }, [location.pathname]);
+  }
+};
 
-  const handleBack = () => {
+useEffect(() => {
+  const homeButton = document.getElementById("home");
+  if (homeButton) {
     if (location.pathname === "/") {
-      return;
+      homeButton.style.color = "#8a8a8a";
     } else {
-      navigate(-1);
+      homeButton.style.color = "";
     }
-  };
+  }
+}, [location.pathname]);
 
-  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newTime = (parseFloat(e.target.value) / 100) * duration;
-    if (playerRef.current) {
-      playerRef.current.seekTo(newTime, "seconds");
-      setCurrentTime(newTime);
-    }
-  };
-
-  const handleProgress = (state: { playedSeconds: number; played: number }) => {
-    setCurrentTime(state.playedSeconds);
-    if (seekBarRef.current) {
-      const progress = state.played * 100;
-      seekBarRef.current.value = progress.toString();
-      seekBarRef.current.style.background = `linear-gradient(to right, rgb(253, 145, 121) ${progress}%, #8a8a8a ${progress}%)`;
-    }
-  };
-
-  const handleDuration = (dur: number) => {
-    setDuration(dur);
-  };
+const handleBack = () => {
+  if (location.pathname === "/") {
+    console.log("You are at the homepage")
+    return;
+  } else {
+    navigate(-1);
+  }
+};
 
   const handleFullscreen = () => {
     const videoContainer = playerRef.current?.getInternalPlayer();
@@ -96,7 +76,7 @@ export default function Page() {
   useEffect(() => {
     const onFullscreenChange = () => {
       if (!document.fullscreenElement) {
-        setIsFullscreen(false); // Exit fullscreen mode
+        setIsFullscreen(false);
       }
     };
 
@@ -107,51 +87,12 @@ export default function Page() {
     };
   }, []);
 
-  const togglePlayPause = () => {
-    setIsPlaying((prev) => !prev);
-  };  
-
-  const formatTime = (time: number) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-  };
-
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <SidebarProvider>
         <AppSidebar />
 
-        {/* ReactPlayer mounted outside the Drawer */}
-        <div className="player-wrapper"
-          style={{
-            display: isFullscreen ? "block" : "none",
-            width: "100%",
-            height: "100vh",
-          }}
-          onDoubleClick={handleFullscreen}
-          onClick={() => isFullscreen && togglePlayPause()}
-        >
-          <ReactPlayer
-            ref={playerRef}
-            url="https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/new%2FEhawa.mp4?alt=media&token=644187c2-d4e8-4f5c-a343-377041975704"
-            playing={isPlaying}
-            controls={false}
-            width="100%"
-            height="100%"
-            onProgress={handleProgress}
-            onDuration={handleDuration}
-            config={{
-              file: {
-                attributes: {
-                  playsInline: true, // Prevents fullscreen autoplay
-                },
-              },
-            }}
-            style={{ display: isFullscreen ? "block" : "none" }}
-          />
-        </div>
-
+        {/* Drawer Button */}
         <Drawer open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
           <DrawerTrigger>
             <button
@@ -159,8 +100,7 @@ export default function Page() {
                 position: "fixed",
                 bottom: "20px",
                 right: "20px",
-                minWidth: "fit-content",
-                background: "Black",
+                background: "black",
                 color: "white",
                 padding: "10px",
                 borderRadius: "50%",
@@ -174,65 +114,56 @@ export default function Page() {
           </DrawerTrigger>
 
           <DrawerContent>
-            <div className="fullscreen-btn" onClick={handleFullscreen}>
-              <BsArrowsFullscreen />
-            </div>
-
-            <div className="drawer-content">
-              <div className="drawer-img">
+            {currentAudio ? (
+              <div className="drawer-content">
                 <DrawerHeader>
-                  <img
-                    className="album-cover"
-                    src="https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Album%20Images%2FEhawaAlbum.jpeg?alt=media&token=d522d410-2b6b-4896-bd00-7a44b8a0df0f"
-                    alt="Album Cover"
-                  />
-                </DrawerHeader>
-              </div>
-
-              <div className="song-details">
-                <DrawerHeader>
-                  <DrawerTitle className="song-title">E Hawa</DrawerTitle>
-                  <DrawerDescription className="song-artist">By Meghdol</DrawerDescription>
+                  <img className="album-cover" src={currentAudio.imageSrc} alt="Album Cover" />
+                  <DrawerTitle className="song-title">{currentAudio.name}</DrawerTitle>
+                  <DrawerDescription className="song-artist">Now Playing</DrawerDescription>
                 </DrawerHeader>
 
-                <DrawerFooter className="pt-0">
-                  <div className="seekbar">
-                    <div className="time-display">
-                      <span>{formatTime(currentTime)}</span>
-                      <input
-                        ref={seekBarRef}
-                        className="seekbar-drawer"
-                        type="range"
-                        min="0"
-                        max="100"
-                        value={(currentTime / duration) * 100 || 0}
-                        step="0.1"
-                        onChange={handleSeek}
-                        style={{
-                          width: "100%",
-                          height: "4px",
-                        }}
-                      />
-                      <span>{formatTime(duration)}</span>
-                    </div>
-                  </div>
-
+                <DrawerFooter>
                   <div className="control-btns">
-                    <div className="previous-btn">
-                      <MdSkipPrevious />
-                    </div>
-                    <div className="play-btn" onClick={togglePlayPause}>
+                    <MdSkipPrevious />
+                    <div className="play-btn" onClick={() => handlePlayPause()}>
                       {isPlaying ? <IoMdPause /> : <IoMdPlay />}
                     </div>
-                    <div className="next-btn">
-                      <MdSkipNext />
-                    </div>
+                    <MdSkipNext />
                   </div>
-                </DrawerFooter> 
+                </DrawerFooter>
               </div>
-            </div>
+            ) : (
+              <div className="drawer-content">
+                <DrawerHeader>
+                  <DrawerTitle>No Audio Playing</DrawerTitle>
+                  <DrawerDescription>Select a song to play</DrawerDescription>
+                </DrawerHeader>
+              </div>
+            )}
           </DrawerContent>
         </Drawer>
+
+        {/* React Player - Fullscreen Mode */}
+        <div
+          className="player-wrapper"
+          style={{
+            display: isFullscreen ? "block" : "none",
+            width: "100%",
+            height: "100vh",
+          }}
+          onDoubleClick={handleFullscreen}
+          onClick={() => isFullscreen && dispatch(togglePlayPause())}
+        >
+          <ReactPlayer
+            ref={playerRef}
+            url={currentAudio?.audioSrc}
+            playing={isPlaying}
+            controls={false}
+            width="100%"
+            height="100%"
+            style={{ display: isFullscreen ? "block" : "none" }}
+          />
+        </div>
 
         <SidebarInset>
           <header
@@ -245,31 +176,30 @@ export default function Page() {
               boxShadow: "0px 16px 40px 0px rgba(68, 70, 94, 0.37)",
               backdropFilter: "blur(10px)",
               WebkitBackdropFilter: "blur(10px)",
-              padding:"10px 0px",
+              padding: "10px 0px",
             }}
-            
           >
             <div className="flex items-center gap-2 px-4">
-              <button id="home" style={{ cursor: "pointer", color: "#fff", fontSize: "20px"}} onClick={handleBack}><MdKeyboardDoubleArrowLeft /></button>
+              <button
+                id="home"
+                style={{ cursor: "pointer", color: "#fff", fontSize: "20px" }}
+                onClick={handleBack}
+              >
+                <MdKeyboardDoubleArrowLeft />
+              </button>
               <Separator orientation="vertical" className="mr-2 h-4" />
               <SidebarTrigger className="-ml-1" />
               <Separator orientation="vertical" className="mr-2 h-4" />
               <Breadcrumb className="d-flex align-items-center">
                 <BreadcrumbList>
                   <BreadcrumbItem>
-                    <BreadcrumbLink
-                      style={{ cursor: "pointer" }}
-                      onClick={() => navigate("/")}
-                    >
+                    <BreadcrumbLink style={{ cursor: "pointer" }} onClick={() => navigate("/")}>
                       Home
                     </BreadcrumbLink>
                   </BreadcrumbItem>
                   <BreadcrumbSeparator />
                   <BreadcrumbItem>
-                    <BreadcrumbPage
-                      style={{ cursor: "pointer" }}
-                      onClick={() => navigate("/About")}
-                    >
+                    <BreadcrumbPage style={{ cursor: "pointer" }} onClick={() => navigate("/About")}>
                       Data Fetching
                     </BreadcrumbPage>
                   </BreadcrumbItem>
@@ -277,6 +207,7 @@ export default function Page() {
               </Breadcrumb>
             </div>
           </header>
+
           <div className="flex flex-1 flex-col p-4 pt-0 overflow-y-hidden w-full">
             <Outlet />
           </div>
