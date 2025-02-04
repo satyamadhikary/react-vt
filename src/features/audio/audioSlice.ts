@@ -28,7 +28,7 @@ const audioSlice = createSlice({
       state.isPlaying = !state.isPlaying;
     },
     stopAudio: (state) => {
-      state.isPlaying = false;
+      state.isPlaying = false;      
     },
     updateCurrentTime: (state, action: PayloadAction<number>) => {
       state.currentTime = action.payload; // Store current playback time

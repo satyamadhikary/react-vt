@@ -13,11 +13,12 @@ import { Drawer, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle, DrawerT
 import { RiPlayList2Line } from "react-icons/ri";
 import { MdSkipPrevious, MdSkipNext, MdKeyboardDoubleArrowLeft } from "react-icons/md";
 import { IoMdPlay, IoMdPause } from "react-icons/io";
+import { Skeleton } from "@/components/ui/skeleton";
 import "../css/drawer.css";
 
 export default function Page() {
   const dispatch = useDispatch();
-  const { currentAudio} = useSelector((state: RootState) => state.audio);
+  const { currentAudio } = useSelector((state: RootState) => state.audio);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const playerRef = useRef<ReactPlayer | null>(null);
@@ -26,35 +27,35 @@ export default function Page() {
   const isPlaying = useSelector((state: RootState) => state.audio.isPlaying);
   const audioRefs = useRef<(HTMLAudioElement | null)[]>([]);
 
-const handlePlayPause = () => {
-  if (currentAudio) {
-    dispatch(togglePlayPause());
-    const playingAudio = audioRefs.current.find((audio) => audio?.src === currentAudio.audioSrc);
-    if (playingAudio) {
-      isPlaying ? playingAudio.pause() : playingAudio.play();
+  const handlePlayPause = () => {
+    if (currentAudio) {
+      dispatch(togglePlayPause());
+      const playingAudio = audioRefs.current.find((audio) => audio?.src === currentAudio.audioSrc);
+      if (playingAudio) {
+        isPlaying ? playingAudio.pause() : playingAudio.play();
+      }
     }
-  }
-};
+  };
 
-useEffect(() => {
-  const homeButton = document.getElementById("home");
-  if (homeButton) {
+  useEffect(() => {
+    const homeButton = document.getElementById("home");
+    if (homeButton) {
+      if (location.pathname === "/") {
+        homeButton.style.color = "#8a8a8a";
+      } else {
+        homeButton.style.color = "";
+      }
+    }
+  }, [location.pathname]);
+
+  const handleBack = () => {
     if (location.pathname === "/") {
-      homeButton.style.color = "#8a8a8a";
+      console.log("You are at the homepage")
+      return;
     } else {
-      homeButton.style.color = "";
+      navigate(-1);
     }
-  }
-}, [location.pathname]);
-
-const handleBack = () => {
-  if (location.pathname === "/") {
-    console.log("You are at the homepage")
-    return;
-  } else {
-    navigate(-1);
-  }
-};
+  };
 
   const handleFullscreen = () => {
     const videoContainer = playerRef.current?.getInternalPlayer();
@@ -118,26 +119,47 @@ const handleBack = () => {
               <div className="drawer-content">
                 <DrawerHeader>
                   <img className="album-cover" src={currentAudio.imageSrc} alt="Album Cover" />
-                  <DrawerTitle className="song-title">{currentAudio.name}</DrawerTitle>
-                  <DrawerDescription className="song-artist">Now Playing</DrawerDescription>
+
                 </DrawerHeader>
 
-                <DrawerFooter>
-                  <div className="control-btns">
-                    <MdSkipPrevious />
-                    <div className="play-btn" onClick={() => handlePlayPause()}>
-                      {isPlaying ? <IoMdPause /> : <IoMdPlay />}
+                <div className="song-details">
+                  <DrawerHeader>
+                    <DrawerTitle className="song-title">{currentAudio.name}</DrawerTitle>
+                    <DrawerDescription className="song-artist">Now Playing</DrawerDescription>
+                  </DrawerHeader>
+
+
+                  <DrawerFooter>
+                    <div className="control-btns">
+                      <MdSkipPrevious />
+                      <div className="play-btn" onClick={() => handlePlayPause()}>
+                        {isPlaying ? <IoMdPause /> : <IoMdPlay />}
+                      </div>
+                      <MdSkipNext />
                     </div>
-                    <MdSkipNext />
-                  </div>
-                </DrawerFooter>
+                  </DrawerFooter>
+                </div>
               </div>
             ) : (
               <div className="drawer-content">
                 <DrawerHeader>
-                  <DrawerTitle>No Audio Playing</DrawerTitle>
-                  <DrawerDescription>Select a song to play</DrawerDescription>
+                  <Skeleton className="w-64 h-64 rounded-lg mx-auto" />
                 </DrawerHeader>
+
+                <div className="song-details">
+                  <DrawerHeader>
+                    <Skeleton className="w-40 h-6 rounded-md sm:mx-0 : mx-auto" />
+                    <Skeleton className="w-24 h-4 mt-2 rounded-md sm:mx-0 : mx-auto" />
+                  </DrawerHeader>
+
+                  <DrawerFooter>
+                    <div className="control-btns flex gap-4">
+                      <Skeleton className="w-10 h-10 rounded-full" />
+                      <Skeleton className="w-12 h-12 rounded-full" />
+                      <Skeleton className="w-10 h-10 rounded-full" />
+                    </div>
+                  </DrawerFooter>
+                </div>
               </div>
             )}
           </DrawerContent>

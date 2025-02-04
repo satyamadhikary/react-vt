@@ -33,9 +33,7 @@ const Songlist = () => {
             currentAudioElement.muted = true;
           }
         });
-
         dispatch(setAudio(song)); // Set current audio in Redux
-
         // Restore playback position
         if (currentAudio?.name === song.name) {
           currentAudioElement.currentTime = currentTime;
