@@ -41,6 +41,42 @@ export default function Page() {
   const isPlaying = useSelector((state: RootState) => state.audio.isPlaying);
   const audioRefs = useRef<(HTMLAudioElement | null)[]>([]);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+<<<<<<< Updated upstream
+=======
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const updateTime = () => {
+      dispatch(setCurrentTime(audio.currentTime));
+    };
+
+    const updateDuration = () => {
+      dispatch(setDuration(audio.duration));
+    };
+
+    audio.addEventListener("timeupdate", updateTime);
+    audio.addEventListener("loadedmetadata", updateDuration);
+
+    return () => {
+      audio.removeEventListener("timeupdate", updateTime);
+      audio.removeEventListener("loadedmetadata", updateDuration);
+    };
+  }, [dispatch]);
+
+  
+    const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newTime = parseFloat(e.target.value);
+      dispatch(setCurrentTime(newTime));
+  
+      // Update the actual audio element
+      const audio = document.querySelector("audio");
+      if (audio) {
+        audio.currentTime = newTime;
+      }
+    };
+
+>>>>>>> Stashed changes
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -95,6 +131,7 @@ export default function Page() {
   };
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   const handleProgress = (state: { playedSeconds: number; played: number }) => {
     setCurrentTime(state.playedSeconds);
     if (seekBarRef.current) {
@@ -102,6 +139,8 @@ export default function Page() {
       seekBarRef.current.value = progress.toString();
       seekBarRef.current.style.background = `linear-gradient(to right, rgb(253, 145, 121) ${progress}%, #8a8a8a ${progress}%)`;
 =======
+=======
+>>>>>>> Stashed changes
 
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
@@ -156,6 +195,7 @@ export default function Page() {
     };
   }, []);
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
   const togglePlayPause = () => {
     setIsPlaying((prev) => !prev);
@@ -168,6 +208,10 @@ export default function Page() {
   };
 
   return (
+=======
+  
+    return (
+>>>>>>> Stashed changes
 =======
   
     return (
@@ -281,6 +325,30 @@ export default function Page() {
                     </div>
                     <div className="next-btn">
 =======
+
+                 <div className="seekbar-container">
+                  <div className="seekbar">
+                    <div className="time-display">
+                      <span>{formatTime(currentTime)}</span>
+                      <input
+                        // ref={seekBarRef}
+                        onChange={handleSeek}
+                        className="seekbar-drawer"
+                        type="range"
+                        min="0"
+                        max={duration}
+                        value={currentTime}
+                        step="0.1"
+                        style={{
+                          width: "100%",
+                          height: "4px",
+                        }}
+                      />
+                      <span>{formatTime(duration)}</span>
+                    </div>
+                  </div>
+                  </div>
+
 
                  <div className="seekbar-container">
                   <div className="seekbar">
