@@ -23,7 +23,58 @@ import { RiPlayList2Line } from "react-icons/ri";
 import { MdSkipPrevious, MdSkipNext } from "react-icons/md";
 import { IoMdPlay, IoMdPause } from "react-icons/io";
 import "../css/drawer.css";
+import { setCurrentTime, setDuration } from "../features/audio/audioSlice";
 
+<<<<<<< Updated upstream
+=======
+export default function Page() {
+  const dispatch = useDispatch();
+  const { currentAudio } = useSelector((state: RootState) => state.audio);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const playerRef = useRef<ReactPlayer | null>(null);
+  const seekBarRef = useRef<HTMLInputElement | null>(null);
+  const currentTime = useSelector((state: RootState) => state.audio.currentTime);
+  const duration = useSelector((state: RootState) => state.audio.duration);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isPlaying = useSelector((state: RootState) => state.audio.isPlaying);
+  const audioRefs = useRef<(HTMLAudioElement | null)[]>([]);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const updateTime = () => {
+      dispatch(setCurrentTime(audio.currentTime));
+    };
+
+    const updateDuration = () => {
+      dispatch(setDuration(audio.duration));
+    };
+
+    audio.addEventListener("timeupdate", updateTime);
+    audio.addEventListener("loadedmetadata", updateDuration);
+
+    return () => {
+      audio.removeEventListener("timeupdate", updateTime);
+      audio.removeEventListener("loadedmetadata", updateDuration);
+    };
+  }, [dispatch]);
+
+  
+    const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newTime = parseFloat(e.target.value);
+      dispatch(setCurrentTime(newTime));
+  
+      // Update the actual audio element
+      const audio = document.querySelector("audio");
+      if (audio) {
+        audio.currentTime = newTime;
+      }
+    };
+
+>>>>>>> Stashed changes
 
 export default function Page() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -43,12 +94,30 @@ export default function Page() {
     }
   };
 
+<<<<<<< Updated upstream
   const handleProgress = (state: { playedSeconds: number; played: number }) => {
     setCurrentTime(state.playedSeconds);
     if (seekBarRef.current) {
       const progress = state.played * 100;
       seekBarRef.current.value = progress.toString();
       seekBarRef.current.style.background = `linear-gradient(to right, rgb(253, 145, 121) ${progress}%, #8a8a8a ${progress}%)`;
+=======
+
+  const formatTime = (time: number) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  };
+
+  useEffect(() => {
+    const homeButton = document.getElementById("home");
+    if (homeButton) {
+      if (location.pathname === "/") {
+        homeButton.style.color = "#8a8a8a";
+      } else {
+        homeButton.style.color = "";
+      }
+>>>>>>> Stashed changes
     }
   };
 
@@ -86,6 +155,7 @@ export default function Page() {
       document.removeEventListener("fullscreenchange", onFullscreenChange);
     };
   }, []);
+<<<<<<< Updated upstream
 
   const togglePlayPause = () => {
     setIsPlaying((prev) => !prev);
@@ -98,6 +168,10 @@ export default function Page() {
   };
 
   return (
+=======
+  
+    return (
+>>>>>>> Stashed changes
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <SidebarProvider>
         <AppSidebar />
@@ -197,6 +271,7 @@ export default function Page() {
                     </div>
                   </div>
 
+<<<<<<< Updated upstream
                   <div className="control-btns">
                     <div className="previous-btn">
                       <MdSkipPrevious />
@@ -205,6 +280,39 @@ export default function Page() {
                       {isPlaying ? <IoMdPause /> : <IoMdPlay />}
                     </div>
                     <div className="next-btn">
+=======
+
+                 <div className="seekbar-container">
+                  <div className="seekbar">
+                    <div className="time-display">
+                      <span>{formatTime(currentTime)}</span>
+                      <input
+                        // ref={seekBarRef}
+                        onChange={handleSeek}
+                        className="seekbar-drawer"
+                        type="range"
+                        min="0"
+                        max={duration}
+                        value={currentTime}
+                        step="0.1"
+                        style={{
+                          width: "100%",
+                          height: "4px",
+                        }}
+                      />
+                      <span>{formatTime(duration)}</span>
+                    </div>
+                  </div>
+                  </div>
+
+
+                  <DrawerFooter>
+                    <div className="control-btns">
+                      <MdSkipPrevious />
+                      <div className="play-btn"  onClick={() => handlePlayPause()}>
+                        {isPlaying ? <IoMdPause /> : <IoMdPlay />}
+                      </div>
+>>>>>>> Stashed changes
                       <MdSkipNext />
                     </div>
                   </div>
@@ -261,4 +369,4 @@ export default function Page() {
       </SidebarProvider>
     </ThemeProvider>
   );
-}
+};
