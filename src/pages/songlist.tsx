@@ -53,7 +53,12 @@ const Songlist = () => {
   };
 
   return (
-    <motion.div>
+    <motion.div
+      initial={{opacity: 0 , translateY: 50}}
+      animate={{opacity: 1 , translateY: 0}}
+      transition={{duration:.3}}
+      exit={{opacity: 0, translateY:100}}
+    >
       <div className="songlist-container overflow-y-auto">
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
           <div className="flex flex-1 flex-col gap-4 p-2 pt-5">
