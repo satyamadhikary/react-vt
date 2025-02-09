@@ -5,17 +5,13 @@ import { motion } from "motion/react";
 import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../app/store";
-import { setAudio } from "../features/audio/audioSlice";
+import { setAudio, stopAudio, updateSeekbar, setDuration } from "../features/audio/audioSlice";
 import { songsData } from "../arrays/songsData";
 import { Audio } from "../features/audio/types";
-import { stopAudio } from "../features/audio/audioSlice";
-import { updateCurrentTime } from "../features/audio/audioSlice";
 
 const Songlist = () => {
   const dispatch = useDispatch();
-  const currentAudio = useSelector((state: RootState) => state.audio.currentAudio);
-  const isPlaying = useSelector((state: RootState) => state.audio.isPlaying);
-  const currentTime = useSelector((state: RootState) => state.audio.currentTime);
+  const { currentAudio, isPlaying, currentTime } = useSelector((state: RootState) => state.audio);
   const audioRefs = useRef<(HTMLAudioElement | null)[]>([]);
 
   const togglePlayPause = (index: number, song: Audio) => {
@@ -33,8 +29,8 @@ const Songlist = () => {
             currentAudioElement.muted = true;
           }
         });
-        dispatch(setAudio(song)); // Set current audio in Redux
-        // Restore playback position
+        dispatch(setAudio(song));
+
         if (currentAudio?.name === song.name) {
           currentAudioElement.currentTime = currentTime;
         }
@@ -44,20 +40,32 @@ const Songlist = () => {
     }
   };
 
-  // Track playback progress and store in Redux
-  const handleTimeUpdate = (index: number) => {
+  const handleLoadedMetadata = (index: number) => {
     const currentAudioElement = audioRefs.current[index];
     if (currentAudioElement) {
-      dispatch(updateCurrentTime(currentAudioElement.currentTime));
+      dispatch(setDuration(currentAudioElement.duration));
     }
   };
 
+  const handleTimeUpdate = (index: number) => {
+    const currentAudioElement = audioRefs.current[index];
+    if (!isPlaying || !currentAudioElement) return; // Stop updates when paused
+
+    dispatch(updateSeekbar({
+      currentTime: currentAudioElement.currentTime,
+      duration: currentAudioElement.duration
+    }));
+  };
+
+
+
+
   return (
     <motion.div
-      initial={{opacity: 0 , translateY: 50}}
-      animate={{opacity: 1 , translateY: 0}}
-      transition={{duration:.3}}
-      exit={{opacity: 0, translateY:100}}
+      initial={{ opacity: 0, translateY: 50 }}
+      animate={{ opacity: 1, translateY: 0 }}
+      transition={{ duration: 0.3 }}
+      exit={{ opacity: 0, translateY: 100 }}
     >
       <div className="songlist-container overflow-y-auto">
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
@@ -71,6 +79,7 @@ const Songlist = () => {
                 <audio
                   ref={(el) => (audioRefs.current[index] = el)}
                   src={song.audioSrc}
+                  onLoadedMetadata={() => handleLoadedMetadata(index)}
                   onTimeUpdate={() => handleTimeUpdate(index)}
                 ></audio>
                 <h1 className="song-name">{song.name}</h1>
@@ -84,5 +93,3 @@ const Songlist = () => {
 };
 
 export default Songlist;
-
-

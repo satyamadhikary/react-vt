@@ -15,27 +15,67 @@ import { MdSkipPrevious, MdSkipNext, MdKeyboardDoubleArrowLeft } from "react-ico
 import { IoMdPlay, IoMdPause } from "react-icons/io";
 import { Skeleton } from "@/components/ui/skeleton";
 import "../css/drawer.css";
+import { updateSeekbar } from "../features/audio/audioSlice";
 
 export default function Page() {
   const dispatch = useDispatch();
-  const { currentAudio } = useSelector((state: RootState) => state.audio);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const playerRef = useRef<ReactPlayer | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const isPlaying = useSelector((state: RootState) => state.audio.isPlaying);
-  const audioRefs = useRef<(HTMLAudioElement | null)[]>([]);
+  const audioRefs = useRef<HTMLAudioElement[]>([]);
+  const { currentAudio, currentTime, duration, isPlaying } = useSelector((state: RootState) => state.audio);
+  const seekBarRef = useRef<HTMLInputElement | null>(null);
+
 
   const handlePlayPause = () => {
     if (currentAudio) {
       dispatch(togglePlayPause());
-      const playingAudio = audioRefs.current.find((audio) => audio?.src === currentAudio.audioSrc);
-      if (playingAudio) {
-        isPlaying ? playingAudio.pause() : playingAudio.play();
+  
+      if (!isPlaying) {
+        dispatch(updateSeekbar({ currentTime, duration }));
       }
     }
   };
+  
+
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!isPlaying) return; // Prevent seeking when paused
+  
+    const newPercentage = parseFloat(e.target.value);
+    const newTime = (newPercentage / 100) * duration;
+  
+    dispatch(updateSeekbar({ currentTime: newTime, duration }));
+  
+    const currentAudioElement = audioRefs.current.find(
+      (audio) => audio?.src === currentAudio?.audioSrc
+    );
+  
+    if (currentAudioElement) {
+      currentAudioElement.currentTime = newTime;
+    }
+  
+    if (playerRef.current) {
+      playerRef.current.seekTo(newTime, "seconds");
+    }
+  };
+  
+  
+  useEffect(() => {
+    if (!isPlaying && playerRef.current) {
+      playerRef.current.seekTo(currentTime, "seconds"); // Keep seek bar in place when paused
+    }
+  }, [isPlaying]);
+  
+
+
+  const formatTime = (time: number) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  };
+
 
   useEffect(() => {
     const homeButton = document.getElementById("home");
@@ -130,9 +170,30 @@ export default function Page() {
 
 
                   <DrawerFooter>
+                    <div className="seekbar">
+                      <div className="time-display">
+                        <span>{formatTime(currentTime)}</span>
+                        <input
+                          ref={seekBarRef} 
+                          className="seekbar-drawer"
+                          type="range"
+                          min="0"
+                          max="100"
+                          value={(currentTime / duration) * 100 || 0}
+                          step="0.1"
+                          onChange={(handleSeek)}
+                          style={{
+                            width: "100%",
+                            height: "4px",
+                          }}
+                        />
+                        <span>{formatTime(duration)}</span>
+                      </div> 
+                    </div>
+
                     <div className="control-btns">
                       <MdSkipPrevious />
-                      <div className="play-btn" onClick={() => handlePlayPause()}>
+                      <div className="play-btn" onClick={handlePlayPause}>
                         {isPlaying ? <IoMdPause /> : <IoMdPlay />}
                       </div>
                       <MdSkipNext />

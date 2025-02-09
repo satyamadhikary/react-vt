@@ -5,12 +5,14 @@ interface AudioState {
   currentAudio: Audio | null;
   isPlaying: boolean;
   currentTime: number; // Store current playback time
+  duration: number;
 }
 
 const initialState: AudioState = {
   currentAudio: null,
   isPlaying: false,
   currentTime: 0,
+  duration: 0,
 };
 
 const audioSlice = createSlice({
@@ -19,6 +21,7 @@ const audioSlice = createSlice({
   reducers: {
     setAudio: (state, action: PayloadAction<Audio>) => {
       if (state.currentAudio?.name !== action.payload.name) {
+        state.duration =  0; // Set duration
         state.currentTime = 0; // Reset time if switching to a new song
       }
       state.currentAudio = action.payload;
@@ -33,8 +36,15 @@ const audioSlice = createSlice({
     updateCurrentTime: (state, action: PayloadAction<number>) => {
       state.currentTime = action.payload; // Store current playback time
     },
+    setDuration: (state, action: PayloadAction<number>) => {
+      state.duration = action.payload; // Store audio duration
+    },
+    updateSeekbar: (state, action: PayloadAction<{ currentTime: number; duration: number }>) => {
+      state.currentTime = action.payload.currentTime;
+      state.duration = action.payload.duration;
+    },
   },
 });
 
-export const { setAudio, togglePlayPause, stopAudio, updateCurrentTime } = audioSlice.actions;
+export const { setAudio, togglePlayPause, stopAudio, updateCurrentTime, setDuration, updateSeekbar } = audioSlice.actions;
 export default audioSlice.reducer;
