@@ -155,8 +155,10 @@ export default function Page() {
           </DrawerTrigger>
 
           <DrawerContent>
+         <video style={{width: "100vw",objectFit: "fill", height: "100%", position: "absolute", zIndex: "-2", filter: "blur(10px)"}} autoPlay={true} loop src="http://cdn.unwatermark.ai/datarm7/unwatermark-removebg-video/2025-02-13/output/f8fd9389-5772-404c-bb90-b1b87ea807d1.mp4"></video>
             {currentAudio ? (
               <div className="drawer-content">
+                
                 <DrawerHeader>
                   <img className="album-cover" src={currentAudio.imageSrc} alt="Album Cover" />
 

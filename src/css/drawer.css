@@ -132,7 +132,11 @@
   }
    
   
-
+  @media screen and (max-width: 1024px) {
+    .album-cover{
+        height: auto;
+    }
+}
 @media screen and (max-width: 768px) {
     .album-cover{
         display: block;
