@@ -131,8 +131,11 @@ export default function Page() {
   document.addEventListener("DOMContentLoaded", function () {
     var video = document.getElementById("myVideo");
 
+    // Set attributes dynamically in case iOS is ignoring inline ones
+    video?.setAttribute("playsinline", "");
+    video?.setAttribute("webkit-playsinline", "");
+    
     video?.addEventListener("play", function () {
-      // Ensure it stays inline
       video?.setAttribute("playsinline", "");
       video?.setAttribute("webkit-playsinline", "");
     });
