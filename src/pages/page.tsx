@@ -128,6 +128,16 @@ export default function Page() {
     };
   }, []);
 
+  document.addEventListener("DOMContentLoaded", function () {
+    var video = document.getElementById("myVideo");
+
+    video?.addEventListener("play", function () {
+      // Ensure it stays inline
+      video?.setAttribute("playsinline", "");
+      video?.setAttribute("webkit-playsinline", "");
+    });
+  });
+
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <SidebarProvider>
@@ -155,7 +165,7 @@ export default function Page() {
           </DrawerTrigger>
 
           <DrawerContent>
-         <video style={{width: "100vw",objectFit: "fill", height: "100%", position: "absolute", zIndex: "-2", filter: "blur(10px)", pointerEvents: "none" }} autoPlay={true} playsInline={false} webkit-playsinline="none" loop src="https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/drawerVideo%2Funwatermark_istockphoto-1317284271-640_adpp_is.mp4?alt=media&token=44d5a9af-59b0-41a6-8b6c-0d96e1c4e6d5"></video>
+         <video id="myVideo" style={{width: "100vw",objectFit: "fill", height: "100%", position: "absolute", zIndex: "-2", filter: "blur(10px)", pointerEvents: "none" }} autoPlay={true} playsInline={false} webkit-playsinline="none" preload={"auto"} loop src="https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/drawerVideo%2Funwatermark_istockphoto-1317284271-640_adpp_is.mp4?alt=media&token=44d5a9af-59b0-41a6-8b6c-0d96e1c4e6d5"></video>
             {currentAudio ? (
               <div className="drawer-content">
                 
