@@ -128,18 +128,7 @@ export default function Page() {
     };
   }, []);
 
-  document.addEventListener("DOMContentLoaded", function () {
-    var video = document.getElementById("myVideo");
 
-    // Set attributes dynamically in case iOS is ignoring inline ones
-    video?.setAttribute("playsinline", "");
-    video?.setAttribute("webkit-playsinline", "");
-
-    video?.addEventListener("play", function () {
-      video?.setAttribute("playsinline", "");
-      video?.setAttribute("webkit-playsinline", "");
-    });
-  });
 
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
@@ -169,18 +158,18 @@ export default function Page() {
 
           <DrawerContent>
             <video
-              id="myVideo"
+             
               style={{
                 width: "100vw",
                 height: "100%",
-                objectFit: "cover", // Avoid stretching
+                objectFit: "fill",
                 position: "absolute",
                 zIndex: "-2",
                 filter: "blur(10px)"
               }}
               autoPlay
-              playsInline // ✅ Corrected
-              webkit-playsinline // ✅ Corrected
+              playsInline 
+              webkit-playsinline 
               loop
               preload="auto"
               src="https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/drawerVideo%2Funwatermark_istockphoto-1317284271-640_adpp_is.mp4?alt=media&token=44d5a9af-59b0-41a6-8b6c-0d96e1c4e6d5"
