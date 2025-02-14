@@ -32,42 +32,42 @@ export default function Page() {
   const handlePlayPause = () => {
     if (currentAudio) {
       dispatch(togglePlayPause());
-  
+
       if (!isPlaying) {
         dispatch(updateSeekbar({ currentTime, duration }));
       }
     }
   };
-  
+
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!isPlaying) return; // Prevent seeking when paused
-  
+
     const newPercentage = parseFloat(e.target.value);
     const newTime = (newPercentage / 100) * duration;
-  
+
     dispatch(updateSeekbar({ currentTime: newTime, duration }));
-  
+
     const currentAudioElement = audioRefs.current.find(
       (audio) => audio?.src === currentAudio?.audioSrc
     );
-  
+
     if (currentAudioElement) {
       currentAudioElement.currentTime = newTime;
     }
-  
+
     if (playerRef.current) {
       playerRef.current.seekTo(newTime, "seconds");
     }
   };
-  
-  
+
+
   useEffect(() => {
     if (!isPlaying && playerRef.current) {
       playerRef.current.seekTo(currentTime, "seconds"); // Keep seek bar in place when paused
     }
   }, [isPlaying]);
-  
+
 
 
   const formatTime = (time: number) => {
@@ -134,7 +134,7 @@ export default function Page() {
     // Set attributes dynamically in case iOS is ignoring inline ones
     video?.setAttribute("playsinline", "");
     video?.setAttribute("webkit-playsinline", "");
-    
+
     video?.addEventListener("play", function () {
       video?.setAttribute("playsinline", "");
       video?.setAttribute("webkit-playsinline", "");
@@ -168,10 +168,27 @@ export default function Page() {
           </DrawerTrigger>
 
           <DrawerContent>
-         <video id="myVideo" style={{width: "100vw",objectFit: "fill", height: "100%", position: "absolute", zIndex: "-2", filter: "blur(10px)", pointerEvents: "none" }} autoPlay={true} playsInline={false} webkit-playsinline="none" preload={"auto"} loop src="https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/drawerVideo%2Funwatermark_istockphoto-1317284271-640_adpp_is.mp4?alt=media&token=44d5a9af-59b0-41a6-8b6c-0d96e1c4e6d5"></video>
+            <video
+              id="myVideo"
+              style={{
+                width: "100vw",
+                height: "100%",
+                objectFit: "cover", // Avoid stretching
+                position: "absolute",
+                zIndex: "-2",
+                filter: "blur(10px)"
+              }}
+              autoPlay
+              playsInline // ✅ Corrected
+              webkit-playsinline // ✅ Corrected
+              loop
+              preload="auto"
+              src="https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/drawerVideo%2Funwatermark_istockphoto-1317284271-640_adpp_is.mp4?alt=media&token=44d5a9af-59b0-41a6-8b6c-0d96e1c4e6d5"
+            />
+
             {currentAudio ? (
               <div className="drawer-content">
-                
+
                 <DrawerHeader>
                   <img className="album-cover" src={currentAudio.imageSrc} alt="Album Cover" />
 
@@ -189,7 +206,7 @@ export default function Page() {
                       <div className="time-display">
                         <span>{formatTime(currentTime)}</span>
                         <input
-                          ref={seekBarRef} 
+                          ref={seekBarRef}
                           className="seekbar-drawer"
                           type="range"
                           min="0"
@@ -203,7 +220,7 @@ export default function Page() {
                           }}
                         />
                         <span>{formatTime(duration)}</span>
-                      </div> 
+                      </div>
                     </div>
 
                     <div className="control-btns">
