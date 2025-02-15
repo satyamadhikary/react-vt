@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation} from "react-router-dom";
 import { useLayoutEffect } from "react";
 import "./App.css"
 import "./index.css"
@@ -8,6 +8,7 @@ import About from "./pages/About";
 import Songlist from "./pages/songlist";
 import { Provider } from "react-redux";
 import { store } from "./app/store";
+import AudioPlayer from "./pages/Audioplayer";
 
 function AppRoutes() {
   const location = useLocation();
@@ -17,24 +18,27 @@ function AppRoutes() {
   }, [location.pathname]);
 
   return (
-     <Provider store={store}>
-    <Routes>
-      <Route
-        path="/"
-        element={<Page />}>
-
+    <Provider store={store}>
+      <AudioPlayer />
+      <Routes>
         <Route
-          index
-          element={<Home />} />
+          path="/"
+          element={<Page />}>
 
-        <Route
-          path="/songlist"
-          element={<Songlist />} />
+          <Route
+            index
+            element={<Home />}
+          />
 
-        <Route path="/About" element={<About />} />
-      </Route>
-    </Routes>
+          <Route
+            path="/songlist"
+            element={<Songlist />} />
+
+          <Route path="/About" element={<About />} />
+        </Route>
+      </Routes>
     </Provider>
+
   );
 }
 
