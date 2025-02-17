@@ -6,6 +6,8 @@ import { togglePlayPause, updateSeekbar } from "../features/audio/audioSlice";
 import { Drawer, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle, DrawerDescription, DrawerTrigger } from "@/components/ui/drawer";
 import { MdSkipPrevious, MdSkipNext } from "react-icons/md";
 import { IoMdPlay, IoMdPause } from "react-icons/io";
+import { MdOutlinePauseCircleFilled } from "react-icons/md";
+import { IoPlayCircleSharp, IoPauseCircleSharp } from "react-icons/io5";
 import { RiPlayList2Line } from "react-icons/ri";
 import { Skeleton } from "@/components/ui/skeleton";
 import "../css/drawer.css";
@@ -105,7 +107,7 @@ const DrawerPage = () => {
                     webkit-playsinline
                     loop
                     preload="auto"
-                    src="https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/drawerVideo%2Funwatermark_istockphoto-1317284271-640_adpp_is.mp4?alt=media&token=44d5a9af-59b0-41a6-8b6c-0d96e1c4e6d5"
+                    src="https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/drawerVideo%2Funwatermark_istockphoto-1317284271-640_adpp_is%20(1)%20(1)%20(1).mp4?alt=media&token=9c3876b5-dcd6-4887-b720-cf530ceef3b5"
                 />
 
                 {currentAudio ? (
@@ -142,7 +144,7 @@ const DrawerPage = () => {
                                 <div className="control-btns">
                                     <MdSkipPrevious />
                                     <div className="play-btn" onClick={handlePlayPause}>
-                                        {isPlaying ? <IoMdPause /> : <IoMdPlay />}
+                                        {isPlaying ? <MdOutlinePauseCircleFilled /> : <IoPlayCircleSharp />}
                                     </div>
                                     <MdSkipNext />
                                 </div>

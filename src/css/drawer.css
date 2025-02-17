@@ -40,6 +40,10 @@
 }
 .control-btns div{
     cursor: pointer;
+    font-size: 45px;
+}
+.control-btns div:hover{
+    color: #f3f3f3;
 }
 
 .time-display{
