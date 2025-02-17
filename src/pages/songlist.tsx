@@ -1,10 +1,11 @@
 import { ThemeProvider } from "@/components/theme-provider";
+import { useEffect } from "react";
 import "../css/songlist.css";
 import { IoMdPlay, IoMdPause } from "react-icons/io";
 import { motion } from "motion/react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../app/store";
-import { setAudio, togglePlayPause } from "../features/audio/audioSlice";
+import { setAudio, togglePlayPause, setPlaylist } from "../features/audio/audioSlice";
 import { songsData } from "../arrays/songsData";
 import { Audio } from "../features/audio/types";
 import AudioPlayer from "./Audioplayer"; 
@@ -13,11 +14,15 @@ const Songlist = () => {
   const dispatch = useDispatch();
   const { currentAudio, isPlaying } = useSelector((state: RootState) => state.audio);
 
-  const togglePlayPauseHandler = (song: Audio) => {
+  useEffect(() => {
+    dispatch(setPlaylist(songsData)); // Set the playlist when the component mounts
+  }, [dispatch]);
+
+  const togglePlayPauseHandler = (song: Audio, index: number) => {
     if (currentAudio?.name === song.name) {
-      dispatch(togglePlayPause()); // Toggle only if the same song is clicked
+      dispatch(togglePlayPause());
     } else {
-      dispatch(setAudio(song));
+      dispatch(setAudio({ audio: song, index }));
     }
   };
 
@@ -33,7 +38,7 @@ const Songlist = () => {
           <div className="flex flex-1 flex-col gap-4 p-2 pt-5">
             {songsData.map((song, index) => (
               <div key={index} className="song-container">
-                <div className="play-pause-btn" onClick={() => togglePlayPauseHandler(song)}>
+                <div className="play-pause-btn" onClick={() => togglePlayPauseHandler(song, index)}>
                   {currentAudio?.name === song.name && isPlaying ? <IoMdPause /> : <IoMdPlay />}
                 </div>
                 <img className="song-image" src={song.imageSrc} alt={song.name} />

@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../app/store";
-import { updateSeekbar } from "../features/audio/audioSlice";
+import { updateSeekbar, nextAudio } from "../features/audio/audioSlice";
 
 
 const AudioPlayer = () => {
@@ -35,6 +35,7 @@ const AudioPlayer = () => {
         <audio
             ref={audioRef}
             src={currentAudio?.audioSrc || ""}
+            onEnded={() => dispatch(nextAudio())} 
             onTimeUpdate={handleTimeUpdate}
             muted
         />
