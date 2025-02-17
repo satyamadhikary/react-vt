@@ -56,7 +56,6 @@
     flex: 1;
     height: 4px;
     border-radius: 3px;
-    background: linear-gradient(to right, #cd7a7a 0%, #8a8a8a 0%);
     cursor: pointer;
     appearance: none; 
 }

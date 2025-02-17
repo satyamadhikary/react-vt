@@ -46,17 +46,22 @@ const DrawerPage = () => {
     const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newPercentage = parseFloat(e.target.value);
         const newTime = (newPercentage / 100) * duration;
-
+        const progress = (newTime / duration) * 100; 
+    
         dispatch(updateSeekbar({ currentTime: newTime, duration }));
-
+    
         if (audioRef.current) {
             audioRef.current.currentTime = newTime;
-        }
-
+        }   
+        if (seekBarRef.current) {
+            seekBarRef.current.style.background = `linear-gradient(to right, rgb(0, 138, 172) ${progress}%, rgb(210, 210, 210) ${progress}%)`;
+        }  
         if (playerRef.current) {
             playerRef.current.seekTo(newTime, "seconds");
         }
     };
+    
+    
 
     useEffect(() => {
         const savedTime = localStorage.getItem("currentTime");
@@ -134,7 +139,7 @@ const DrawerPage = () => {
                                             value={(currentTime / duration) * 100 || 0}
                                             step="0.1"
                                             onChange={handleSeek}
-                                            style={{ width: "100%", height: "4px" }}
+                                            style={{ width: "100%", height: "4px", backgroundColor: "rgb(210, 210, 210)" }}
                                         />
                                         <span>{formatTime(duration)}</span>
                                     </div>
@@ -179,9 +184,12 @@ const DrawerPage = () => {
                 ref={audioRef}
                 src={currentAudio?.audioSrc || ""}
                 onTimeUpdate={() => {
-                    if (audioRef.current) {
-                        dispatch(updateSeekbar({ currentTime: audioRef.current.currentTime, duration: audioRef.current.duration }));
+                    if (audioRef.current && seekBarRef.current) {
+                        const progress = (audioRef.current.currentTime / audioRef.current.duration) * 100;
+                        seekBarRef.current.value = progress.toString();
+                        seekBarRef.current.style.background = `linear-gradient(to right, rgb(0, 138, 172) ${progress}%, rgb(210, 210, 210) ${progress}%)`;
                     }
+                    dispatch(updateSeekbar({ currentTime: audioRef.current?.currentTime || 0, duration: audioRef.current?.duration || 1 }));
                 }}
             />
         </Drawer>
