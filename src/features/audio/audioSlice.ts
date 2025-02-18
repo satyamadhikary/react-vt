@@ -53,12 +53,17 @@ const audioSlice = createSlice({
       state.currentTime = action.payload; // Store current playback time
     },
     setDuration: (state, action: PayloadAction<number>) => {
-      state.duration = action.payload; // Store audio duration
+      if (!isNaN(action.payload) && action.payload > 0) {
+        state.duration = action.payload;
+      } else {
+        state.duration = 0; // Default to 0 if invalid
+      }
     },
     updateSeekbar: (state, action: PayloadAction<{ currentTime: number; duration: number }>) => {
-      state.currentTime = action.payload.currentTime;
-      state.duration = action.payload.duration;
+      state.currentTime = isNaN(action.payload.currentTime) ? 0 : action.payload.currentTime;
+      state.duration = isNaN(action.payload.duration) || action.payload.duration <= 0 ? 0 : action.payload.duration;
     },
+    
   },
 });
 
