@@ -10,6 +10,8 @@ type PropType = {
   options?: EmblaOptionsType;
 };
 
+
+
 const EmblaCarousel: React.FC<PropType> = ({ images = [{ imageSrc: '' }], audio = [], options }) => {
   const [emblaRef] = useEmblaCarousel(options);
 
