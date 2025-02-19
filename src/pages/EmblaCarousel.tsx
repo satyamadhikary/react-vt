@@ -7,7 +7,7 @@ import { setAudio } from "../features/audio/audioSlice";
 import { useDispatch } from "react-redux";
 
 type Props = {
-  images: { imageSrc: string }[];
+  images: { imageSrc: string; albumSrc: string}[];
   audio: string[];
   name: string[];
   options?: EmblaOptionsType;
@@ -40,7 +40,7 @@ const EmblaCarousel: React.FC<Props> = ({ images = [], audio = [], name = [],opt
               {audio[index] && (
                 <CustomAudioPlayer
                   audioSrc={audio[index]}
-                  imageSrc={image.imageSrc}
+                  imageSrc={image.albumSrc || image.imageSrc}
                   name={name[index]} // Replace with actual song name if available
                   onAudioEnd={handleNextSlide}
                   onPlay={() =>
@@ -48,7 +48,7 @@ const EmblaCarousel: React.FC<Props> = ({ images = [], audio = [], name = [],opt
                       setAudio({
                         audio: {
                           audioSrc: audio[index],
-                          imageSrc: image.imageSrc,
+                          imageSrc: image.albumSrc || image.imageSrc,
                           name: name[index],
                         },
                         index,
