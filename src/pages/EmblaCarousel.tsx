@@ -3,16 +3,20 @@ import "../css/embla.css";
 import { EmblaOptionsType } from "embla-carousel";
 import useEmblaCarousel from "embla-carousel-react";
 import { IoIosPause, IoIosPlay } from "react-icons/io";
+import { setAudio } from "../features/audio/audioSlice";
+import { useDispatch } from "react-redux";
 
-type PropType = {
+type Props = {
   images: { imageSrc: string }[];
   audio: string[];
+  name: string[];
   options?: EmblaOptionsType;
 };
 
-const EmblaCarousel: React.FC<PropType> = ({ images = [{ imageSrc: "" }], audio = [], options }) => {
+const EmblaCarousel: React.FC<Props> = ({ images = [], audio = [], name = [],options }) => {
   const [emblaRef, emblaApi] = useEmblaCarousel(options);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const dispatch = useDispatch();
 
   const handleNextSlide = useCallback(() => {
     if (!emblaApi) return;
@@ -33,7 +37,26 @@ const EmblaCarousel: React.FC<PropType> = ({ images = [{ imageSrc: "" }], audio 
           {images.map((image, index) => (
             <div className="embla__slide" key={index}>
               <img src={image.imageSrc} alt={`Slide ${index + 1}`} className="embla-img" />
-              {audio[index] && <CustomAudioPlayer src={audio[index]} onAudioEnd={handleNextSlide} />}
+              {audio[index] && (
+                <CustomAudioPlayer
+                  audioSrc={audio[index]}
+                  imageSrc={image.imageSrc}
+                  name={name[index]} // Replace with actual song name if available
+                  onAudioEnd={handleNextSlide}
+                  onPlay={() =>
+                    dispatch(
+                      setAudio({
+                        audio: {
+                          audioSrc: audio[index],
+                          imageSrc: image.imageSrc,
+                          name: name[index],
+                        },
+                        index,
+                      })
+                    )
+                  }
+                />
+              )}
             </div>
           ))}
         </div>
@@ -42,14 +65,28 @@ const EmblaCarousel: React.FC<PropType> = ({ images = [{ imageSrc: "" }], audio 
   );
 };
 
-const CustomAudioPlayer: React.FC<{ src: string; onAudioEnd: () => void }> = ({ src, onAudioEnd }) => {
+type AudioPlayerProps = {
+  audioSrc: string;
+  imageSrc: string;
+  name: string;
+  onAudioEnd: () => void;
+  onPlay: () => void;
+};
+
+const CustomAudioPlayer: React.FC<AudioPlayerProps> = ({ audioSrc, onAudioEnd, onPlay }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const seekBarRef = useRef<HTMLInputElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
   const togglePlayPause = () => {
     if (!audioRef.current) return;
-    audioRef.current.paused ? audioRef.current.play() : audioRef.current.pause();
+    if (audioRef.current.paused) {
+      audioRef.current.play();
+      onPlay(); // Dispatch Redux action
+    } else {
+      audioRef.current.pause();
+    }
+    setIsPlaying(!audioRef.current.paused);
   };
 
   const updateSeekBar = () => {
@@ -70,21 +107,16 @@ const CustomAudioPlayer: React.FC<{ src: string; onAudioEnd: () => void }> = ({ 
     const audio = audioRef.current;
     if (!audio) return;
 
-    const onPlayPause = () => setIsPlaying(!audio.paused);
     const onEnded = () => {
       setIsPlaying(false);
       onAudioEnd(); // Move to next slide when audio ends
     };
 
     audio.addEventListener("timeupdate", updateSeekBar);
-    audio.addEventListener("play", onPlayPause);
-    audio.addEventListener("pause", onPlayPause);
     audio.addEventListener("ended", onEnded);
 
     return () => {
       audio.removeEventListener("timeupdate", updateSeekBar);
-      audio.removeEventListener("play", onPlayPause);
-      audio.removeEventListener("pause", onPlayPause);
       audio.removeEventListener("ended", onEnded);
     };
   }, [onAudioEnd]);
@@ -105,7 +137,7 @@ const CustomAudioPlayer: React.FC<{ src: string; onAudioEnd: () => void }> = ({ 
           defaultValue="0"
           onChange={handleSeek}
         />
-        <audio ref={audioRef} src={src} preload="auto" />
+        <audio ref={audioRef} muted src={audioSrc} preload="auto" />
       </div>
     </div>
   );
