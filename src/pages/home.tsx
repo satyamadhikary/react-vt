@@ -1,3 +1,4 @@
+import Albumcarousel from "./albumcarousel"
 import { ThemeProvider } from "@/components/theme-provider";
 import { useNavigate } from "react-router-dom";
 import "../index.css";
@@ -29,6 +30,8 @@ const Home = () => {
       </div>
 
       <EmblaCarousel options={options} images={carouselData.map((item) => ({ imageSrc: item.imageSrc, albumSrc: item.albumSrc ?? '' }))} audio={carouselData.map((item) => item.audioSrc )} name={carouselData.map((item) => item.name)}/>
+
+      <Albumcarousel/>
       </ThemeProvider>
       </motion.div>
     )
