@@ -5,7 +5,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import { IoIosPause, IoIosPlay } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../app/store";
-import { setAudio, setPlaylist, togglePlayPause } from "../features/audio/audioSlice";
+import { setAudio, setPlaylist, togglePlayPause, updateSeekbar } from "../features/audio/audioSlice";
 import { carouselData } from "@/arrays/CarouselData";
 
 type Props = {
@@ -19,9 +19,9 @@ const EmblaCarousel: React.FC<Props> = ({ options }) => {
   const [emblaRef, emblaApi] = useEmblaCarousel(options);
   const [currentIndex, setCurrentIndex] = useState(0);
   const dispatch = useDispatch();
-  const { currentAudio, isPlaying } = useSelector((state: RootState) => state.audio);
+  const { currentAudio, isPlaying, currentTime, duration } = useSelector((state: RootState) => state.audio);
 
-  // Set playlist when component mounts
+
   useEffect(() => {
     dispatch(setPlaylist(carouselData));
   }, [dispatch]);
@@ -41,21 +41,20 @@ const EmblaCarousel: React.FC<Props> = ({ options }) => {
   const togglePlayPauseHandler = (index: number) => {
     const song = carouselData[index];
     const imageSrcToUse = song.albumSrc ? song.albumSrc : song.imageSrc;
-  
+
     if (currentAudio?.name === song.name) {
       dispatch(togglePlayPause());
     } else {
-      dispatch(setAudio({ 
-        audio: { 
-          audioSrc: song.audioSrc, 
-          imageSrc: imageSrcToUse, 
-          name: song.name 
-        }, 
-        index 
+      dispatch(setAudio({
+        audio: {
+          audioSrc: song.audioSrc,
+          imageSrc: imageSrcToUse,
+          name: song.name
+        },
+        index
       }));
     }
   };
-
 
   return (
     <section className="embla">
@@ -72,6 +71,8 @@ const EmblaCarousel: React.FC<Props> = ({ options }) => {
                   onAudioEnd={handleNextSlide}
                   isPlaying={currentAudio?.name === item.name && isPlaying}
                   onTogglePlay={() => togglePlayPauseHandler(index)}
+                  currentTime={currentTime}
+                  duration={duration}
                 />
               )}
             </div>
@@ -89,58 +90,60 @@ type AudioPlayerProps = {
   onAudioEnd: () => void;
   isPlaying: boolean;
   onTogglePlay: () => void;
+  currentTime: number;
+  duration: number;
 };
 
 const CustomAudioPlayer: React.FC<AudioPlayerProps> = ({
   audioSrc,
-  onAudioEnd,
+  name,
   isPlaying,
   onTogglePlay,
+  currentTime,
+  duration,
 }) => {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
   const seekBarRef = useRef<HTMLInputElement | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [localCurrentTime, setLocalCurrentTime] = useState(0);
+  const dispatch = useDispatch();
+  const { currentAudio } = useSelector((state: RootState) => state.audio);
 
-  const updateSeekBar = () => {
-    if (audioRef.current && seekBarRef.current) {
-      const progress = (audioRef.current.currentTime / audioRef.current.duration) * 100 || 0;
-      seekBarRef.current.value = progress.toString();
-      seekBarRef.current.style.background = `linear-gradient(to right, #fff ${progress}%, #8a8a8a ${progress}%)`;
+  // Reset local time when a different audio starts playing
+  useEffect(() => {
+    if (currentAudio?.name !== name) {
+      setLocalCurrentTime(0); // Reset seek bar for other tracks
     }
-  };
+  }, [currentAudio, name]);
 
+  // Sync local time only if it's the currently playing audio
+  useEffect(() => {
+    if (isPlaying) {
+      setLocalCurrentTime(currentTime);
+    }
+  }, [currentTime, isPlaying]);
 
+  // Update seek bar background
+  useEffect(() => {
+    if (seekBarRef.current) {
+      const progress = (localCurrentTime / duration) * 100;
+      seekBarRef.current.style.background = `linear-gradient(to right, rgb(0, 138, 172) ${progress}%, rgb(210, 210, 210) ${progress}%)`;
+    }
+  }, [localCurrentTime, duration]);
+
+  // Handle seek bar interaction
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newPercentage = parseFloat(e.target.value);
+    const newTime = (newPercentage / 100) * duration;
+
+    if (!isPlaying) return; // Prevent seek bar updates when audio is paused
+
+    setLocalCurrentTime(newTime);
+    dispatch(updateSeekbar({ currentTime: newTime, duration }));
+
     if (audioRef.current) {
-      audioRef.current.currentTime = (parseFloat(e.target.value) / 100) * (audioRef.current.duration || 1);
+      audioRef.current.currentTime = newTime;
     }
   };
-
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    const onEnded = () => {
-      onAudioEnd();
-    };
-
-    audio.addEventListener("timeupdate", updateSeekBar);
-    audio.addEventListener("ended", onEnded);
-
-    return () => {
-      audio.removeEventListener("timeupdate", updateSeekBar);
-      audio.removeEventListener("ended", onEnded);
-    };
-  }, [onAudioEnd]);
-
-  useEffect(() => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.play();
-      } else {
-        audioRef.current.pause();
-      }
-    }
-  }, [isPlaying]);
 
   return (
     <div className="embla-audio">
@@ -155,13 +158,24 @@ const CustomAudioPlayer: React.FC<AudioPlayerProps> = ({
           min="0"
           max="100"
           step="0.1"
-          defaultValue="0"
+          value={(localCurrentTime / duration) * 100 || 0}
           onChange={handleSeek}
         />
-        <audio ref={audioRef} muted src={audioSrc} preload="auto" />
       </div>
+      <audio
+        ref={audioRef}
+        src={audioSrc}
+        onTimeUpdate={() => {
+          if (audioRef.current && isPlaying) {
+            setLocalCurrentTime(audioRef.current.currentTime);
+          }
+        }}
+      />
     </div>
   );
 };
+
+
+
 
 export default EmblaCarousel;
