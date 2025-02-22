@@ -8,7 +8,7 @@ import { RootState } from "../app/store";
 import { setAudio, togglePlayPause, setPlaylist } from "../features/audio/audioSlice";
 import { songsData } from "../arrays/songsData";
 import { Audio } from "../features/audio/types";
-import AudioPlayer from "./Audioplayer"; 
+import AudioPlayer from "./Audioplayer";
 
 const Songlist = () => {
   const dispatch = useDispatch();
@@ -37,8 +37,8 @@ const Songlist = () => {
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
           <div className="flex flex-1 flex-col gap-4 p-2 pt-5">
             {songsData.map((song, index) => (
-              <div key={index} className="song-container">
-                <div className="play-pause-btn" onClick={() => togglePlayPauseHandler(song, index)}>
+              <div key={index} className="song-container" onClick={() => togglePlayPauseHandler(song, index)}>
+                <div className="play-pause-btn">
                   {currentAudio?.name === song.name && isPlaying ? <IoMdPause /> : <IoMdPlay />}
                 </div>
                 <img className="song-image" src={song.imageSrc} alt={song.name} />
@@ -47,7 +47,7 @@ const Songlist = () => {
             ))}
           </div>
         </ThemeProvider>
-      </div>  
+      </div>
       <AudioPlayer />
     </motion.div>
   );
