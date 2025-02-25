@@ -135,15 +135,18 @@ const CustomAudioPlayer: React.FC<AudioPlayerProps> = ({
     const newPercentage = parseFloat(e.target.value);
     const newTime = (newPercentage / 100) * duration;
 
-    if (!isPlaying) return; // Prevent seek bar updates when audio is paused
-
-    setLocalCurrentTime(newTime);
     dispatch(updateSeekbar({ currentTime: newTime, duration }));
 
     if (audioRef.current) {
-      audioRef.current.currentTime = newTime;
+        audioRef.current.currentTime = newTime;
     }
-  };
+};
+
+useEffect(() => {
+  if (audioRef.current) {
+      audioRef.current.currentTime = currentTime;
+  }
+}, [currentTime]);
 
   return (
     <div className="embla-audio">

@@ -167,7 +167,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { setTheme, theme} = useTheme()
   return (
 <> 
-    <Sidebar style={{display:"flex"}} collapsible="icon" {...props}>
+    <Sidebar style={{display:"flex" , height:"90vh"}} collapsible="icon" {...props}>
 
     <div style={{padding:"6px", textAlign:"left"}}>
     <DropdownMenu>

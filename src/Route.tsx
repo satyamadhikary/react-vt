@@ -9,13 +9,15 @@ import Songlist from "./pages/songlist";
 import { Provider } from "react-redux";
 import { store } from "./app/store";
 import AudioPlayer from "./pages/Audioplayer";
+import Drawer from "./pages/drawer";
+
 
 function AppRoutes() {
   const location = useLocation();
 
   useLayoutEffect(() => {
     document.documentElement.scrollTo({ top: 0, left: 0, behavior: "instant" });
-  }, [location.pathname]);
+  }, [location.pathname]);   
 
   return (
     <Provider store={store}>
@@ -23,7 +25,8 @@ function AppRoutes() {
       <Routes>
         <Route
           path="/"
-          element={<Page />}>
+          element={<><Page /> <Drawer /></> }
+          >
 
           <Route
             index

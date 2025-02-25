@@ -6,7 +6,7 @@ import { togglePlayPause, updateSeekbar } from "../features/audio/audioSlice";
 import { Drawer, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle, DrawerDescription, DrawerTrigger } from "@/components/ui/drawer";
 import { MdSkipPrevious, MdSkipNext } from "react-icons/md";
 import { MdOutlinePauseCircleFilled } from "react-icons/md";
-import { IoPlayCircleSharp} from "react-icons/io5";
+import { IoPlayCircleSharp } from "react-icons/io5";
 import { RiPlayList2Line } from "react-icons/ri";
 import { Skeleton } from "@/components/ui/skeleton";
 import "../css/drawer.css";
@@ -46,21 +46,25 @@ const DrawerPage = () => {
     const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newPercentage = parseFloat(e.target.value);
         const newTime = (newPercentage / 100) * duration;
-        const progress = (newTime / duration) * 100; 
     
         dispatch(updateSeekbar({ currentTime: newTime, duration }));
     
         if (audioRef.current) {
             audioRef.current.currentTime = newTime;
-        }   
-        if (seekBarRef.current) {
-            seekBarRef.current.style.background = `linear-gradient(to right, rgb(0, 138, 172) ${progress}%, rgb(210, 210, 210) ${progress}%)`;
-        }  
+        }
         if (playerRef.current) {
             playerRef.current.seekTo(newTime, "seconds");
         }
     };
     
+
+    useEffect(() => {
+        if (seekBarRef.current) {
+            const progress = (currentTime / duration) * 100;
+            seekBarRef.current.value = progress.toString();
+            seekBarRef.current.style.background = `linear-gradient(to right, rgb(0, 138, 172) ${progress}%, rgb(210, 210, 210) ${progress}%)`;
+        }
+    }, [currentTime, duration]);
     
 
     useEffect(() => {
@@ -78,24 +82,51 @@ const DrawerPage = () => {
 
     return (
         <Drawer open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
+
+
             <DrawerTrigger>
-                <button
-                    style={{
-                        position: "fixed",
-                        bottom: "20px",
-                        right: "20px",
-                        background: "black",
-                        color: "white",
-                        padding: "10px",
-                        borderRadius: "50%",
-                        zIndex: "50",
-                        cursor: "pointer",
-                    }}
-                    onClick={() => setIsDrawerOpen(true)}
-                >
-                    <RiPlayList2Line />
-                </button>
+                {currentAudio ? (
+                    <div className="songbar">
+                        <img className="songbar-cover" src={currentAudio.imageSrc} alt="Album Cover" />
+                        <div className="seekbar">
+                                    <div className="time-display">
+                                        <span>{formatTime(currentTime)}</span>
+                                        <input
+                                            ref={seekBarRef}
+                                            className="seekbar-drawer"
+                                            type="range"
+                                            min="0"
+                                            max="100"
+                                            value={(currentTime / duration) * 100 || 0}
+                                            step="0.1"
+                                            onChange={handleSeek}
+                                            style={{ width: "100%", height: "4px", backgroundColor: "rgb(210, 210, 210)" }}
+                                        />
+                                        <span>{formatTime(duration)}</span>
+                                    </div>
+                                </div>
+                        <button onClick={() => setIsDrawerOpen(true)}>
+                            <RiPlayList2Line />
+                        </button>
+
+                    </div>
+                ) : (
+                    <div className="songbar">
+
+
+                        <button
+                            onClick={() => setIsDrawerOpen(true)}
+                            style={{
+                                cursor: "pointer",
+                            }}
+                        >
+                            <RiPlayList2Line />
+                        </button>
+                    </div>
+                )}
+
             </DrawerTrigger>
+
             <DrawerContent>
                 <video
                     style={{
