@@ -29,7 +29,7 @@ const Home = () => {
       <h6>Show all</h6>
       </div>
 
-      <EmblaCarousel options={options} images={carouselData.map((item) => ({ imageSrc: item.imageSrc}))} audio={carouselData.map((item) => item.audioSrc )} name={carouselData.map((item) => item.name)}/>
+      <EmblaCarousel options={options} images={carouselData.map((item) => ({ imageSrc: item.imageSrc, albumSrc: item.albumSrc ?? '' }))} audio={carouselData.map((item) => item.audioSrc )} name={carouselData.map((item) => item.name)}/>
 
       <Albumcarousel/>
       </ThemeProvider>

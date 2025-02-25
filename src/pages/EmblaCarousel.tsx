@@ -7,10 +7,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../app/store";
 import { setAudio, setPlaylist, togglePlayPause, updateSeekbar } from "../features/audio/audioSlice";
 import { carouselData } from "@/arrays/CarouselData";
-import { songsData } from "@/arrays/songsData";
 
 type Props = {
-  images: { imageSrc: string}[];
+  images: { imageSrc: string; albumSrc: string }[];
   audio: string[];
   name: string[];
   options?: EmblaOptionsType;
@@ -24,12 +23,12 @@ const EmblaCarousel: React.FC<Props> = ({ options }) => {
 
 
   useEffect(() => {
-    dispatch(setPlaylist(songsData));
+    dispatch(setPlaylist(carouselData));
   }, [dispatch]);
 
   const handleNextSlide = useCallback(() => {
     if (!emblaApi) return;
-    const nextIndex = (currentIndex + 1) % songsData.length;
+    const nextIndex = (currentIndex + 1) % carouselData.length;
     emblaApi.scrollTo(nextIndex);
     setCurrentIndex(nextIndex);
   }, [emblaApi, currentIndex]);
@@ -40,7 +39,8 @@ const EmblaCarousel: React.FC<Props> = ({ options }) => {
   }, [emblaApi]);
 
   const togglePlayPauseHandler = (index: number) => {
-    const song = songsData[index];
+    const song = carouselData[index];
+    const imageSrcToUse = song.albumSrc ? song.albumSrc : song.imageSrc;
 
     if (currentAudio?.name === song.name) {
       dispatch(togglePlayPause());
@@ -48,7 +48,7 @@ const EmblaCarousel: React.FC<Props> = ({ options }) => {
       dispatch(setAudio({
         audio: {
           audioSrc: song.audioSrc,
-          imageSrc: song.imageSrc,
+          imageSrc: imageSrcToUse,
           name: song.name
         },
         index
@@ -66,7 +66,7 @@ const EmblaCarousel: React.FC<Props> = ({ options }) => {
               {item.audioSrc && (
                 <CustomAudioPlayer
                   audioSrc={item.audioSrc}
-                  imageSrc={item.imageSrc}
+                  imageSrc={item.albumSrc || item.imageSrc}
                   name={item.name}
                   onAudioEnd={handleNextSlide}
                   isPlaying={currentAudio?.name === item.name && isPlaying}
