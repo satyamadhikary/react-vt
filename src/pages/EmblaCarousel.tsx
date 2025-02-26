@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../app/store";
 import { setAudio, setPlaylist, togglePlayPause, updateSeekbar } from "../features/audio/audioSlice";
 import { carouselData } from "@/arrays/CarouselData";
+import { songsData } from "@/arrays/songsData";
 
 type Props = {
   images: { imageSrc: string; albumSrc: string }[];
@@ -23,12 +24,12 @@ const EmblaCarousel: React.FC<Props> = ({ options }) => {
 
 
   useEffect(() => {
-    dispatch(setPlaylist(carouselData));
+    dispatch(setPlaylist(songsData));
   }, [dispatch]);
 
   const handleNextSlide = useCallback(() => {
     if (!emblaApi) return;
-    const nextIndex = (currentIndex + 1) % carouselData.length;
+    const nextIndex = (currentIndex + 1) % songsData.length;
     emblaApi.scrollTo(nextIndex);
     setCurrentIndex(nextIndex);
   }, [emblaApi, currentIndex]);
@@ -39,8 +40,7 @@ const EmblaCarousel: React.FC<Props> = ({ options }) => {
   }, [emblaApi]);
 
   const togglePlayPauseHandler = (index: number) => {
-    const song = carouselData[index];
-    const imageSrcToUse = song.albumSrc ? song.albumSrc : song.imageSrc;
+    const song = songsData[index];
 
     if (currentAudio?.name === song.name) {
       dispatch(togglePlayPause());
@@ -48,7 +48,7 @@ const EmblaCarousel: React.FC<Props> = ({ options }) => {
       dispatch(setAudio({
         audio: {
           audioSrc: song.audioSrc,
-          imageSrc: imageSrcToUse,
+          imageSrc: song.imageSrc,
           name: song.name
         },
         index

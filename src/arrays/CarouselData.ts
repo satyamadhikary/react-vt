@@ -16,6 +16,10 @@ export const carouselData = [
     albumSrc: 'https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Album%20Images%2FObosthanAlbum.jpg?alt=media&token=d640a1ae-74b2-4743-8420-ccc98d3a99d7',
     imageSrc: 'https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Album%20Images%2FObosthan.jpeg?alt=media&token=92c08d0d-51cb-448d-82a1-228eedff9f5f',
     audioSrc: 'https://firebasestorage.googleapis.com/v0/b/storage-bucket-575e1.appspot.com/o/music%2FObosthan.mp3?alt=media&token=9f0c0914-2ff4-40f5-8545-f23df037532b'
-    }
-    
+    },
+    {
+        name: 'Noshto',
+        imageSrc: 'https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Album%20Images%2FNoshto%20Carousel%20Image.jpg?alt=media&token=5898c703-d009-410e-8117-4d939cda42ab',
+        audioSrc: 'https://firebasestorage.googleapis.com/v0/b/storage-bucket-575e1.appspot.com/o/music%2FNoshto%20Reincarnation.mp3?alt=media&token=1b52a5aa-adde-4b8a-8409-b2ac66638a3f',
+    },
 ];
