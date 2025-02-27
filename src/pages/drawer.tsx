@@ -2,7 +2,7 @@ import ReactPlayer from "react-player";
 import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../app/store";
-import { togglePlayPause, updateSeekbar, openDrawer} from "../features/audio/audioSlice";
+import { togglePlayPause, updateSeekbar, openDrawer } from "../features/audio/audioSlice";
 import { Drawer, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle, DrawerDescription, DrawerTrigger } from "@/components/ui/drawer";
 import { MdSkipPrevious, MdSkipNext } from "react-icons/md";
 import { MdOutlinePauseCircleFilled } from "react-icons/md";
@@ -17,7 +17,7 @@ const DrawerPage = () => {
     const playerRef = useRef<ReactPlayer | null>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const { currentAudio, currentTime, duration, isPlaying } = useSelector((state: RootState) => state.audio);
-    const seekBarRef = useRef<HTMLInputElement | null>(null);   
+    const seekBarRef = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
         if (audioRef.current) {
@@ -45,9 +45,9 @@ const DrawerPage = () => {
     const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newPercentage = parseFloat(e.target.value);
         const newTime = (newPercentage / 100) * duration;
-    
+
         dispatch(updateSeekbar({ currentTime: newTime, duration }));
-    
+
         if (audioRef.current) {
             audioRef.current.currentTime = newTime;
         }
@@ -55,7 +55,7 @@ const DrawerPage = () => {
             playerRef.current.seekTo(newTime, "seconds");
         }
     };
-    
+
 
     useEffect(() => {
         if (seekBarRef.current) {
@@ -64,7 +64,7 @@ const DrawerPage = () => {
             seekBarRef.current.style.background = `linear-gradient(to right, rgb(0, 138, 172) ${progress}%, rgb(210, 210, 210) ${progress}%)`;
         }
     }, [currentTime, duration]);
-    
+
 
     useEffect(() => {
         const savedTime = localStorage.getItem("currentTime");
@@ -84,24 +84,33 @@ const DrawerPage = () => {
             dispatch(openDrawer());
         }
     }, [currentAudio, isPlaying, dispatch]);
-    
+
+
+    const [isWideScreen, setIsWideScreen] = useState(window.innerWidth < 425);
+
+    useEffect(() => {
+        const handleResize = () => setIsWideScreen(window.innerWidth < 425);
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
 
     return (
         <Drawer open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
             <DrawerTrigger>
                 {currentAudio ? (
-                    <div className="songbar">
-                        <div style={{height: '100%', display: 'flex', alignItems: 'center'}}>
-                        <img className="songbar-cover" src={currentAudio.imageSrc} alt="Album Cover" />
-                        <div className="songbar-content">
-                            <p className="song-title">{currentAudio.name}</p>
-                            <p className="song-artist">{currentAudio.name}</p>
-                        </div>
+                    <div className="songbar" onClick={() => isWideScreen && setIsDrawerOpen(true)}>
+                        <div style={{ height: '100%', display: 'flex', alignItems: 'center' }}>
+                            <img className="songbar-cover" src={currentAudio.imageSrc} alt="Album Cover" />
+                            <div className="songbar-content">
+                                <p className="song-title">{currentAudio.name}</p>
+                                <p className="song-artist">{currentAudio.name}</p>
+                            </div>
                         </div>
                         <div className="seekbar-container">
-                        <div className="songbar-seekbar">
+                            <div className="songbar-seekbar">
 
-                        <div className="songbar-control">
+                                <div className="songbar-control">
                                     <MdSkipPrevious />
                                     <div className="play-btn" onClick={handlePlayPause}>
                                         {isPlaying ? <MdOutlinePauseCircleFilled /> : <IoPlayCircleSharp />}
@@ -109,29 +118,29 @@ const DrawerPage = () => {
                                     <MdSkipNext />
                                 </div>
 
-                                    <div className="time-display">
-                                        <span>{formatTime(currentTime)}</span>
-                                        <input
-                                            ref={seekBarRef}
-                                            className="seekbar-drawer"
-                                            type="range"
-                                            min="0"
-                                            max="100"
-                                            value={(currentTime / duration) * 100 || 0}
-                                            step="0.1"
-                                            onChange={handleSeek}
-                                            style={{ width: "100%", height: "3px", backgroundColor: "rgb(210, 210, 210)" }}
-                                        />
-                                        <span>{formatTime(duration)}</span>
-                                    </div>
+                                <div className="time-display">
+                                    <span>{formatTime(currentTime)}</span>
+                                    <input
+                                        ref={seekBarRef}
+                                        className="seekbar-drawer"
+                                        type="range"
+                                        min="0"
+                                        max="100"
+                                        value={(currentTime / duration) * 100 || 0}
+                                        step="0.1"
+                                        onChange={handleSeek}
+                                        style={{ width: "100%", height: "3px", backgroundColor: "rgb(210, 210, 210)" }}
+                                    />
+                                    <span>{formatTime(duration)}</span>
                                 </div>
-                                </div>
+                            </div>
+                        </div>
                         <button onClick={() => setIsDrawerOpen(true)}>
                             <RiPlayList2Line />
                         </button>
                     </div>
                 ) : (
-                    <div style={{ transform: "translateY(15vh)", opacity: "0"}}></div>
+                    <div style={{ transform: "translateY(15vh)", opacity: "0" }}></div>
                 )}
 
             </DrawerTrigger>
