@@ -5,7 +5,7 @@ import { IoMdPlay, IoMdPause } from "react-icons/io";
 import { motion } from "motion/react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../app/store";
-import { setAudio, togglePlayPause, setPlaylist } from "../features/audio/audioSlice";
+import { setAudio, togglePlayPause, setPlaylist, openDrawer } from "../features/audio/audioSlice";
 import { songsData } from "../arrays/songsData";
 import { Audio } from "../features/audio/types";
 import AudioPlayer from "./Audioplayer";
@@ -21,6 +21,7 @@ const Songlist = () => {
   const togglePlayPauseHandler = (song: Audio, index: number) => {
     if (currentAudio?.name === song.name) {
       dispatch(togglePlayPause());
+      dispatch(openDrawer());
     } else {
       dispatch(setAudio({ audio: song, index }));
     }

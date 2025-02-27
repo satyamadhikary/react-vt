@@ -8,6 +8,7 @@ interface AudioState {
   currentTime: number;
   duration: number;
   currentIndex: number;
+  isDrawerOpen: boolean;
 }
 
 const initialState: AudioState = {
@@ -17,12 +18,17 @@ const initialState: AudioState = {
   currentTime: 0,
   duration: 0,
   currentIndex: 0,
+  isDrawerOpen: false,
+  
 };
 
 const audioSlice = createSlice({
   name: "audio",
   initialState,
   reducers: {
+    openDrawer: (state) => {
+      state.isDrawerOpen = true;
+    },
     setPlaylist: (state, action: PayloadAction<Audio[]>) => {
       state.playlist = action.payload;
     },
@@ -67,5 +73,5 @@ const audioSlice = createSlice({
   },
 });
 
-export const { setAudio, togglePlayPause, stopAudio, updateCurrentTime, setDuration, updateSeekbar, nextAudio, setPlaylist } = audioSlice.actions;
+export const { setAudio, togglePlayPause, stopAudio, updateCurrentTime, setDuration, updateSeekbar, nextAudio, setPlaylist,openDrawer} = audioSlice.actions;
 export default audioSlice.reducer;

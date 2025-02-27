@@ -2,11 +2,11 @@ import ReactPlayer from "react-player";
 import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../app/store";
-import { togglePlayPause, updateSeekbar } from "../features/audio/audioSlice";
+import { togglePlayPause, updateSeekbar, openDrawer} from "../features/audio/audioSlice";
 import { Drawer, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle, DrawerDescription, DrawerTrigger } from "@/components/ui/drawer";
 import { MdSkipPrevious, MdSkipNext } from "react-icons/md";
 import { MdOutlinePauseCircleFilled } from "react-icons/md";
-import { IoPlayCircleSharp} from "react-icons/io5";
+import { IoPlayCircleSharp } from "react-icons/io5";
 import { RiPlayList2Line } from "react-icons/ri";
 import { Skeleton } from "@/components/ui/skeleton";
 import "../css/drawer.css";
@@ -17,7 +17,7 @@ const DrawerPage = () => {
     const playerRef = useRef<ReactPlayer | null>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const { currentAudio, currentTime, duration, isPlaying } = useSelector((state: RootState) => state.audio);
-    const seekBarRef = useRef<HTMLInputElement | null>(null);
+    const seekBarRef = useRef<HTMLInputElement | null>(null);   
 
     useEffect(() => {
         if (audioRef.current) {
@@ -32,7 +32,6 @@ const DrawerPage = () => {
     const handlePlayPause = () => {
         if (currentAudio) {
             dispatch(togglePlayPause());
-
             if (audioRef.current) {
                 if (isPlaying) {
                     audioRef.current.pause();
@@ -46,21 +45,25 @@ const DrawerPage = () => {
     const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newPercentage = parseFloat(e.target.value);
         const newTime = (newPercentage / 100) * duration;
-        const progress = (newTime / duration) * 100; 
     
         dispatch(updateSeekbar({ currentTime: newTime, duration }));
     
         if (audioRef.current) {
             audioRef.current.currentTime = newTime;
-        }   
-        if (seekBarRef.current) {
-            seekBarRef.current.style.background = `linear-gradient(to right, rgb(0, 138, 172) ${progress}%, rgb(210, 210, 210) ${progress}%)`;
-        }  
+        }
         if (playerRef.current) {
             playerRef.current.seekTo(newTime, "seconds");
         }
     };
     
+
+    useEffect(() => {
+        if (seekBarRef.current) {
+            const progress = (currentTime / duration) * 100;
+            seekBarRef.current.value = progress.toString();
+            seekBarRef.current.style.background = `linear-gradient(to right, rgb(0, 138, 172) ${progress}%, rgb(210, 210, 210) ${progress}%)`;
+        }
+    }, [currentTime, duration]);
     
 
     useEffect(() => {
@@ -76,26 +79,63 @@ const DrawerPage = () => {
         return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
     };
 
+    useEffect(() => {
+        if (currentAudio && isPlaying) {
+            dispatch(openDrawer());
+        }
+    }, [currentAudio, isPlaying, dispatch]);
+    
+
     return (
         <Drawer open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
             <DrawerTrigger>
-                <button
-                    style={{
-                        position: "fixed",
-                        bottom: "20px",
-                        right: "20px",
-                        background: "black",
-                        color: "white",
-                        padding: "10px",
-                        borderRadius: "50%",
-                        zIndex: "50",
-                        cursor: "pointer",
-                    }}
-                    onClick={() => setIsDrawerOpen(true)}
-                >
-                    <RiPlayList2Line />
-                </button>
+                {currentAudio ? (
+                    <div className="songbar">
+                        <div style={{height: '100%', display: 'flex', alignItems: 'center'}}>
+                        <img className="songbar-cover" src={currentAudio.imageSrc} alt="Album Cover" />
+                        <div className="songbar-content">
+                            <p className="song-title">{currentAudio.name}</p>
+                            <p className="song-artist">{currentAudio.name}</p>
+                        </div>
+                        </div>
+                        <div className="seekbar-container">
+                        <div className="songbar-seekbar">
+
+                        <div className="songbar-control">
+                                    <MdSkipPrevious />
+                                    <div className="play-btn" onClick={handlePlayPause}>
+                                        {isPlaying ? <MdOutlinePauseCircleFilled /> : <IoPlayCircleSharp />}
+                                    </div>
+                                    <MdSkipNext />
+                                </div>
+
+                                    <div className="time-display">
+                                        <span>{formatTime(currentTime)}</span>
+                                        <input
+                                            ref={seekBarRef}
+                                            className="seekbar-drawer"
+                                            type="range"
+                                            min="0"
+                                            max="100"
+                                            value={(currentTime / duration) * 100 || 0}
+                                            step="0.1"
+                                            onChange={handleSeek}
+                                            style={{ width: "100%", height: "3px", backgroundColor: "rgb(210, 210, 210)" }}
+                                        />
+                                        <span>{formatTime(duration)}</span>
+                                    </div>
+                                </div>
+                                </div>
+                        <button onClick={() => setIsDrawerOpen(true)}>
+                            <RiPlayList2Line />
+                        </button>
+                    </div>
+                ) : (
+                    <div style={{ transform: "translateY(15vh)", opacity: "0"}}></div>
+                )}
+
             </DrawerTrigger>
+
             <DrawerContent>
                 <video
                     style={{
