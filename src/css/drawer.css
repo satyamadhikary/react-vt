@@ -46,6 +46,9 @@
 .songbar-seekbar{
     width: 100%;
 }
+.songbar-text{
+    display: none;
+}
 
 .songbar-control{
     display:flex;
@@ -230,6 +233,69 @@
     .songbar-cover{
         height: 50%;
     }
+    .draweropener{
+        display: none;
+    }
+    .song-title{
+        display: none;
+    }
+    .song-artist{
+        display: none;
+    }
+    .songbar{
+        justify-content: center;
+    }
+    .seekbar-container{
+        width: 100%;
+    }
+    .time-display {
+        padding: 0 0 0 20px;
+    }
+    .songbar-control{
+        justify-content: start;
+        padding-left: 10px;
+    }
+    .songbar-text{
+        display: flex !important;
+        overflow: hidden;
+        position: relative;
+    }
+    .songbar-text p{
+        font-size: 16px;
+    }
+    .songbar-artist{
+        color: #c4c3c3;
+    }
+    .songbar-text::before,
+    .songbar-text::after{
+        content: "";
+    position: absolute;
+    top: 0;
+    width: 10px; /* Adjust shadow width */
+    height: 100%;
+    z-index: 10;
+    pointer-events: none;
+    }
+    .songbar-text::before{
+        left: -1%;
+        background: linear-gradient(to right, black, rgba(119, 64, 64, 0));
+    }
+    .songbar-text::after{
+        right: -1%;
+        background: linear-gradient(to left, black, rgba(119, 64, 64, 0));
+    }
+    .marquee {
+        width: 80px;
+        white-space: nowrap;
+        display: inline-flex;
+        gap: 10px;
+        animation: marquee 6s ease-in-out infinite alternate;
+    }
+    
+    @keyframes marquee {
+        0% { transform: translateX(0%); }  /* Start position */
+        100% { transform: translateX(-100%); }  /* Move halfway */
+    }
 }
 
 @media  screen and (max-width: 375px) {
@@ -246,5 +312,11 @@
     }
     .song-artist{
         font-size: 20px;
+    }
+    .songbar-control .play-btn{
+        font-size: 35px;
+    }
+    .songbar-control{
+        gap: 15px;
     }
 }

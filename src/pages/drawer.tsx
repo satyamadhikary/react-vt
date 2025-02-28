@@ -29,7 +29,8 @@ const DrawerPage = () => {
         }
     }, [isPlaying, currentAudio]);
 
-    const handlePlayPause = () => {
+    const handlePlayPause = (event: React.MouseEvent) => {
+        event.stopPropagation();
         if (currentAudio) {
             dispatch(togglePlayPause());
             if (audioRef.current) {
@@ -43,6 +44,7 @@ const DrawerPage = () => {
     };
 
     const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.stopPropagation();
         const newPercentage = parseFloat(e.target.value);
         const newTime = (newPercentage / 100) * duration;
 
@@ -109,8 +111,13 @@ const DrawerPage = () => {
                         </div>
                         <div className="seekbar-container">
                             <div className="songbar-seekbar">
-
                                 <div className="songbar-control">
+                                    <div className="songbar-text">
+                                        <div className="marquee">
+                                            <p className="songbar-title">{currentAudio.name}</p>
+                                            <p className="songbar-artist">{currentAudio.name}</p>
+                                        </div>
+                                    </div>
                                     <MdSkipPrevious />
                                     <div className="play-btn" onClick={handlePlayPause}>
                                         {isPlaying ? <MdOutlinePauseCircleFilled /> : <IoPlayCircleSharp />}
@@ -126,6 +133,8 @@ const DrawerPage = () => {
                                         type="range"
                                         min="0"
                                         max="100"
+                                        onClick={(e) => e.stopPropagation()}
+                                        onTouchStart={(e) => e.stopPropagation()}
                                         value={(currentTime / duration) * 100 || 0}
                                         step="0.1"
                                         onChange={handleSeek}
@@ -135,7 +144,7 @@ const DrawerPage = () => {
                                 </div>
                             </div>
                         </div>
-                        <button onClick={() => setIsDrawerOpen(true)}>
+                        <button className="draweropener" onClick={(e) => { e.stopPropagation(); setIsDrawerOpen(true); }}>
                             <RiPlayList2Line />
                         </button>
                     </div>
