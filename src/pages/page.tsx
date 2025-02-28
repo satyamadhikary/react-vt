@@ -84,7 +84,7 @@ export default function Page() {
             </div>
           </header>
 
-          <div className="flex flex-1 flex-col p-4 pt-0 overflow-y-hidden w-full" style={{height: "85vh"}}>
+          <div className="flex flex-1 flex-col p-4 pt-0 overflow-y-scroll w-full" >
             <Outlet />
           </div>
         </SidebarInset>
