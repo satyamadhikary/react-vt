@@ -297,6 +297,13 @@
 }
 
 @media  screen and (max-width: 375px) {
+    .marquee {
+        width: 100px;
+    }
+    @keyframes marquee {
+        0% { transform: translateX(0%); }  /* Start position */
+        100% { transform: translateX(-50%); }  /* Move halfway */
+    }
     .songbar-control{
         padding-left: 20px;
     }
