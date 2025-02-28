@@ -129,7 +129,7 @@ const DrawerPage = () => {
                                 <div className="time-display">
                                     <span>{formatTime(currentTime)}</span>
                                     <input
-                                         ref={(el) => {
+                                        ref={(el) => {
                                             if (el && !seekBarsRef.current.includes(el)) {
                                                 seekBarsRef.current.push(el);
                                             }
@@ -194,7 +194,7 @@ const DrawerPage = () => {
                                     <div className="time-display">
                                         <span>{formatTime(currentTime)}</span>
                                         <input
-                                              ref={(el) => {
+                                            ref={(el) => {
                                                 if (el && !seekBarsRef.current.includes(el)) {
                                                     seekBarsRef.current.push(el);
                                                 }
@@ -248,26 +248,26 @@ const DrawerPage = () => {
 
             {/* SINGLE GLOBAL AUDIO ELEMENT */}
             <audio
-    ref={audioRef}
-    src={currentAudio?.audioSrc || ""}
-    onTimeUpdate={() => {
-        if (audioRef.current) {
-            const progress = (audioRef.current.currentTime / audioRef.current.duration) * 100;
-            
-            seekBarsRef.current.forEach((seekBar) => {
-                if (seekBar) {
-                    seekBar.value = progress.toString();
-                    seekBar.style.background = `linear-gradient(to right, rgb(0, 138, 172) ${progress}%, rgb(210, 210, 210) ${progress}%)`;
-                }
-            });
-            // Update Redux state
-            dispatch(updateSeekbar({ 
-                currentTime: audioRef.current.currentTime || 0, 
-                duration: audioRef.current.duration || 1 
-            }));
-        }
-    }}
-/>
+                ref={audioRef}
+                src={currentAudio?.audioSrc || ""}
+                onTimeUpdate={() => {
+                    if (audioRef.current) {
+                        const progress = (audioRef.current.currentTime / audioRef.current.duration) * 100;
+
+                        seekBarsRef.current.forEach((seekBar) => {
+                            if (seekBar) {
+                                seekBar.value = progress.toString();
+                                seekBar.style.background = `linear-gradient(to right, rgb(0, 138, 172) ${progress}%, rgb(210, 210, 210) ${progress}%)`;
+                            }
+                        });
+                        // Update Redux state
+                        dispatch(updateSeekbar({
+                            currentTime: audioRef.current.currentTime || 0,
+                            duration: audioRef.current.duration || 1
+                        }));
+                    }
+                }}
+            />
         </Drawer>
     );
 };
