@@ -236,10 +236,7 @@
     .draweropener{
         display: none;
     }
-    .song-title{
-        display: none;
-    }
-    .song-artist{
+    .songbar-content{
         display: none;
     }
     .songbar{
