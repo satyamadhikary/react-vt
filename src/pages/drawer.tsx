@@ -17,6 +17,7 @@ const DrawerPage = () => {
     const playerRef = useRef<ReactPlayer | null>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const { currentAudio, currentTime, duration, isPlaying } = useSelector((state: RootState) => state.audio);
+    const seekBarsRef = useRef<HTMLInputElement[]>([]);
     const seekBarRef = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
@@ -128,7 +129,11 @@ const DrawerPage = () => {
                                 <div className="time-display">
                                     <span>{formatTime(currentTime)}</span>
                                     <input
-                                        ref={seekBarRef}
+                                         ref={(el) => {
+                                            if (el && !seekBarsRef.current.includes(el)) {
+                                                seekBarsRef.current.push(el);
+                                            }
+                                        }}
                                         className="seekbar-drawer"
                                         type="range"
                                         min="0"
@@ -189,7 +194,11 @@ const DrawerPage = () => {
                                     <div className="time-display">
                                         <span>{formatTime(currentTime)}</span>
                                         <input
-                                            ref={seekBarRef}
+                                              ref={(el) => {
+                                                if (el && !seekBarsRef.current.includes(el)) {
+                                                    seekBarsRef.current.push(el);
+                                                }
+                                            }}
                                             className="seekbar-drawer"
                                             type="range"
                                             min="0"
@@ -239,17 +248,26 @@ const DrawerPage = () => {
 
             {/* SINGLE GLOBAL AUDIO ELEMENT */}
             <audio
-                ref={audioRef}
-                src={currentAudio?.audioSrc || ""}
-                onTimeUpdate={() => {
-                    if (audioRef.current && seekBarRef.current) {
-                        const progress = (audioRef.current.currentTime / audioRef.current.duration) * 100;
-                        seekBarRef.current.value = progress.toString();
-                        seekBarRef.current.style.background = `linear-gradient(to right, rgb(0, 138, 172) ${progress}%, rgb(210, 210, 210) ${progress}%)`;
-                    }
-                    dispatch(updateSeekbar({ currentTime: audioRef.current?.currentTime || 0, duration: audioRef.current?.duration || 1 }));
-                }}
-            />
+    ref={audioRef}
+    src={currentAudio?.audioSrc || ""}
+    onTimeUpdate={() => {
+        if (audioRef.current) {
+            const progress = (audioRef.current.currentTime / audioRef.current.duration) * 100;
+            
+            seekBarsRef.current.forEach((seekBar) => {
+                if (seekBar) {
+                    seekBar.value = progress.toString();
+                    seekBar.style.background = `linear-gradient(to right, rgb(0, 138, 172) ${progress}%, rgb(210, 210, 210) ${progress}%)`;
+                }
+            });
+            // Update Redux state
+            dispatch(updateSeekbar({ 
+                currentTime: audioRef.current.currentTime || 0, 
+                duration: audioRef.current.duration || 1 
+            }));
+        }
+    }}
+/>
         </Drawer>
     );
 };
