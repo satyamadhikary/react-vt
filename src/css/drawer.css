@@ -297,10 +297,6 @@
 }
 
 @media  screen and (max-width: 375px) {
-    .songbar-cover{
-        height: 50%;
-        width: 45px;
-    }
     .songbar-control{
         padding-left: 20px;
     }
