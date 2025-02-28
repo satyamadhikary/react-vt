@@ -232,6 +232,7 @@
 @media screen and (max-width: 425px){
     .songbar-cover{
         height: 50%;
+        width: 60px;
     }
     .draweropener{
         display: none;
@@ -250,7 +251,7 @@
     }
     .songbar-control{
         justify-content: start;
-        padding-left: 10px;
+        padding-left: 20px;
     }
     .songbar-text{
         display: flex !important;
@@ -296,6 +297,13 @@
 }
 
 @media  screen and (max-width: 375px) {
+    .songbar-cover{
+        height: 50%;
+        width: 45px;
+    }
+    .songbar-control{
+        padding-left: 20px;
+    }
     .album-cover{
         width: auto; 
         height: 180px;
