@@ -55,6 +55,16 @@ const audioSlice = createSlice({
         state.duration = 0;
       }
     },
+    prevAudio: (state) => {
+      if (state.playlist.length > 0) {
+        const prevIndex = (state.currentIndex - 1 + state.playlist.length) % state.playlist.length; // Loops back to last song
+        state.currentAudio = state.playlist[prevIndex];
+        state.currentIndex = prevIndex;
+        state.isPlaying = true;
+        state.currentTime = 0;
+        state.duration = 0;
+      }
+    },
     updateCurrentTime: (state, action: PayloadAction<number>) => {
       state.currentTime = action.payload; // Store current playback time
     },
@@ -73,5 +83,5 @@ const audioSlice = createSlice({
   },
 });
 
-export const { setAudio, togglePlayPause, stopAudio, updateCurrentTime, setDuration, updateSeekbar, nextAudio, setPlaylist,openDrawer} = audioSlice.actions;
+export const { setAudio, togglePlayPause, stopAudio, updateCurrentTime, setDuration, updateSeekbar, nextAudio, setPlaylist,openDrawer, prevAudio} = audioSlice.actions;
 export default audioSlice.reducer;

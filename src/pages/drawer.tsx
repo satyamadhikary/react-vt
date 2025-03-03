@@ -2,7 +2,7 @@ import ReactPlayer from "react-player";
 import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../app/store";
-import { togglePlayPause, updateSeekbar, openDrawer } from "../features/audio/audioSlice";
+import { togglePlayPause, updateSeekbar, openDrawer, prevAudio, nextAudio } from "../features/audio/audioSlice";
 import { Drawer, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle, DrawerDescription, DrawerTrigger } from "@/components/ui/drawer";
 import { MdSkipPrevious, MdSkipNext } from "react-icons/md";
 import { MdOutlinePauseCircleFilled } from "react-icons/md";
@@ -42,6 +42,13 @@ const DrawerPage = () => {
                 }
             }
         }
+    };
+
+    const handlePrev = () => {
+        dispatch(prevAudio());
+    };
+    const handleNext = () => {
+        dispatch(nextAudio());
     };
 
     const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -119,14 +126,22 @@ const DrawerPage = () => {
                                             <p className="songbar-artist">{currentAudio.name}</p>
                                         </div>
                                     </div>
-                                    <MdSkipPrevious />
-                                    <div className="play-btn" onClick={handlePlayPause}>
+
+                                    <span className="previous-btn" style={{cursor: "pointer"}} onClick={(e) => { e.stopPropagation(); handlePrev(); }}>
+                                        <MdSkipPrevious />
+                                    </span>
+
+                                    <div className="songbar-play-btn" onClick={handlePlayPause}>
                                         {isPlaying ? <MdOutlinePauseCircleFilled /> : <IoPlayCircleSharp />}
                                     </div>
-                                    <MdSkipNext />
+
+                                    <span className="next-btn" style={{cursor: "pointer"}} onClick={(e) => { e.stopPropagation(); handleNext(); }}>
+                                        <MdSkipNext />
+                                    </span>
+
                                 </div>
 
-                                <div className="time-display">
+                                <div className="songbar-time-display">
                                     <span>{formatTime(currentTime)}</span>
                                     <input
                                         ref={(el) => {
@@ -213,11 +228,18 @@ const DrawerPage = () => {
                                 </div>
 
                                 <div className="control-btns">
-                                    <MdSkipPrevious />
+                                <span className="previous-btn" style={{cursor: "pointer"}} onClick={handlePrev}>
+                                        <MdSkipPrevious />
+                                    </span>
+
                                     <div className="play-btn" onClick={handlePlayPause}>
                                         {isPlaying ? <MdOutlinePauseCircleFilled /> : <IoPlayCircleSharp />}
                                     </div>
-                                    <MdSkipNext />
+
+                                    <span className="next-btn" style={{cursor: "pointer"}} onClick={handleNext}>
+                                        <MdSkipNext />
+                                    </span>
+                                    
                                 </div>
                             </DrawerFooter>
                         </div>
