@@ -53,6 +53,7 @@ export default function Page() {
               backdropFilter: "blur(10px)",
               WebkitBackdropFilter: "blur(10px)",
               padding: "10px 0px",
+              transition: "width 0.7s ease-in-out",
             }}
           >
             <div className="flex items-center gap-2 px-4">

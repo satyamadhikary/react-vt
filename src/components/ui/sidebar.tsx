@@ -1,5 +1,6 @@
 "use client"
-
+import { useSelector } from "react-redux"
+import { RootState } from "@/app/store"
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { VariantProps, cva } from "class-variance-authority"
@@ -317,12 +318,18 @@ SidebarRail.displayName = "SidebarRail"
 const SidebarInset = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<"main">
+  
 >(({ className, ...props }, ref) => {
+  const isDrawerOpen = useSelector((state : RootState) => state.audio.isDrawerOpen);
   return (
     <main
+    style={{display: "flex",
+      overflowY: "scroll",
+      height: isDrawerOpen ? "85vh" : "100vh", 
+      transition: "height 0.5s ease-in-out"}}
       ref={ref}
       className={cn(
-        "relative flex min-h-svh flex-1 flex-col bg-background",
+        "relative flex flex-1 flex-col bg-background",
         "peer-data-[variant=inset]:min-h-[calc(100svh-theme(spacing.4))] md:peer-data-[variant=inset]:m-2 md:peer-data-[state=collapsed]:peer-data-[variant=inset]:ml-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow",
         className
       )}
