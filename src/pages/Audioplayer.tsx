@@ -25,7 +25,7 @@ const AudioPlayer = () => {
         }
     }, [currentTime]); // Ensure playback resumes from last position
 
-    const handleTimeUpdate = () => {
+    const handleTimeUpdate = () => { 
         if (audioRef.current) {
             dispatch(updateSeekbar({ currentTime: audioRef.current.currentTime, duration: audioRef.current.duration }));
         }
@@ -33,12 +33,12 @@ const AudioPlayer = () => {
 
     return (
         <audio
-            ref={audioRef}
-            src={currentAudio?.audioSrc || ""}
-            onEnded={() => dispatch(nextAudio())} 
-            onTimeUpdate={handleTimeUpdate}
-            muted
-        />
+        ref={audioRef}
+        src={currentAudio?.audioSrc || ""}
+        onEnded={() => dispatch(nextAudio())} 
+        onTimeUpdate={handleTimeUpdate}
+        muted
+      />      
     );
 };
 

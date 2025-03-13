@@ -1,7 +1,7 @@
-import { Routes, Route, useLocation} from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { useLayoutEffect } from "react";
-import "./App.css"
-import "./index.css"
+import "./App.css";
+import "./index.css";
 import Page from "./pages/page";
 import Home from "./pages/home";
 import About from "./pages/About";
@@ -9,6 +9,8 @@ import Songlist from "./pages/songlist";
 import { Provider } from "react-redux";
 import { store } from "./app/store";
 import AudioPlayer from "./pages/Audioplayer";
+import AlbumList from "./pages/AlbumList"; // Import AlbumList page
+import SongDetails from "./pages/SongDetails"; // Import SongDetails page
 
 function AppRoutes() {
   const location = useLocation();
@@ -21,24 +23,17 @@ function AppRoutes() {
     <Provider store={store}>
       <AudioPlayer />
       <Routes>
-        <Route
-          path="/"
-          element={<Page />}>
+        <Route path="/" element={<Page />}>
+          <Route index element={<Home />} />
+          <Route path="/songlist" element={<Songlist />} />
+          <Route path="/about" element={<About />} />
 
-          <Route
-            index
-            element={<Home />}
-          />
-
-          <Route
-            path="/songlist"
-            element={<Songlist />} />
-
-          <Route path="/About" element={<About />} />
+          {/* New Routes for Albums */}
+          <Route path="/albums" element={<AlbumList />} />
+          <Route path="/album/:albumId" element={<SongDetails />} />
         </Route>
       </Routes>
     </Provider>
-
   );
 }
 

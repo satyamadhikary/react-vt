@@ -2,7 +2,7 @@ import '../css/albumcarousel.css';
 import AlbumEmbla from './albumembla';
 import { EmblaOptionsType } from 'embla-carousel';
 
-const OPTIONS: EmblaOptionsType = { align: 'start', dragFree: true, loop: true }
+const OPTIONS: EmblaOptionsType = { align: 'start', dragFree: true, loop: true };
 
 const Albumcarousel = () => {
     return (
@@ -13,6 +13,6 @@ const Albumcarousel = () => {
             </div>
         </div>
     );
-}
+};
 
 export default Albumcarousel;
