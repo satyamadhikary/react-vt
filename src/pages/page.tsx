@@ -85,7 +85,7 @@ export default function Page() {
             </div>
           </header>
 
-          <div style={{ height: "100vh" , overflowY: "scroll"}} className="flex flex-1 flex-col p-4 pt-0 w-full" >
+          <div style={{  overflowY: "scroll"}} className="flex flex-1 flex-col p-4 pt-0 w-full" >
             <Outlet />
           </div>
         </SidebarInset>
