@@ -29,7 +29,6 @@ const SongDetails = () => {
       dispatch(openDrawer());
     } else {
       dispatch(setAudio({ audio: song, index }));
-      dispatch(openDrawer());
     }
   };
 
@@ -57,7 +56,7 @@ const SongDetails = () => {
                 <div className="play-pause-btn">
                   {currentAudio?.name === song.name && isPlaying ? <IoMdPause /> : <IoMdPlay />}
                 </div>
-                <img className="song-image" src={song.imageSrc} alt={song.name} />
+                <img className="song-image" src={song.imageSrc} />
                 <h1 className="song-name">{song.name}</h1>
               </div>
             ))}

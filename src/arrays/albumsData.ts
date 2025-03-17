@@ -1,7 +1,7 @@
 // albumsData.ts
 export const albumsData = [
     {
-        id: 1,
+        id: "yejawanihaidewani",
         name: "Ye Jawani hai Dewani",
         imageSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/ye%20jawani%20h%20diwani%2Fyejawanihdiwani.jpeg?alt=media&token=7931a42f-cc5f-4dfb-8959-3f5d33ff8fa8",
         songs: [
