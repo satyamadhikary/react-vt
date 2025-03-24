@@ -173,7 +173,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 <> 
     <Sidebar style={{display: "flex",
         overflowY: "scroll",
-        height: isDrawerOpen ? "85vh" : "100vh", 
+        height: isDrawerOpen ? "85%" : "100%", 
         transition: "height 0.5s ease-in-out"}} collapsible="icon" {...props}>
 
     <div style={{padding:"6px", textAlign:"left"}}>
