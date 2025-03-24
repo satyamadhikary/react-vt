@@ -45,7 +45,8 @@ export default function Page() {
           <header
             style={{
               borderBottom: "1px solid rgb(33 33 33)",
-              position: "sticky",
+              position: "fixed",
+              width: "100%",
               top: "0",
               zIndex: "11",
               background: "rgba(255, 255, 255, 0.25)",
@@ -85,7 +86,7 @@ export default function Page() {
             </div>
           </header>
 
-          <div style={{ overflowY: "scroll"}} className="flex flex-1 flex-col p-4 pt-0 w-full" >
+          <div style={{ overflowY: "scroll", paddingTop: "50px" }} className="flex flex-1 flex-col p-4 pt-0 w-full" >
             <Outlet />
           </div>
         </SidebarInset>
