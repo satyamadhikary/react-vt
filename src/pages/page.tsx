@@ -8,8 +8,11 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
 import "../css/drawer.css";
 import DrawerPage from "../pages/drawer";
+import { useSelector } from "react-redux";
+import { RootState } from "../app/store";
 
 export default function Page() {
+  const isDrawerOpen = useSelector((state : RootState) => state.audio.isDrawerOpen);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -86,8 +89,13 @@ export default function Page() {
             </div>
           </header>
 
-          <div style={{ overflowY: "scroll", paddingTop: "50px", maxHeight: "100vh" }} className="flex flex-1 flex-col p-4 pt-0 w-full" >
+          <div style={{display: "flex",
+        overflowY: "scroll",
+        maxHeight: isDrawerOpen ? "85vh" : "100vh",   
+        transition: "height 0.5s ease-in-out"}}>
+          <div style={{ overflowY: "scroll", paddingTop: "50px"}} className="flex flex-1 flex-col p-4 pt-0 w-full" >
             <Outlet />
+          </div>
           </div>
         </SidebarInset>
       </SidebarProvider>
