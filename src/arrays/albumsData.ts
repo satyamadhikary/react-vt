@@ -21,12 +21,25 @@ export const albumsData = [
         ]
     },
     {
-        id: 2,
-        name: "Album 2",
-        imageSrc: "album2.jpg",
+        id: "fossils.vol.1",
+        name: "Fossils, Volume 1",
+        imageSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Fossilsvol1%2FFossils-Vol-1-albumcover.jpg?alt=media&token=624ce18e-9fa2-46a9-8b36-68db05d7eb04",
         songs: [
-            { id: 201, name: "Song X", imageSrc: "songX.jpg", audioSrc: "songX.mp3" },
-            { id: 202, name: "Song Y", imageSrc: "songY.jpg", audioSrc: "songY.mp3" }
+            { id: 1, name: "Aro Ekbar", imageSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Fossilsvol1%2FFossils-Vol-1-albumcover.jpg?alt=media&token=624ce18e-9fa2-46a9-8b36-68db05d7eb04", audioSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Fossilsvol1%2Fsongs%2FAro%20Ekbar%20%5BMusic1tube.Blogspot.Com%5D.mp3?alt=media&token=7604684d-7131-4143-ac5a-fd969ea1fe94ss" },
+
+            { id: 2, name: "Ekla Ghor", imageSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Fossilsvol1%2FFossils-Vol-1-albumcover.jpg?alt=media&token=624ce18e-9fa2-46a9-8b36-68db05d7eb04", audioSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Fossilsvol1%2Fsongs%2FEkla%20Ghar%20%5BMusic1tube.Blogspot.Com%5D.mp3?alt=media&token=001de68f-0ccd-4d75-b83d-abc981515b90" },
+
+            { id: 3, name: "Hashnuhana", imageSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Fossilsvol1%2FFossils-Vol-1-albumcover.jpg?alt=media&token=624ce18e-9fa2-46a9-8b36-68db05d7eb04", audioSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Fossilsvol1%2Fsongs%2FHashnuhana%20%5BMusic1tube.Blogspot.Com%5D.mp3?alt=media&token=1f9a157d-8bdf-4680-b045-b689a13d02f3" },
+            
+            { id: 4, name: "Dekho Manashi", imageSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Fossilsvol1%2FFossils-Vol-1-albumcover.jpg?alt=media&token=624ce18e-9fa2-46a9-8b36-68db05d7eb04", audioSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Fossilsvol1%2Fsongs%2FDekho%20Manashi%20%5BMusic1tube.Blogspot.Com%5D.mp3?alt=media&token=47f4a4ea-4fda-478c-9193-b4a339bbaf64" },
+
+            { id: 5, name: "Bishakto Manush", imageSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Fossilsvol1%2FFossils-Vol-1-albumcover.jpg?alt=media&token=624ce18e-9fa2-46a9-8b36-68db05d7eb04", audioSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Fossilsvol1%2Fsongs%2FBishakto%20Manush%20%5BMusic1tube.Blogspot.Com%5D.mp3?alt=media&token=e3e86e73-8d32-4045-80d6-34a08d3a673d"},
+
+            { id: 6, name: "Nemesis", imageSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Fossilsvol1%2FFossils-Vol-1-albumcover.jpg?alt=media&token=624ce18e-9fa2-46a9-8b36-68db05d7eb04", audioSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Fossilsvol1%2Fsongs%2FNemesis%20%5BMusic1tube.Blogspot.Com%5D.mp3?alt=media&token=9e41e3cb-5822-4d8a-823f-d9cff4086709" },
+
+            { id: 7, name: "Niskraman", imageSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Fossilsvol1%2FFossils-Vol-1-albumcover.jpg?alt=media&token=624ce18e-9fa2-46a9-8b36-68db05d7eb04", audioSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Fossilsvol1%2Fsongs%2FNiskraman%20%5BMusic1tube.Blogspot.Com%5D.mp3?alt=media&token=12e20952-6278-427a-b1fb-fd94d3619ec6" },
+
+            { id: 8, name: "Millennium", imageSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Fossilsvol1%2FFossils-Vol-1-albumcover.jpg?alt=media&token=624ce18e-9fa2-46a9-8b36-68db05d7eb04", audioSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Fossilsvol1%2Fsongs%2FMillennium%20%5BMusic1tube.Blogspot.Com%5D.mp3?alt=media&token=68123f18-fc2a-4a65-8d38-db2d5d1c5ced" }
         ]
     }
 ]
