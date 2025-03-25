@@ -41,5 +41,31 @@ export const albumsData = [
 
             { id: 8, name: "Millennium", imageSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Fossilsvol1%2FFossils-Vol-1-albumcover.jpg?alt=media&token=624ce18e-9fa2-46a9-8b36-68db05d7eb04", audioSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Fossilsvol1%2Fsongs%2FMillennium%20%5BMusic1tube.Blogspot.Com%5D.mp3?alt=media&token=68123f18-fc2a-4a65-8d38-db2d5d1c5ced" }
         ]
+    },
+    {
+        id: "aashiqui2",
+        name: "Aashiqui 2",
+        imageSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Aashiqui2%2Fsize_m_1712905431.jpg?alt=media&token=d9681585-0d83-402b-affe-9f00bc423ef4",
+        songs: [
+            { id: 1, name: "Tum hi ho", imageSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Aashiqui2%2Fsize_m_1712905431.jpg?alt=media&token=d9681585-0d83-402b-affe-9f00bc423ef4", audioSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Aashiqui2%2Fsongs%2FTum%20Hi%20Ho%20(Aashiqui%202)-(Mr-Jat.in).mp3?alt=media&token=4a8cb782-58fa-48d1-8d91-f0447dd30960" },
+
+            { id: 2, name: "Sunn Raha Hai (Male)", imageSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Aashiqui2%2Fsize_m_1712905431.jpg?alt=media&token=d9681585-0d83-402b-affe-9f00bc423ef4", audioSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Aashiqui2%2Fsongs%2FSunn%20Raha%20Hai%20(Male)-(Mr-Jat.in).mp3?alt=media&token=fbbc2889-283e-4528-8f01-74870f817273" },
+
+            { id: 3, name: "Sunn Raha Hai (Female)", imageSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Aashiqui2%2Fsize_m_1712905431.jpg?alt=media&token=d9681585-0d83-402b-affe-9f00bc423ef4", audioSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Aashiqui2%2Fsongs%2FSunn%20Raha%20Hai%20(Female)%20Aashiqui%202-(Mr-Jat.in).mp3?alt=media&token=66d92129-0c2b-404b-a7e4-c51f6b569d45" },
+            
+            { id: 4, name: "Milne Hai Mujhse Aayi", imageSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Aashiqui2%2Fsize_m_1712905431.jpg?alt=media&token=d9681585-0d83-402b-affe-9f00bc423ef4", audioSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Aashiqui2%2Fsongs%2FMilne%20Hai%20Mujhse%20Aayi%20(Aashiqui%202)-(Mr-Jat.in).mp3?alt=media&token=72a7082c-ebac-401e-a255-845537a53f6a" },
+
+            { id: 5, name: "Chahun Main Ya Naa", imageSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Aashiqui2%2Fsize_m_1712905431.jpg?alt=media&token=d9681585-0d83-402b-affe-9f00bc423ef4", audioSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Aashiqui2%2Fsongs%2FChahun%20Main%20Ya%20Naa%20(Aashiqui%202)-(Mr-Jat.in).mp3?alt=media&token=4a54c9ff-2ffe-4eaa-abbc-663da8340d69"},
+
+            { id: 6, name: "Bhula Dena", imageSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Aashiqui2%2Fsize_m_1712905431.jpg?alt=media&token=d9681585-0d83-402b-affe-9f00bc423ef4", audioSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Aashiqui2%2Fsongs%2FBhula%20Dena%20(Aashiqui%202)-(Mr-Jat.in).mp3?alt=media&token=c2d9c52c-3602-4ac7-baa6-8c73200bf902" },
+
+            { id: 7, name: "Aasan Nahin Yahan", imageSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Aashiqui2%2Fsize_m_1712905431.jpg?alt=media&token=d9681585-0d83-402b-affe-9f00bc423ef4", audioSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Aashiqui2%2Fsongs%2FAasan%20Nahin%20Yahan%20(Aashiqui%202)-(Mr-Jat.in).mp3?alt=media&token=108abb01-1592-4782-aca3-f7d3d2c3b7c8" },
+
+            { id: 8, name: "Meri Aashiqui", imageSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Aashiqui2%2Fsize_m_1712905431.jpg?alt=media&token=d9681585-0d83-402b-affe-9f00bc423ef4", audioSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Aashiqui2%2Fsongs%2FMeri%20Aashiqui%20(Aashiqui%202)-(Mr-Jat.in).mp3?alt=media&token=ddbcf92e-8d5d-4ced-b3a5-652cd3349bf4" },
+            
+            { id: 9, name: "Piya Aaye Na", imageSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Aashiqui2%2Fsize_m_1712905431.jpg?alt=media&token=d9681585-0d83-402b-affe-9f00bc423ef4", audioSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Aashiqui2%2Fsongs%2FPiya%20Aaye%20Na%20(Aashiqui%202)-(Mr-Jat.in).mp3?alt=media&token=87aa8b5a-806c-4315-8e64-cad06daea1d1" },
+
+            { id: 10, name: "Hum Mar Jayenge", imageSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Aashiqui2%2Fsize_m_1712905431.jpg?alt=media&token=d9681585-0d83-402b-affe-9f00bc423ef4", audioSrc: "https://firebasestorage.googleapis.com/v0/b/flute-8592b.appspot.com/o/Aashiqui2%2Fsongs%2FHum%20Mar%20Jayenge%20(Aashiqui%202)-(Mr-Jat.in)%20(1).mp3?alt=media&token=9f4fffb4-4c9a-494f-8918-79149384db2f" }
+        ]
     }
 ]
