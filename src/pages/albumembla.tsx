@@ -3,7 +3,7 @@ import { EmblaOptionsType } from 'embla-carousel';
 import Autoplay from 'embla-carousel-autoplay';
 import useEmblaCarousel from 'embla-carousel-react';
 import '../css/albumembla.css';
-import { albumsData } from '@/arrays/albumsData'; // Import albumsData
+import albumsData from '@/arrays/albumsData.json'; // Import albumsData
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 type PropType = {

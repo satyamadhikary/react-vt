@@ -6,7 +6,7 @@ import { motion } from "motion/react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../app/store";
 import { setAudio, togglePlayPause, setPlaylist, openDrawer } from "../features/audio/audioSlice";
-import { songsData } from "../arrays/songsData";
+import  songsData  from "../arrays/songsData.json";
 import { Audio } from "../features/audio/types";
 import AudioPlayer from "./Audioplayer";
 

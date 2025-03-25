@@ -5,7 +5,7 @@ import "../index.css";
 import EmblaCarousel from "./EmblaCarousel";
 import { EmblaOptionsType } from "embla-carousel";
 import { motion } from "motion/react"
-import { carouselData } from "../arrays/CarouselData";
+import carouselData from "../arrays/CarouselData.json";
 
 
 

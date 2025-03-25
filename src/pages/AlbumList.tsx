@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { albumsData } from "@/arrays/albumsData";
+import albumsData from "@/arrays/albumsData.json";
 
 const AlbumList: React.FC = () => {
     const navigate = useNavigate();

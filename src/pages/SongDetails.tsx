@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../app/store";
 import { setAudio, togglePlayPause, setPlaylist, openDrawer } from "../features/audio/audioSlice";
-import { albumsData } from "@/arrays/albumsData";
+import albumsData from "@/arrays/albumsData.json";
 import { Audio } from "../features/audio/types";
 import { IoMdPlay, IoMdPause } from "react-icons/io";
 import { useEffect } from "react";

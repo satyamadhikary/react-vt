@@ -6,8 +6,8 @@ import { IoIosPause, IoIosPlay } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../app/store";
 import { setAudio, setPlaylist, togglePlayPause, updateSeekbar } from "../features/audio/audioSlice";
-import { carouselData } from "@/arrays/CarouselData";
-import { songsData } from "@/arrays/songsData";
+import carouselData from "@/arrays/CarouselData.json";
+import songsData from "@/arrays/songsData.json";
 
 type Props = {
   images: { imageSrc: string}[];
