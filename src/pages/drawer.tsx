@@ -113,8 +113,8 @@ const DrawerPage = () => {
                         <div style={{ height: '100%', display: 'flex', alignItems: 'center' }}>
                             <img className="songbar-cover" src={currentAudio.imageSrc} alt="Album Cover" />
                             <div className="songbar-content">
-                                <p className="song-title">{currentAudio.name}</p>
-                                <p className="song-artist">{currentAudio.name}</p>
+                                <p className="song-title">{currentAudio.name || currentAudio.title}</p>
+                                <p className="song-artist">{currentAudio.name || currentAudio.title}</p>
                             </div>
                         </div>
                         <div className="seekbar-container">
@@ -122,8 +122,8 @@ const DrawerPage = () => {
                                 <div className="songbar-control">
                                     <div className="songbar-text">
                                         <div className="marquee">
-                                            <p className="songbar-title">{currentAudio.name}</p>
-                                            <p className="songbar-artist">{currentAudio.name}</p>
+                                            <p className="songbar-title">{currentAudio.name || currentAudio.title}</p>
+                                            <p className="songbar-artist">{currentAudio.name || currentAudio.title}</p>
                                         </div>
                                     </div>
 
@@ -200,7 +200,7 @@ const DrawerPage = () => {
 
                         <div className="song-details">
                             <DrawerHeader>
-                                <DrawerTitle className="song-title">{currentAudio.name}</DrawerTitle>
+                                <DrawerTitle className="song-title">{currentAudio.name || currentAudio.title}</DrawerTitle>
                                 <DrawerDescription className="song-artist">Now Playing</DrawerDescription>
                             </DrawerHeader>
 

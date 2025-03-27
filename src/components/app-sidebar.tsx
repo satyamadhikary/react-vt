@@ -61,18 +61,18 @@ const data = {
   ],
   navMain: [
     {
-      title: "Playground",
+      title: "Admin",
       url: "#",
       icon: SquareTerminal,
       isActive: true,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Audio Upload",
+          url: "/admin",
         },
         {
-          title: "Starred",
-          url: "#",
+          title: "Server Audio",
+          url: "/serveraudio",
         },
         {
           title: "Settings",

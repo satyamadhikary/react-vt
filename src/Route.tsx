@@ -9,6 +9,8 @@ import Songlist from "./pages/songlist";
 import { Provider } from "react-redux";
 import { store } from "./app/store";
 import AudioPlayer from "./pages/Audioplayer";
+import Adminpanel from "./pages/adminpanel";
+import Serveraudio from "./pages/serveraudio";
 import AlbumList from "./pages/AlbumList"; // Import AlbumList page
 import SongDetails from "./pages/SongDetails"; // Import SongDetails page
 
@@ -27,6 +29,8 @@ function AppRoutes() {
           <Route index element={<Home />} />
           <Route path="/songlist" element={<Songlist />} />
           <Route path="/about" element={<About />} />
+          <Route path="/admin" element={<Adminpanel />} />
+          <Route path="/serveraudio" element={<Serveraudio />} />
 
           {/* New Routes for Albums */}
           <Route path="/albums" element={<AlbumList />} />
