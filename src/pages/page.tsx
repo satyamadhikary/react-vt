@@ -91,7 +91,7 @@ export default function Page() {
           </header>
 
           <div style={{display: "flex",
-        overflowY: "scroll",
+        overflowY: "hidden",
         maxHeight: isDrawerOpen ? "85dvh" : "100dvh",   
         transition: "height 0.5s ease-in-out"}}>
           <div style={{ overflowY: "scroll", paddingTop: "50px"}} className="flex flex-1 flex-col p-4 pt-0 w-full" >
