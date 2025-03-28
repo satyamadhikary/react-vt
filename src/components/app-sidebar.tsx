@@ -1,4 +1,5 @@
 import * as React from "react"
+import { useSelector } from "react-redux"
 import {
   AudioWaveform,
   BookOpen,
@@ -32,6 +33,7 @@ import {
   SidebarFooter,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import { RootState } from "@/app/store"
 
 // This is sample data.
 const data = {
@@ -165,10 +167,14 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { setTheme, theme} = useTheme()
+  const isDrawerOpen = useSelector((state : RootState) => state.audio.isDrawerOpen);
 
   return (
-<> 
-    <Sidebar style={{overflow:"hidden"}} collapsible="icon" {...props}>
+  <> 
+    <Sidebar style={{display: "flex",
+        overflowY: "hidden",
+        height: isDrawerOpen ? "85dvh" : "100dvh", 
+        transition: "height 0.5s ease-in-out"}} collapsible="icon" {...props}>
 
     <div style={{padding:"6px", textAlign:"left"}}>
     <DropdownMenu>
@@ -191,6 +197,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-    </>
+  </>
   )
 }

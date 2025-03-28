@@ -325,7 +325,7 @@ const SidebarInset = React.forwardRef<
     <main
     style={{display: "flex",
       overflowY: "hidden",
-      height: isDrawerOpen ? "85vh" : "100vh", 
+      height: isDrawerOpen ? "85dvh" : "100dvh", 
       transition: "height 0.5s ease-in-out"}}
       ref={ref}
       className={cn(

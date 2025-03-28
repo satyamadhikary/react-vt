@@ -90,7 +90,7 @@ export default function Page() {
             </div>
           </header>
 
-          <div style={{display: "flex",
+          <div style={{display: "flex", 
         overflowY: "hidden",
         maxHeight: isDrawerOpen ? "85dvh" : "100dvh",   
         transition: "height 0.5s ease-in-out"}}>
