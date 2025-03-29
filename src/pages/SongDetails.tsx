@@ -39,7 +39,7 @@ const SongDetails = () => {
   return (
     <>
       <div className="songlist-container overflow-y-auto">
-        <h2 className="text-white text-2xl p-4">{album.name}</h2>
+        <h2 className="text-2xl p-4">{album.name}</h2>
         <motion.div
           initial={{ opacity: 0, translateY: 50 }}
           animate={{ opacity: 1, translateY: 0 }}

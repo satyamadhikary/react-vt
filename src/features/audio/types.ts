@@ -3,5 +3,6 @@ export interface Audio {
     title?:string;
     imageSrc: string;
     audioSrc: string;
+    background?:string;
   }
   

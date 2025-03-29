@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../app/store";
 import { setAudio, togglePlayPause, setPlaylist, openDrawer } from "../features/audio/audioSlice";
 import { Audio } from "../features/audio/types";
-import AudioPlayer from "./Audioplayer";
+import AudioPlayer from "../pages/Audioplayer";
 
 const Serveraudio = () => {
   const dispatch = useDispatch();

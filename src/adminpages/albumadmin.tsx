@@ -17,7 +17,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
 
-const AdminPanel: React.FC = () => {
+const Albumadmin: React.FC = () => {
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [songTitle, setSongTitle] = useState<string>("");
@@ -70,21 +70,20 @@ const AdminPanel: React.FC = () => {
   const saveUrlsToServer = async () => {
     setLoading(true);
     try {
-      const response = await fetch("https://test-flute.onrender.com/save-urls", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(downloadUrls),
-      });
-      const data = await response.json();
-      Swal("Success", `File saved on server: ${data.message}`, "success");
+        const response = await fetch("https://test-flute.onrender.com/save-urls/albums", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(downloadUrls),
+        });
+        const data = await response.json();
+        Swal("Success", `File saved on server: ${data.message}`, "success");
     } catch (error) {
-      console.error("Error saving file:", error);
-      Swal("Save Error", "Error saving file on server!", "error");
+        console.error("Error saving file:", error);
+        Swal("Save Error", "Error saving file on server!", "error");
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
-
+};
   return (
     <div className="container mx-auto p-4 flex flex-col items-center">
       <h1 className="text-2xl font-bold mb-4">Upload Audio</h1>
@@ -136,4 +135,4 @@ const AdminPanel: React.FC = () => {
   );
 };
 
-export default AdminPanel;
+export default Albumadmin;
