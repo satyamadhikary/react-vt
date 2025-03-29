@@ -106,14 +106,14 @@ app.delete('/delete-url-by-id/:collection/:id', async (req: Request, res: Respon
         console.log(`🗑️ Deleting data from collection: ${collection}, ID: ${id}`);
 
         if (!['songs', 'albums', 'artists'].includes(collection)) {
-            return res.status(400).json({ message: '❌ Invalid collection name' });
+            res.status(400).json({ message: '❌ Invalid collection name' });
         }
         
         const Model = getCollectionModel(collection);
         const deletedUrl = await Model.findByIdAndDelete(id);
         
         if (!deletedUrl) {
-            return res.status(404).json({ message: '❌ No matching document found in database' });
+            res.status(404).json({ message: '❌ No matching document found in database' });
         }
 
         res.status(200).json({ message: `✅ Data deleted successfully from ${collection}` });

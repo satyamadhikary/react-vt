@@ -17,7 +17,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
 
-const Albumadmin: React.FC = () => {
+const AdminPanel: React.FC = () => {
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [songTitle, setSongTitle] = useState<string>("");
@@ -84,6 +84,7 @@ const Albumadmin: React.FC = () => {
         setLoading(false);
     }
 };
+
   return (
     <div className="container mx-auto p-4 flex flex-col items-center">
       <h1 className="text-2xl font-bold mb-4">Upload Audio</h1>
@@ -135,4 +136,4 @@ const Albumadmin: React.FC = () => {
   );
 };
 
-export default Albumadmin;
+export default AdminPanel;
