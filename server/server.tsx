@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // 🔹 MongoDB Connection
-const mongoURI: string = process.env.MONGO_URI || 'your-mongo-db-uri-here';
+const mongoURI: string = process.env.MONGO_URI || 'mongodb+srv://fluteadmin:YMyQlZMGZ7T1BbET@flutecluster.jcvldbk.mongodb.net/flutedb?retryWrites=true&w=majority&appName=FluteCluster';
 
 mongoose.connect(mongoURI)
     .then(() => console.log('✅ Connected to MongoDB'))
