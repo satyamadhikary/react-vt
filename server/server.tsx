@@ -32,7 +32,7 @@ interface IUrl extends Document {
 // Function to Get a Collection Model Dynamically
 const getCollectionModel = (collectionName: string) => {
     // Allowed collections
-    const allowedCollections = ['songs', 'albums', 'artists'];
+    const allowedCollections = ['urls', 'songs', 'albums', 'artists'];
 
     if (!allowedCollections.includes(collectionName)) {
         throw new Error('❌ Invalid collection');
@@ -105,7 +105,7 @@ app.delete('/delete-url-by-id/:collection/:id', async (req: Request, res: Respon
         const { collection, id } = req.params;
         console.log(`🗑️ Deleting data from collection: ${collection}, ID: ${id}`);
 
-        if (!['songs', 'albums', 'artists'].includes(collection)) {
+        if (!['urls', 'songs', 'albums', 'artists'].includes(collection)) {
             res.status(400).json({ message: '❌ Invalid collection name' });
             return;
         }

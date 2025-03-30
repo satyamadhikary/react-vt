@@ -18,7 +18,7 @@ const Serveraudio = () => {
   useEffect(() => {
     const fetchSongs = async () => {
       try {
-        const response = await fetch("https://test-flute.onrender.com/get-urls");
+        const response = await fetch("https://test-flute.onrender.com/get-urls/urls");
         if (!response.ok) throw new Error("Failed to fetch songs");
         const data = await response.json();
 
