@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // 🔹 MongoDB Connection
-const mongoURI: string = 'mongodb+srv://fluteadmin:YMyQlZMGZ7T1BbET@flutecluster.jcvldbk.mongodb.net/flutedb?retryWrites=true&w=majority&appName=FluteCluster';
+const mongoURI: string = process.env.MONGO_URI || 'your-mongo-db-uri-here';
 
 mongoose.connect(mongoURI)
     .then(() => console.log('✅ Connected to MongoDB'))
@@ -23,8 +23,8 @@ mongoose.connect(mongoURI)
 
 // Define Interface for URLs
 interface IUrl extends Document {
-    audioSrc: [string];
-    imageSrc: [string];
+    audioSrc: string[];
+    imageSrc: string[];
     title: string;
     timestamp?: Date;
 }
@@ -40,8 +40,8 @@ const getCollectionModel = (collectionName: string) => {
 
     // Define Schema for URLs (multiple audio and image support)
     const urlSchema: Schema<IUrl> = new Schema({
-        audioSrc: { type: [String], required: true },  // Allow multiple audio links
-        imageSrc: { type: [String], required: true },  // Allow multiple image links
+        audioSrc: { type: [String], required: true },  
+        imageSrc: { type: [String], required: true },
         title: { type: String, required: true },
         timestamp: { type: Date, default: Date.now }
     });
@@ -107,6 +107,7 @@ app.delete('/delete-url-by-id/:collection/:id', async (req: Request, res: Respon
 
         if (!['songs', 'albums', 'artists'].includes(collection)) {
             res.status(400).json({ message: '❌ Invalid collection name' });
+            return;
         }
         
         const Model = getCollectionModel(collection);
@@ -114,6 +115,7 @@ app.delete('/delete-url-by-id/:collection/:id', async (req: Request, res: Respon
         
         if (!deletedUrl) {
             res.status(404).json({ message: '❌ No matching document found in database' });
+            return;
         }
 
         res.status(200).json({ message: `✅ Data deleted successfully from ${collection}` });
