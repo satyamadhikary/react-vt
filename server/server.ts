@@ -127,6 +127,6 @@ app.delete('/delete-url-by-id/:collection/:id', async (req: Request, res: Respon
 });
 
 // Start the Server
-app.listen(parseInt(PORT, 10), '0.0.0.0', () => {
+app.listen(PORT, () => {
     console.log(`🚀 Server is running on ${APPURL || `http://localhost:${PORT}`}`);
 });
