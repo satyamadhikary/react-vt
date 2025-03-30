@@ -9,6 +9,13 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
+    sourcemap: false,  // ✅ Reduces build size
+    minify: "terser",  // ✅ More efficient than default esbuild
+    rollupOptions: {
+      output: {
+        manualChunks: undefined, // ✅ Prevents excessive chunk splitting
+      }
+    },
   },
   base: '/',
   resolve: {

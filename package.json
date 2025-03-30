@@ -6,7 +6,7 @@
   "scripts": {
   "dev": "vite",
   "build": "tsc -p tsconfig.server.json && vite build",
-  "start": "node dist/server.js",
+ "start": "node --max-old-space-size=450 dist/server.js",
   "server:dev": "nodemon --ext ts --exec ts-node server.ts",
   "lint": "eslint .",
   "preview": "vite preview"
