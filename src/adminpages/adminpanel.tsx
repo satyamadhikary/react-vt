@@ -70,7 +70,7 @@ const AdminPanel: React.FC = () => {
   const saveUrlsToServer = async () => {
     setLoading(true);
     try {
-      const response = await fetch("https://test-flute.onrender.com/save-urls", {
+      const response = await fetch("https://test-flute.onrender.com/save-urls/urls", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(downloadUrls),
