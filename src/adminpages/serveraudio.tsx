@@ -22,8 +22,8 @@ const Serveraudio = () => {
         if (!response.ok) throw new Error("Failed to fetch songs");
         const data = await response.json();
 
-        setSongs(data.urls);
-        dispatch(setPlaylist(data.urls));
+        setSongs(data.data);
+        dispatch(setPlaylist(data.data));
       } catch (error) {
         console.error(error);
       } finally {
@@ -64,7 +64,7 @@ const Serveraudio = () => {
                   <div className="play-pause-btn">
                     {currentAudio?.title === song.title && isPlaying ? <IoMdPause /> : <IoMdPlay />}
                   </div>
-                  <img className="song-image" src={song.imageSrc} alt={song.name} />
+                  <img className="song-image" src={song.imageSrc[0]} alt={song.name} />
                   <h1 className="song-name">{song.title}</h1>
                 </div>
               ))}

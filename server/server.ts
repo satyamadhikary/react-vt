@@ -7,7 +7,7 @@ import mongoose, { Document, Schema } from 'mongoose';
 dotenv.config({ path: './.env' });
 
 const app = express();
-const PORT: string | undefined = process.env.PORT || '5000';
+const PORT: string = process.env.PORT || '5000';
 const APPURL: string | undefined = process.env.APP_URL;
 
 app.use(cors());
@@ -21,32 +21,34 @@ mongoose.connect(mongoURI)
     .then(() => console.log('✅ Connected to MongoDB'))
     .catch((err: Error) => console.error('❌ Failed to connect to MongoDB:', err));
 
-// Define Interface for URLs
-interface IUrl extends Document {
-    audioSrc: string[];
-    imageSrc: string[];
+// Define Interface for Album & Songs
+interface IAlbum extends Document {
     title: string;
+    imageSrc: string[];
+    songs: { title: string; audioSrc: string }[]; // Array of song objects
     timestamp?: Date;
 }
 
 // Function to Get a Collection Model Dynamically
 const getCollectionModel = (collectionName: string) => {
-    // Allowed collections
     const allowedCollections = ['urls', 'songs', 'albums', 'artists'];
-
     if (!allowedCollections.includes(collectionName)) {
         throw new Error('❌ Invalid collection');
     }
 
-    // Define Schema for URLs (multiple audio and image support)
-    const urlSchema: Schema<IUrl> = new Schema({
-        audioSrc: { type: [String], required: true },  
-        imageSrc: { type: [String], required: true },
+    const commonSchema = new Schema({
         title: { type: String, required: true },
+        imageSrc: [{ type: String, required: true }],  // Array of image URLs
+        songs: [
+            {
+                title: { type: String, required: true },
+                audioSrc: { type: String, required: true }
+            }
+        ],
         timestamp: { type: Date, default: Date.now }
     });
 
-    return mongoose.models[collectionName] || mongoose.model<IUrl>(collectionName, urlSchema);
+    return mongoose.models[collectionName] || mongoose.model(collectionName, commonSchema);
 };
 
 // Serve the HTML Upload Page
@@ -54,26 +56,41 @@ app.get('/', (_req: Request, res: Response): void => {
     res.sendFile(path.join(__dirname, 'public', 'songupload.html'));
 });
 
-// Save Data to a Specific Collection
+// 🔹 Save Album Data
 app.post('/save-urls/:collection', async (req: Request, res: Response): Promise<void> => {
     try {
         const { collection } = req.params;
         console.log(`📥 Saving data to collection: ${collection}`);
 
-        if (!Array.isArray(req.body)) {
-            res.status(400).json({ message: '❌ Invalid data format' });
+        if (!req.body || typeof req.body !== 'object') {
+            res.status(400).json({ message: '❌ Invalid data format. Expected an object.' });
             return;
         }
 
-        const Model = getCollectionModel(collection);
-        const urlObjects = req.body.map(({ title, audio, image }) => ({
-            title,
-            audioSrc: Array.isArray(audio) ? audio : [audio], // Ensure array format
-            imageSrc: Array.isArray(image) ? image : [image],
-            timestamp: new Date()
+        const { title, audioSrc, imageSrc } = req.body;
+
+        if (!title || !Array.isArray(audioSrc) || !Array.isArray(imageSrc)) {
+            res.status(400).json({ message: '❌ Missing title, audioSrc, or imageSrc must be arrays.' });
+            return;
+        }
+
+        // 🛠 Format `audioSrc` into an array of song objects with title and URL
+        const songs = audioSrc.map((url, index) => ({
+            title: `Track ${index + 1}`, // Placeholder titles, modify as needed
+            audioSrc: url
         }));
 
-        await Model.insertMany(urlObjects);
+        // 🛠 Ensure `imageSrc` is stored correctly
+        const dataToSave = {
+            title,
+            imageSrc,  // Already an array, no need to modify
+            songs,     // Now includes song titles along with URLs
+            timestamp: new Date()
+        };
+
+        const Model = getCollectionModel(collection);
+        await Model.create(dataToSave);
+
         res.status(200).json({ message: `✅ Data saved successfully to ${collection}` });
 
     } catch (error) {
@@ -82,16 +99,18 @@ app.post('/save-urls/:collection', async (req: Request, res: Response): Promise<
     }
 });
 
-// Retrieve Data from a Specific Collection
+
+
+// 🔹 Get Data from a Specific Collection
 app.get('/get-urls/:collection', async (req: Request, res: Response): Promise<void> => {
     try {
         const { collection } = req.params;
         console.log(`📤 Fetching data from collection: ${collection}`);
 
         const Model = getCollectionModel(collection);
-        const urls = await Model.find();
+        const data = await Model.find();
 
-        res.status(200).json({ urls });
+        res.status(200).json({ data });
 
     } catch (error) {
         console.error('❌ Error retrieving data:', error);
@@ -99,7 +118,7 @@ app.get('/get-urls/:collection', async (req: Request, res: Response): Promise<vo
     }
 });
 
-// Delete Data by ID from a Specific Collection
+// 🔹 Delete Album/Song by ID
 app.delete('/delete-url-by-id/:collection/:id', async (req: Request, res: Response): Promise<void> => {
     try {
         const { collection, id } = req.params;
@@ -109,11 +128,11 @@ app.delete('/delete-url-by-id/:collection/:id', async (req: Request, res: Respon
             res.status(400).json({ message: '❌ Invalid collection name' });
             return;
         }
-        
+
         const Model = getCollectionModel(collection);
-        const deletedUrl = await Model.findByIdAndDelete(id);
-        
-        if (!deletedUrl) {
+        const deletedData = await Model.findByIdAndDelete(id);
+
+        if (!deletedData) {
             res.status(404).json({ message: '❌ No matching document found in database' });
             return;
         }
@@ -126,7 +145,7 @@ app.delete('/delete-url-by-id/:collection/:id', async (req: Request, res: Respon
     }
 });
 
-// Start the Server
+// 🔹 Start the Server
 app.listen(PORT, () => {
     console.log(`🚀 Server is running on ${APPURL || `http://localhost:${PORT}`}`);
 });

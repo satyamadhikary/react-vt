@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import Swal from "sweetalert";
 import { initializeApp } from "firebase/app";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { IoMdAdd, IoMdCheckmark } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 
+// 🔹 Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyCoJXfyyoMfZerrWxLYFslgtRQ_NudOZks",
   authDomain: "storage-bucket-575e1.firebaseapp.com",
@@ -18,128 +20,173 @@ const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
 
 const AdminPanel: React.FC = () => {
-  const [audioFile, setAudioFile] = useState<File | null>(null);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [songTitle, setSongTitle] = useState<string>("");
-  const [downloadUrls, setDownloadUrls] = useState<{ title: string; audio: string; image: string }[]>([]);
+  const [albumTitle, setAlbumTitle] = useState<string>("");
+  const [albumImage, setAlbumImage] = useState<File | null>(null);
+  const [albumImageUrl, setAlbumImageUrl] = useState<string | null>(null);
+  const [songs, setSongs] = useState<{ title: string; audio: File | null; audioUrl: string | null }[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  const handleAudioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAudioFile(e.target.files ? e.target.files[0] : null);
+  const handleAlbumImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setAlbumImage(e.target.files ? e.target.files[0] : null);
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setImageFile(e.target.files ? e.target.files[0] : null);
+  const handleAddSong = () => {
+    setSongs([...songs, { title: "", audio: null, audioUrl: null }]);
   };
 
-  const handleUpload = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!audioFile || !imageFile || !songTitle.trim()) {
-      Swal("Missing Data", "Please select audio, image, and enter a title.", "warning");
+  const handleSongChange = (index: number, field: "title" | "audio", value: string | File | null) => {
+    const updatedSongs = [...songs];
+    if (field === "title") updatedSongs[index].title = value as string;
+    if (field === "audio") updatedSongs[index].audio = value as File;
+    setSongs(updatedSongs);
+  };
+
+  const handleUpload = async () => {
+    if (!albumTitle.trim() || !albumImage) {
+      Swal("Missing Data", "Please add album image and title first.", "warning");
+      return;
+    }
+    if (songs.length === 0 || songs.some((song) => !song.title || !song.audio)) {
+      Swal("Incomplete Songs", "Please add at least one song with title and audio.", "warning");
       return;
     }
 
     setLoading(true);
     try {
-      // Upload Audio
-      const audioRef = ref(storage, `audio/${Date.now()}_${audioFile.name}`);
-      await uploadBytes(audioRef, audioFile);
-      const audioDownloadUrl = await getDownloadURL(audioRef);
+      console.log("🚀 Uploading album image...");
 
-      // Upload Image
-      const imageRef = ref(storage, `images/${Date.now()}_${imageFile.name}`);
-      await uploadBytes(imageRef, imageFile);
-      const imageDownloadUrl = await getDownloadURL(imageRef);
+      // 🔹 Upload Album Image
+      const imageRef = ref(storage, `albums/${Date.now()}_${albumImage.name}`);
+      await uploadBytes(imageRef, albumImage);
+      const imageUrl = await getDownloadURL(imageRef);
+      console.log("✅ Image uploaded:", imageUrl);
 
-      // Update list
-      const newEntry = { title: songTitle, audio: audioDownloadUrl, image: imageDownloadUrl };
-      setDownloadUrls((prev) => [...prev, newEntry]);
-      setSongTitle("");
-      setAudioFile(null);
-      setImageFile(null);
+      // 🔹 Upload Songs and Collect URLs
+      const uploadedSongs = await Promise.all(
+        songs.map(async (song) => {
+          if (!song.audio) return null;
+          const audioRef = ref(storage, `songs/${Date.now()}_${song.audio.name}`);
+          await uploadBytes(audioRef, song.audio);
+          const audioUrl = await getDownloadURL(audioRef);
+          console.log(`✅ Uploaded song: ${song.title} -> ${audioUrl}`);
+          return { title: song.title, audioSrc: audioUrl };
+        })
+      );
 
-      Swal("Success", "Song uploaded successfully!", "success");
+      // 🔹 Remove failed uploads
+      const finalSongs = uploadedSongs.filter((s) => s !== null) as { title: string; audioSrc: string }[];
+
+      // 🔹 Ensure all URLs are valid before saving
+      if (!imageUrl || finalSongs.length === 0) {
+        Swal("Error", "Failed to upload album image or songs!", "error");
+        return;
+      }
+
+      Swal("Success", "Album and songs uploaded successfully!", "success");
+
+      // 🔹 Save to Server with Correct Data Format
+      saveToServer(albumTitle, imageUrl, finalSongs);
     } catch (error) {
-      console.error("Error during upload:", error);
-      Swal("Upload Error", "Error during upload!", "error");
+      console.error("❌ Upload Error:", error);
+      Swal("Error", "Failed to upload album and songs!", "error");
     } finally {
       setLoading(false);
     }
   };
 
-  const saveUrlsToServer = async () => {
-    if (downloadUrls.length === 0) {
-      Swal("No Data", "No uploaded songs to save.", "warning");
-      return;
-    }
-
+  // ✅ Fix saveToServer to match backend format
+  const saveToServer = async (albumTitle: string, albumImage: string, songs: { title: string; audioSrc: string }[]) => {
     setLoading(true);
     try {
+      const formattedData = {
+        title: albumTitle,
+        songs, // ✅ Songs are now an array of objects with title & audioSrc
+        imageSrc: [albumImage], // ✅ Sent as an array
+      };
+
+      console.log("📤 Sending data to server:", JSON.stringify(formattedData, null, 2));
+
       const response = await fetch("https://test-flute.onrender.com/save-urls/albums", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(downloadUrls),
+        body: JSON.stringify(formattedData),
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
-      const data = await response.json();
-      console.log("✅ Data saved:", data);
-      setDownloadUrls([]);
-      Swal("Success", "Data saved successfully!", "success");
+      Swal("Success", "Album saved to server!", "success");
+      setAlbumTitle("");
+      setAlbumImage(null);
+      setSongs([]);
     } catch (error) {
-      console.error("❌ Error saving file:", error);
-      Swal("Error", "Failed to save data!", "error");
+      console.error("❌ Save Error:", error);
+      Swal("Error", "Failed to save album!", "error");
     } finally {
       setLoading(false);
     }
   };
 
+
+
   return (
     <div className="container mx-auto p-4 flex flex-col items-center">
-      <h1 className="text-2xl font-bold mb-4">Upload Audio</h1>
-      <form className="p-4 shadow-md rounded-md w-80 flex flex-col gap-4" onSubmit={handleUpload}>
-        <input type="file" accept="audio/*" onChange={handleAudioChange} />
-        <input type="file" accept="image/*" onChange={handleImageChange} />
+      <h1 className="text-2xl font-bold mb-4">Upload Album</h1>
+
+      {/* Album Image and Title */}
+      <div className="p-4 shadow-md rounded-md w-80 flex flex-col gap-4">
+        <input type="file" accept="image/*" onChange={handleAlbumImageChange} />
         <input
           type="text"
-          placeholder="Enter Song Title"
-          value={songTitle}
-          onChange={(e) => setSongTitle(e.target.value)}
+          placeholder="Enter Album Title"
+          value={albumTitle}
+          onChange={(e) => setAlbumTitle(e.target.value)}
           className="border p-2 rounded-md"
         />
-        <button type="submit" className="bg-green-500 text-white p-2 rounded-md" disabled={loading}>
-          {loading ? "Uploading..." : "Upload Audio"}
-        </button>
-      </form>
+      </div>
 
-      <button
-        onClick={saveUrlsToServer}
-        className="bg-blue-500 text-white p-2 rounded-md mt-4"
-        disabled={loading || downloadUrls.length === 0}
-      >
-        {loading ? "Saving..." : "Save URLs to Server"}
+      {/* Add Songs Section */}
+      {albumTitle && albumImage && (
+        <div className="songlist-container mt-4 w-80 bg-white p-4 shadow-md rounded-md">
+          {songs.map((song, index) => (
+            <div key={index} className="flex flex-col gap-2 p-2 border-b">
+              <input
+                type="text"
+                placeholder="Enter Song Title"
+                value={song.title}
+                onChange={(e) => handleSongChange(index, "title", e.target.value)}
+                className="border p-2 rounded-md"
+              />
+              <input
+                type="file"
+                accept="audio/*"
+                onChange={(e) => {
+                  const file = e.target.files ? e.target.files[0] : null;
+                  handleSongChange(index, "audio", file);
+                  if (file) alert(`🎵 Selected: ${file.name}`); // ✅ Show filename
+                }}
+              />
+              <button className="bg-green-500 text-white p-2 rounded-md flex items-center justify-center" disabled={!song.title || !song.audio}>
+                <IoMdCheckmark className="text-white text-xl" />
+              </button>
+            </div>
+          ))}
+
+          {/* Add Song Button */}
+          <button className="bg-blue-500 text-white p-2 rounded-md flex items-center justify-center mt-2" onClick={handleAddSong}>
+            <IoMdAdd className="text-white text-xl" />
+          </button>
+        </div>
+      )}
+
+      {/* Upload & Save Buttons */}
+      <button onClick={handleUpload} className="bg-green-500 text-white p-2 rounded-md mt-4" disabled={loading}>
+        {loading ? "Uploading..." : "Upload Details"}
       </button>
 
-      <button
-        onClick={() => navigate("/serveraudio")}
-        className="bg-blue-500 text-white p-2 rounded-md mt-4"
-      >
+      <button onClick={() => navigate("/serveraudio")} className="bg-blue-500 text-white p-2 rounded-md mt-4">
         Back to Home
       </button>
-
-      <ul className="mt-4 bg-white p-4 shadow-md w-80 rounded-md">
-        {downloadUrls.map((item, index) => (
-          <li key={index} className="border-b p-2">
-            <p><strong>{item.title}</strong></p>
-            <p><strong>Audio:</strong> <a href={item.audio} target="_blank" rel="noopener noreferrer">Listen</a></p>
-            <p><strong>Image:</strong> <a href={item.image} target="_blank" rel="noopener noreferrer">View</a></p>
-          </li>
-        ))}
-      </ul>
     </div>
   );
 };

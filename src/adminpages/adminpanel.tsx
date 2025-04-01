@@ -22,7 +22,7 @@ const AdminPanel: React.FC = () => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [songTitle, setSongTitle] = useState<string>("");
   const [audioUrl, setAudioUrl] = useState<string>("");
-  const [downloadUrls, setDownloadUrls] = useState<{ title: string; audio: string; image: string }[]>([]);
+  const [downloadUrls, setDownloadUrls] = useState<{ title: string; audioSrc: string; imageSrc: string }[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
@@ -55,7 +55,7 @@ const AdminPanel: React.FC = () => {
       const imageDownloadUrl = await getDownloadURL(imageRef);
 
       // Update list
-      const newEntry = { title: songTitle, audio: audioDownloadUrl, image: imageDownloadUrl };
+      const newEntry = { title: songTitle, audioSrc: audioDownloadUrl, imageSrc: imageDownloadUrl };
       setDownloadUrls((prev) => [...prev, newEntry]);
 
       Swal("Success", "Song uploaded successfully!", "success");
@@ -134,8 +134,8 @@ const AdminPanel: React.FC = () => {
       <ul className="mt-4 bg-white p-4 shadow-md w-80 rounded-md">
         {downloadUrls.map((item, index) => (
           <li key={index} className="border-b p-2">
-            <p><strong>Audio:</strong> <a href={item.audio} target="_blank" rel="noopener noreferrer">Listen</a></p>
-            <p><strong>Image:</strong> <a href={item.image} target="_blank" rel="noopener noreferrer">View</a></p>
+            <p><strong>Audio:</strong> <a href={item.audioSrc} target="_blank" rel="noopener noreferrer">Listen</a></p>
+            <p><strong>Image:</strong> <a href={item.imageSrc} target="_blank" rel="noopener noreferrer">View</a></p>
           </li>
         ))}
       </ul>
