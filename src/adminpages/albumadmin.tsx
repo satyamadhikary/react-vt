@@ -22,7 +22,6 @@ const storage = getStorage(app);
 const AdminPanel: React.FC = () => {
   const [albumTitle, setAlbumTitle] = useState<string>("");
   const [albumImage, setAlbumImage] = useState<File | null>(null);
-  const [albumImageUrl, setAlbumImageUrl] = useState<string | null>(null);
   const [songs, setSongs] = useState<{ title: string; audio: File | null; audioUrl: string | null }[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
