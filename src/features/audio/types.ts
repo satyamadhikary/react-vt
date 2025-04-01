@@ -4,5 +4,7 @@ export interface Audio {
     imageSrc: string;
     audioSrc: string;
     background?:string;
+    id?:string;
+    _id?:string;
   }
   

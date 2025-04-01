@@ -183,9 +183,21 @@ const AdminPanel: React.FC = () => {
         {loading ? "Uploading..." : "Upload Details"}
       </button>
 
-      <button onClick={() => navigate("/serveraudio")} className="bg-blue-500 text-white p-2 rounded-md mt-4">
-        Back to Home
+      <div style={{display: 'flex', gap: '10px'}}>
+      <button
+        onClick={() => navigate("/serveralbum")}
+        className="bg-blue-500 text-white p-2 rounded-md mt-4 relative"
+      >
+       View your Added Albums
       </button>
+
+      <button
+        onClick={() => navigate("/admin")}
+        className="bg-blue-500 text-white p-2 rounded-md mt-4 relative"
+      >
+        Go to Admin Panel
+      </button>
+      </div>
     </div>
   );
 };

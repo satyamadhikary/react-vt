@@ -19,10 +19,13 @@ const SongDetails = () => {
 
   useEffect(() => {
     if (album) {
-      dispatch(setPlaylist(album.songs));
+      const audioSongs = album.songs.map((song) => ({
+        ...song,
+        id: song.id.toString(), // Convert id to string
+      }));
+      dispatch(setPlaylist(audioSongs));
     }
   }, [album, dispatch]);
-
   const handleAlbumClick = (song: Audio, index: number) => {
     if (currentAudio?.name === song.name) {
       dispatch(togglePlayPause());
@@ -51,7 +54,7 @@ const SongDetails = () => {
               <div
                 key={index}
                 className="song-container"
-                onClick={() => handleAlbumClick(song, index)}
+                onClick={() => handleAlbumClick({ ...song, id: song.id.toString() }, index)}
               >
                 <div className="play-pause-btn">
                   {currentAudio?.name === song.name && isPlaying ? <IoMdPause /> : <IoMdPlay />}

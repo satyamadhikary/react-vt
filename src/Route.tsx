@@ -14,9 +14,13 @@ import AudioPlayer from "./pages/Audioplayer";
 import Adminpanel from "./adminpages/adminpanel";
 import Serveraudio from "./adminpages/serveraudio";
 import Albumadmin from "./adminpages/albumadmin";
+import Singles from "./adminpages/singles";
 
 import AlbumList from "./pages/AlbumList"; // Import AlbumList page
 import SongDetails from "./pages/SongDetails"; // Import SongDetails page
+
+import Serveralbum from "./adminpages/serverablum";
+import ServeralbumDetails from "./adminpages/serveralbumlist";
 
 function AppRoutes() {
   const location = useLocation();
@@ -38,7 +42,10 @@ function AppRoutes() {
           <Route path="/admin" element={<Adminpanel />} />
           <Route path="/serveraudio" element={<Serveraudio />} />
           <Route path="/albumadmin" element={<Albumadmin />} />
+          <Route path="/singles" element={<Singles />} />
 
+          <Route path="/serveralbum" element={<Serveralbum />} />
+          <Route path="/Serveralbum/:albumId" element={<ServeralbumDetails />}></Route>
 
           {/* New Routes for Albums */}
           <Route path="/albums" element={<AlbumList />} />

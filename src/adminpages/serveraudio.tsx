@@ -51,7 +51,7 @@ const Serveraudio = () => {
         </div>
       ) : (
         <motion.div
-          key={songs.length} // Re-run animation when songs are fetched
+          key={songs.length}
           initial={{ opacity: 0, translateY: 50 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ duration: 0.3 }}
