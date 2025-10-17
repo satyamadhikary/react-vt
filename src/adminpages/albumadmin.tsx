@@ -7,13 +7,13 @@ import { useNavigate } from "react-router-dom";
 
 // 🔹 Firebase Config
 const firebaseConfig = {
-  apiKey: "AIzaSyCoJXfyyoMfZerrWxLYFslgtRQ_NudOZks",
-  authDomain: "storage-bucket-575e1.firebaseapp.com",
-  projectId: "storage-bucket-575e1",
-  storageBucket: "storage-bucket-575e1.appspot.com",
-  messagingSenderId: "380024875635",
-  appId: "1:380024875635:web:b4b493ebf341be70189806",
-  measurementId: "G-G0EZZXX7KB",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
 const app = initializeApp(firebaseConfig);
@@ -183,20 +183,20 @@ const AdminPanel: React.FC = () => {
         {loading ? "Uploading..." : "Upload Details"}
       </button>
 
-      <div style={{display: 'flex', gap: '10px'}}>
-      <button
-        onClick={() => navigate("/serveralbum")}
-        className="bg-blue-500 text-white p-2 rounded-md mt-4 relative"
-      >
-       View your Added Albums
-      </button>
+      <div className="flex gap-[10px]">
+        <button
+          onClick={() => navigate("/serveralbum")}
+          className="bg-blue-500 text-white p-2 rounded-md mt-4 relative"
+        >
+          View your Added Albums
+        </button>
 
-      <button
-        onClick={() => navigate("/admin")}
-        className="bg-blue-500 text-white p-2 rounded-md mt-4 relative"
-      >
-        Go to Admin Panel
-      </button>
+        <button
+          onClick={() => navigate("/admin")}
+          className="bg-blue-500 text-white p-2 rounded-md mt-4 relative"
+        >
+          Go to Admin Panel
+        </button>
       </div>
     </div>
   );
