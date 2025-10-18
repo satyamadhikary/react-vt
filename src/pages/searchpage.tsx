@@ -79,8 +79,8 @@ export default function SearchPage() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <section className="md:px-4">
-        <div className="flex flex-col w-full items-center md:px-4 pb-6 sticky top-0 pt-10 bg-background">
-          <h2 className="mb-10 text-xl text-center sm:text-5xl dark:text-white text-black">
+        <div className="flex flex-col w-full items-center md:px-4 pb-6 sticky top-0 md:pt-10 pt-5 bg-background">
+          <h2 className="md:mb-10 mb-5 text-xl text-center sm:text-5xl dark:text-white text-black">
             Search for your Favourite Songs
           </h2>
 
