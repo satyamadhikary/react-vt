@@ -1,7 +1,7 @@
 import { useEffect } from "react";
-import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import { Outlet, useNavigate, useLocation} from "react-router-dom";
 import { AppSidebar } from "@/components/app-sidebar";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import { IoIosSearch } from "react-icons/io";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -13,7 +13,7 @@ import { RootState } from "../app/store";
 
 
 export default function Page() {
-  const isDrawerOpen = useSelector((state : RootState) => state.audio.isDrawerOpen);
+  const isDrawerOpen = useSelector((state: RootState) => state.audio.isDrawerOpen);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -49,7 +49,7 @@ export default function Page() {
           <header
             style={{
               borderBottom: "1px solid rgb(33 33 33)",
-              position: "fixed",
+              position: "sticky",
               width: "100%",
               top: "0",
               zIndex: "11",
@@ -72,31 +72,29 @@ export default function Page() {
               <Separator orientation="vertical" className="mr-2 h-4" />
               <SidebarTrigger className="-ml-1" />
               <Separator orientation="vertical" className="mr-2 h-4" />
-              <Breadcrumb className="d-flex align-items-center">
-                <BreadcrumbList>
-                  <BreadcrumbItem>
-                    <BreadcrumbLink style={{ cursor: "pointer" }} onClick={() => navigate("/")}>
-                      Home
-                    </BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator />
-                  <BreadcrumbItem>
-                    <BreadcrumbPage style={{ cursor: "pointer" }} onClick={() => navigate("/About")}>
-                      Data Fetching
-                    </BreadcrumbPage>
-                  </BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb>
+              <div className="flex items-center justify-between gap-2 w-full">
+                <div className="flex items-center">
+                  <button onClick={() => navigate("/")} className="cursor-pointer">Home</button>
+                  <Separator orientation="vertical" className="mx-2 h-4 text-primary" />
+                  <button onClick={() => navigate("/About")} className="cursor-pointer">Data Fetching</button>
+                </div>
+
+                <button onClick={() => navigate("/search")}>
+                  <IoIosSearch className="text-xl"/>
+                </button>
+              </div>
             </div>
           </header>
 
-          <div style={{display: "flex", 
-        overflowY: "hidden",
-        maxHeight: isDrawerOpen ? "85dvh" : "100dvh",   
-        transition: "height 0.5s ease-in-out"}}>
-          <div style={{ overflowY: "scroll", paddingTop: "50px"}} className="flex flex-1 flex-col p-4 pt-0 w-full" >
-            <Outlet />
-          </div>
+          <div style={{
+            display: "flex",
+            overflowY: "hidden",
+            maxHeight: isDrawerOpen ? "85dvh" : "100dvh",
+            transition: "height 0.5s ease-in-out"
+          }}>
+            <div style={{ overflowY: "scroll" }} className="flex flex-1 flex-col p-4 pt-0 w-full" >
+              <Outlet />
+            </div>
           </div>
         </SidebarInset>
       </SidebarProvider>

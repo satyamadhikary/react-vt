@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import path from "path";
 import dotenv from "dotenv";
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Document, models, Schema } from "mongoose";
 
 dotenv.config({ path: "./.env" });
 
@@ -166,6 +166,115 @@ app.delete(
     }
   }
 );
+
+app.get("/api/search", async (req: Request, res: Response) => {
+  const query = (req.query.q as string)?.trim();
+  const collectionName = req.query.collection as string | undefined;
+
+  if (!query) {
+    return res.status(400).json({ error: "Search query is required" });
+  }
+
+  const regexQuery = { title: { $regex: query, $options: "i" } }; // partial + case-insensitive
+  const results: any[] = []; // ✅ initialize correctly
+
+  try {
+    if (collectionName) {
+      const Model = getCollectionModel(collectionName);
+      if (!Model) {
+        return res.status(400).json({ error: "Invalid collection" });
+      }
+
+      if (collectionName === "albums") {
+        // Search for albums matching the query
+        const albums = await Model.find(regexQuery).lean();
+
+        albums.forEach((album: any) => {
+          album.songs.forEach((song: any) => {
+            results.push({
+              albumTitle: album.title,
+              albumId: album._id,
+              imageSrc: album.imageSrc?.[0] || "",
+              ...song,
+            });
+          });
+        });
+
+        // Also search inside songs of albums
+        const nestedAlbums = await Model.find({
+          "songs.title": { $regex: query, $options: "i" },
+        }).lean();
+
+        nestedAlbums.forEach((album: any) => {
+          const matchedSongs = album.songs.filter((song: any) =>
+            song.title.toLowerCase().includes(query.toLowerCase())
+          );
+
+          matchedSongs.forEach((song: any) => {
+            results.push({
+              albumTitle: album.title,
+              albumId: album._id,
+              imageSrc: album.imageSrc?.[0] || "",
+              ...song,
+            });
+          });
+        });
+
+        return res.json(results);
+      }
+
+      // For non-album collections
+      const found = await Model.find(regexQuery).lean();
+      return res.json(found);
+    }
+
+    // 🔍 Search across all collections
+    for (const key of Object.keys(models)) {
+      const model = models[key];
+
+      if (key === "albums") {
+        const albums = await model.find(regexQuery).lean();
+
+        albums.forEach((album: any) => {
+          album.songs.forEach((song: any) => {
+            results.push({
+              albumTitle: album.title,
+              albumId: album._id,
+              imageSrc: album.imageSrc?.[0] || "",
+              ...song,
+            });
+          });
+        });
+
+        const nestedAlbums = await model
+          .find({ "songs.title": { $regex: query, $options: "i" } })
+          .lean();
+
+        nestedAlbums.forEach((album: any) => {
+          const matchedSongs = album.songs.filter((song: any) =>
+            song.title.toLowerCase().includes(query.toLowerCase())
+          );
+          matchedSongs.forEach((song: any) => {
+            results.push({
+              albumTitle: album.title,
+              albumId: album._id,
+              imageSrc: album.imageSrc?.[0] || "",
+              ...song,
+            });
+          });
+        });
+      } else {
+        const found = await model.find(regexQuery).lean();
+        results.push(...found);
+      }
+    }
+
+    res.json(results);
+  } catch (error) {
+    console.error("❌ Search error:", error);
+    res.status(500).json({ error: "Search error" });
+  }
+});
 
 // 🔹 Start the Server
 app.listen(PORT, () => {

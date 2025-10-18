@@ -21,6 +21,7 @@ import SongDetails from "./pages/SongDetails"; // Import SongDetails page
 
 import Serveralbum from "./adminpages/serverablum";
 import ServeralbumDetails from "./adminpages/serveralbumlist";
+import SearchPage from "./pages/searchpage";
 
 function AppRoutes() {
   const location = useLocation();
@@ -37,6 +38,7 @@ function AppRoutes() {
           <Route index element={<Home />} />
           <Route path="/songlist" element={<Songlist />} />
           <Route path="/about" element={<About />} />
+          <Route path="/search" element={<SearchPage />} />
 
            {/* New Routes for Admin */}
           <Route path="/admin" element={<Adminpanel />} />
