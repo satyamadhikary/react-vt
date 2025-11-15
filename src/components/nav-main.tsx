@@ -1,12 +1,13 @@
 "use client"
 
 import { ChevronRight, type LucideIcon } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+} from "./ui/collapsible"
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -16,8 +17,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from "@/components/ui/sidebar"
-import { useNavigate } from "react-router-dom"
+} from "./ui/sidebar"
 
 export function NavMain({
   items,
@@ -34,7 +34,7 @@ export function NavMain({
   }[]
 }) {
 
-   const navigate = useNavigate();
+   const router = useRouter();
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
@@ -59,7 +59,7 @@ export function NavMain({
                   {item.items?.map((subItem) => (
                     <SidebarMenuSubItem key={subItem.title}>
                       <SidebarMenuSubButton asChild>
-                        <div onClick={() => navigate(`${subItem.url}`)}>
+                        <div onClick={() => router.push(`${subItem.url}`)}>
                           <span>{subItem.title}</span>
                         </div>
                       </SidebarMenuSubButton>
