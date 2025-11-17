@@ -105,7 +105,10 @@ body {
 body {
   @apply font-sans;
 }
-
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+}
 .header-content {
   display: flex;
   align-items: end;

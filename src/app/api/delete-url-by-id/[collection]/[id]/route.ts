@@ -2,16 +2,19 @@ import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/mongodb";
 import { getCollectionModel } from "@/lib/models";
 
-interface RouteContext {
-  params: { collection: string; id: string; };
+interface RouteParams {
+  collection: string;
+  id: string;
 }
 
 export async function DELETE(
-  req: NextRequest,
-  context: RouteContext
+  _req: NextRequest,
+  context: { params: Promise<RouteParams> }
 ) {
   await dbConnect();
-  const { collection, id } = context.params;
+
+  // ⬅️ FIX: Await params
+  const { collection, id } = await context.params;
 
   try {
     console.log(`🗑️ Deleting data from collection: ${collection}, ID: ${id}`);

@@ -1,4 +1,4 @@
-import mongoose, { Document, models, Schema } from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
 
 // Define Interface for Album & Songs
 export interface IAlbum extends Document {

@@ -3,11 +3,11 @@ import dbConnect from "@/lib/mongodb";
 import { getCollectionModel } from "@/lib/models";
 
 export async function GET(
-  req: NextRequest,
-  context: { params: { collection: string } }
+  _req: NextRequest,
+  context: { params: Promise<{ collection: string }> }
 ) {
   await dbConnect();
-  const { collection } = context.params;
+  const { collection } = await context.params;
 
   try {
     console.log(`📤 Fetching data from collection: ${collection}`);

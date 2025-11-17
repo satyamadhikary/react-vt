@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { ChevronRight, type LucideIcon } from "lucide-react"
-import { useRouter } from "next/navigation"
+import Link from "next/link";
+import { ChevronRight, type LucideIcon } from "lucide-react";
 
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "./ui/collapsible"
+} from "./ui/collapsible";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -17,24 +17,19 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from "./ui/sidebar"
+} from "./ui/sidebar";
 
 export function NavMain({
   items,
 }: {
   items: {
-    title: string
-    url: string
-    icon?: LucideIcon
-    isActive?: boolean
-    items?: {
-      title: string
-      url: string
-    }[]
-  }[]
+    title: string;
+    url: string;
+    icon?: LucideIcon;
+    isActive?: boolean;
+    items?: { title: string; url: string }[];
+  }[];
 }) {
-
-   const router = useRouter();
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
@@ -54,14 +49,13 @@ export function NavMain({
                   <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                 </SidebarMenuButton>
               </CollapsibleTrigger>
+
               <CollapsibleContent>
                 <SidebarMenuSub>
                   {item.items?.map((subItem) => (
                     <SidebarMenuSubItem key={subItem.title}>
                       <SidebarMenuSubButton asChild>
-                        <div onClick={() => router.push(`${subItem.url}`)}>
-                          <span>{subItem.title}</span>
-                        </div>
+                        <Link href={subItem.url}>{subItem.title}</Link>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                   ))}
@@ -72,5 +66,5 @@ export function NavMain({
         ))}
       </SidebarMenu>
     </SidebarGroup>
-  )
+  );
 }

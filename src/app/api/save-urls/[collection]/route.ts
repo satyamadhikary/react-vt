@@ -4,10 +4,10 @@ import { getCollectionModel } from "@/lib/models";
 
 export async function POST(
   req: NextRequest,
-  context: { params: { collection: string } }
+  context: { params: Promise<{ collection: string }> }
 ) {
   await dbConnect();
-  const { collection } = context.params;
+  const { collection } = await context.params;
 
   try {
     const body = await req.json();
