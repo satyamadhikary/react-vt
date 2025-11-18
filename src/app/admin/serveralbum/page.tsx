@@ -53,7 +53,7 @@ const Serveralbum: React.FC<PropType> = (props) => {
             <div className="emblaa__container">
               {songs.map((song, index) => (
                 <Link
-                  href={`/admin/serveralbum/${song.id || song._id}`}
+                  href={`/admin/serveralbum/${song._id}`}
                   className="emblaa__slide px-2"
                   key={index}
                 >
