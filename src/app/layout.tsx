@@ -15,6 +15,8 @@ export const metadata: Metadata = {
   description: "Free music for everyone",
 };
 
+export const dynamic = "force-dynamic";
+
 export default function RootLayout({
   children,
 }: {
