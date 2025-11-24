@@ -46,7 +46,7 @@ const ServeralbumDetails = () => {
       
         const updatedSong = {
           ...song,
-          imageSrc: album.imageSrc[0], 
+          imageSrc: [album.imageSrc?.[0] || ""], 
         };
       
         if (currentAudio?.title === song.title) {

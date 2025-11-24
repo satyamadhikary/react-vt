@@ -25,8 +25,13 @@ const EmblaCarousel: React.FC<Props> = ({ options }) => {
 
 
   useEffect(() => {
-    dispatch(setPlaylist(songsData));
-  }, [dispatch]);
+  const formattedSongs = songsData.map(song => ({
+    ...song,
+    imageSrc: Array.isArray(song.imageSrc) ? song.imageSrc : [song.imageSrc]
+  }));
+
+  dispatch(setPlaylist(formattedSongs));
+}, [dispatch]);
 
   const handleNextSlide = useCallback(() => {
     if (!emblaApi) return;
@@ -49,7 +54,7 @@ const EmblaCarousel: React.FC<Props> = ({ options }) => {
       dispatch(setAudio({
         audio: {
           audioSrc: song.audioSrc,
-          imageSrc: song.imageSrc,
+          imageSrc: [song.imageSrc],
           name: song.name
         },
         index

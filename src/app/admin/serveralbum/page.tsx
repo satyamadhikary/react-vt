@@ -60,7 +60,7 @@ const Serveralbum: React.FC<PropType> = (props) => {
                   <div className="relative flex flex-col items-center bg-gray-800 rounded-lg p-2 group cursor-pointer">
                     <div className="w-full h-40 bg-gray-700 rounded-lg overflow-hidden relative">
                       <img
-                        src={song.imageSrc}
+                        src={song.imageSrc?.[0] || ""}
                         alt={song.title}
                         className="album-img"
                       />

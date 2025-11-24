@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import "@/app/css/songlist.css";
 import { IoMdPlay, IoMdPause } from "react-icons/io";
 import { motion } from "motion/react";
@@ -17,7 +18,7 @@ const Serveraudio = () => {
   useEffect(() => {
     const fetchSongs = async () => {
       try {
-        const response = await fetch("https://test-flute.onrender.com/get-urls/urls");
+        const response = await fetch("/api/get-urls/urls");
         if (!response.ok) throw new Error("Failed to fetch songs");
         const data = await response.json();
 
@@ -59,12 +60,14 @@ const Serveraudio = () => {
           <div className="songlist-container overflow-y-auto">
             <div className="flex flex-1 flex-col gap-4 p-2 pt-5">
               {songs.map((song, index) => (
-                <div key={index} className="song-container" onClick={() => togglePlayPauseHandler(song, index)}>
-                  <div className="play-pause-btn">
+                <div key={index} className="song-container">
+                  <div className="play-pause-btn" onClick={() => togglePlayPauseHandler(song, index)}>
                     {currentAudio?.title === song.title && isPlaying ? <IoMdPause /> : <IoMdPlay />}
                   </div>
-                  <img className="song-image" src={song.imageSrc[0]} alt={song.name} />
-                  <h1 className="song-name">{song.title}</h1>
+                  <Link href={`/admin/serveraudio/${song._id}`} className="flex items-center gap-4 w-full">
+                    <img className="song-image" src={song.imageSrc[0]} alt={song.name} />
+                    <h1 className="song-name">{song.title}</h1>
+                  </Link>
                 </div>
               ))}
             </div>

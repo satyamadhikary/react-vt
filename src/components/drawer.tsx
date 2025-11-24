@@ -126,7 +126,7 @@ const DrawerPage = () => {
                         onClick={() => isWideScreen && setIsDrawerOpen(true)}
                     >
                         <div style={{ height: "100%", display: "flex", alignItems: "center" }}>
-                            <img className="songbar-cover" src={currentAudio.imageSrc} alt="Album Cover" />
+                            <img className="songbar-cover" src={currentAudio.imageSrc[0]} alt="Album Cover" />
 
                             <div className="songbar-content">
                                 <p className="song-title">{currentAudio.name || currentAudio.title}</p>
@@ -218,7 +218,7 @@ const DrawerPage = () => {
                 {currentAudio ? (
                     <div className="drawer-content">
                         <DrawerHeader>
-                            <img className="album-cover" src={currentAudio.imageSrc} alt="Album Cover" />
+                            <img className="album-cover" src={currentAudio.imageSrc[0]} alt="Album Cover" />
                         </DrawerHeader>
 
                         <div className="song-details">

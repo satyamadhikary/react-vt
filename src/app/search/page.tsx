@@ -130,7 +130,7 @@ export default function SearchPage() {
                     </div>
                     <img
                       className="song-image w-14 h-14 object-cover rounded-md"
-                      src={song.imageSrc}
+                      src={song.imageSrc[0] || ""}
                       alt={song.title || song.name || "Unknown Song"}
                     />
                     <h1 className="song-name text-white font-semibold truncate">

@@ -44,7 +44,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+    <ThemeProvider defaultTheme="dark" storageKey="theme">
       <SidebarProvider>
         <AppSidebar />
         <DrawerPage />

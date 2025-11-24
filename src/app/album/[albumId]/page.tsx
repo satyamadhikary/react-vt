@@ -2,14 +2,28 @@
 import { useParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/app/store";
-import { setAudio, togglePlayPause, setPlaylist, openDrawer } from "../../../features/audio/audioSlice";
-import albumsData from "../../../arrays/albumsData.json";
-import { Audio } from "../../../features/audio/types";
+import { setAudio, togglePlayPause, setPlaylist, openDrawer } from "@/features/audio/audioSlice";
+import albumsData from "@/arrays/albumsData.json";
+import { Audio } from "@/features/audio/types";
 import { IoMdPlay, IoMdPause } from "react-icons/io";
 import { useEffect } from "react";
 import { motion } from "framer-motion";
 import "@/app/css/songlist.css";
 
+// Local interfaces for the JSON data structure
+interface Song {
+  id: number;
+  name: string;
+  imageSrc: string;
+  audioSrc: string;
+}
+
+interface Album {
+  id: string;
+  name: string;
+  imageSrc: string;
+  songs: Song[];
+}
 
 const SongDetails = () => {
   const { albumId } = useParams();
@@ -17,23 +31,33 @@ const SongDetails = () => {
   const { currentAudio, isPlaying } = useSelector((state: RootState) => state.audio);
 
   // Find album by ID
-  const album = albumsData.find((a) => a.id.toString() === albumId);
+  const album: Album | undefined = albumsData.find((a) => a.id.toString() === albumId);
 
   useEffect(() => {
     if (album) {
-      const audioSongs = album.songs.map((song) => ({
+      const audioSongs: Audio[] = album.songs.map((song) => ({
         ...song,
-        id: song.id.toString(), // Convert id to string
+        id: song.id.toString(),
+        title: song.name,
+        imageSrc: [song.imageSrc],
       }));
       dispatch(setPlaylist(audioSongs));
     }
   }, [album, dispatch]);
-  const handleAlbumClick = (song: Audio, index: number) => {
+
+  const handleAlbumClick = (song: Song, index: number) => {
+    const audioSong: Audio = {
+      ...song,
+      id: song.id.toString(),
+      title: song.name,
+      imageSrc: [song.imageSrc],
+    };
+
     if (currentAudio?.name === song.name) {
       dispatch(togglePlayPause());
       dispatch(openDrawer());
     } else {
-      dispatch(setAudio({ audio: song, index }));
+      dispatch(setAudio({ audio: audioSong, index }));
     }
   };
 
@@ -56,12 +80,12 @@ const SongDetails = () => {
               <div
                 key={index}
                 className="song-container"
-                onClick={() => handleAlbumClick({ ...song, id: song.id.toString() }, index)}
+                onClick={() => handleAlbumClick(song, index)}
               >
                 <div className="play-pause-btn">
                   {currentAudio?.name === song.name && isPlaying ? <IoMdPause /> : <IoMdPlay />}
                 </div>
-                <img className="song-image" src={song.imageSrc} />
+                <img className="song-image" src={song.imageSrc} alt={song.name} />
                 <h1 className="song-name">{song.name}</h1>
               </div>
             ))}
