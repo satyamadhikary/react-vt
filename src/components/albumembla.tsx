@@ -5,7 +5,8 @@ import Autoplay from 'embla-carousel-autoplay';
 import useEmblaCarousel from 'embla-carousel-react';
 import '../app/css/albumembla.css';
 import albumsData from '@/arrays/albumsData.json'; // Import albumsData
-import { useRouter } from 'next/navigation'; // Import useRouter
+// import { useRouter } from 'next/navigation'; // Import useRouter
+import Link from 'next/link';
 
 type PropType = {
     options?: EmblaOptionsType;
@@ -14,17 +15,18 @@ type PropType = {
 const AlbumEmbla: React.FC<PropType> = (props) => {
     const { options } = props;
     const [emblaRef] = useEmblaCarousel(options, [Autoplay()]);
-    const router = useRouter(); // Initialize router
+    // const router = useRouter(); // Initialize router
 
     return (
         <section className="emblaa">
             <div className="emblaa__viewport" ref={emblaRef}>
                 <div className="emblaa__container">
                     {albumsData.map((album, index) => (
-                        <div
+                        <Link
                             className="emblaa__slide px-2"
                             key={index}
-                            onClick={() => router.push(`/album/${album.id}`)} // Navigate to album details
+                            href={`/album/${album.id}`}
+                            // onClick={() => router.push(`/album/${album.id}`)} // Navigate to album details
                         >
                             <div className="relative flex flex-col items-center bg-gray-800 rounded-lg p-2 group cursor-pointer">
                                 <div className="w-full h-40 bg-gray-700 rounded-lg overflow-hidden relative">
@@ -52,7 +54,7 @@ const AlbumEmbla: React.FC<PropType> = (props) => {
                                     {album.name}
                                 </p>
                             </div>
-                        </div>
+                        </Link>
                     ))}
                 </div>
             </div>
