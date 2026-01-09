@@ -25,7 +25,8 @@ interface Album {
   songs: Song[];
 }
 
-const SongDetails = () => {
+const Page = () => {
+  console.log("🔥 Album page rendered");
   const { albumId } = useParams();
   const dispatch = useDispatch();
   const { currentAudio, isPlaying } = useSelector((state: RootState) => state.audio);
@@ -96,4 +97,4 @@ const SongDetails = () => {
   );
 };
 
-export default SongDetails;
+export default Page;
