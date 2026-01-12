@@ -17,9 +17,10 @@ async function getAlbum(albumId: string) {
 const AlbumPage = async ({
   params,
 }: {
-  params: { albumId: string };
+  params: Promise<{ albumId: string }>;
 }) => {
-  const album = await getAlbum(params.albumId);
+  const { albumId } = await params;
+  const album = await getAlbum(albumId);
 
   if (!album) {
     return (
