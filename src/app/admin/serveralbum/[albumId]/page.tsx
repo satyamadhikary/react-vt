@@ -10,67 +10,42 @@ import {
 } from "@/features/audio/audioSlice";
 import { Audio } from "@/features/audio/types";
 import { IoMdPlay, IoMdPause } from "react-icons/io";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import "@/app/css/songlist.css";
+import { useAlbums } from "@/hooks/tanstack-query-hook";
 
 const ServeralbumDetails = () => {
   const params = useParams();
   const albumId = Array.isArray(params.albumId)
     ? params.albumId[0]
     : params.albumId;
+  const { data: albums, isLoading, error } = useAlbums();
+
+  const albumsData = albums?.find((a: any) => a._id === albumId);
 
   const dispatch = useDispatch();
   const { currentAudio, isPlaying } = useSelector(
     (state: RootState) => state.audio
   );
 
-  const [album, setAlbum] = useState<{
-    title: string;
-    imageSrc: string[];
-    songs: Audio[];
-  } | null>(null);
-  const [loading, setLoading] = useState(true);
-
   useEffect(() => {
-    const fetchAlbum = async () => {
-      try {
-        const response = await fetch(
-          `https://test-flute.onrender.com/get-urls/albums`
-        );
-        if (!response.ok) throw new Error("Failed to fetch album");
+    if (!albumsData) return;
 
-        const data = await response.json();
+    const songsWithImageSrc = albumsData.songs.map((song: Audio) => ({
+      ...song,
+      imageSrc: song.imageSrc || albumsData.imageSrc || [],
+    }));
 
-        // Always compare using sanitized ID
-        const foundAlbum = data.data.find((a: any) => a._id === albumId);
-        const songsWithImageSrc = foundAlbum.songs.map((song: Audio) => ({
-          ...song,
-          imageSrc: song.imageSrc || foundAlbum.imageSrc || [],
-        }));
-        if (foundAlbum) {
-          setAlbum({
-            ...foundAlbum,
-            songs: songsWithImageSrc,
-          });
-          dispatch(setPlaylist(songsWithImageSrc));
-        }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAlbum();
-  }, [albumId, dispatch]);
+    dispatch(setPlaylist(songsWithImageSrc));
+  }, [albumsData, dispatch]);
 
   const handleAlbumClick = (song: Audio, index: number) => {
-    if (!album) return;
+    if (!albumsData) return;
 
     const updatedSong = {
       ...song,
-      imageSrc: album.imageSrc || song.imageSrc || [],
+      imageSrc: albumsData.imageSrc || song.imageSrc || [],
     };
 
     if (currentAudio?.title === song.title) {
@@ -80,16 +55,19 @@ const ServeralbumDetails = () => {
       dispatch(setAudio({ audio: updatedSong, index }));
     }
   };
-
-  if (loading)
+  console.log(albumsData);
+  if (isLoading)
     return <p className="text-white text-center mt-10">Loading album...</p>;
-  if (!album)
+  if (!albumsData)
     return <p className="text-white text-center mt-10">song not found.</p>;
-
+  if (error)
+    return (
+      <p className="text-white text-center mt-10">Error: {error.message}</p>
+    );
   return (
     <>
       <div className="songlist-container overflow-y-auto">
-        <h2 className="text-2xl p-4 text-center">{album.title}</h2>
+        <h2 className="text-2xl p-4 text-center">{albumsData.title}</h2>
 
         <motion.div
           initial={{ opacity: 0, translateY: 50 }}
@@ -98,7 +76,7 @@ const ServeralbumDetails = () => {
           exit={{ opacity: 0, translateY: 100 }}
         >
           <div className="flex flex-1 flex-col gap-4 p-2 pt-5">
-            {album.songs.map((song, index) => (
+            {albumsData.songs.map((song: Audio, index: number) => (
               <div
                 key={index}
                 className="song-container"
@@ -114,8 +92,8 @@ const ServeralbumDetails = () => {
 
                 <img
                   className="song-image"
-                  src={album.imageSrc[0]}
-                  alt={album.title}
+                  src={albumsData.imageSrc[0]}
+                  alt={albumsData.title}
                 />
                 <h1 className="song-name">{song.title}</h1>
               </div>

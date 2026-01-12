@@ -1,4 +1,4 @@
-"use server";
+"use client";
 import React from "react";
 import albumsData from "@/arrays/albumsData.json";
 import Link from "next/link";

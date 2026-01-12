@@ -14,9 +14,8 @@ type PropType = {
   options?: EmblaOptionsType;
 };
 
-const Serveralbum: React.FC<PropType> = (props) => {
-  const { options } = props;
-  const [emblaRef] = useEmblaCarousel(options, [Autoplay()]);
+const Serveralbum: React.FC<PropType> = () => {
+  const [emblaRef] = useEmblaCarousel({dragFree: true, loop: true}, [Autoplay()]);
   const dispatch = useDispatch();
   const [songs, setSongs] = useState<Audio[]>([]);
   const [loading, setLoading] = useState(true);
@@ -48,7 +47,7 @@ const Serveralbum: React.FC<PropType> = (props) => {
           <p className="text-white text-lg">Loading Albums...</p>
         </div>
       ) : (
-        <section className="emblaa">
+        <section className="emblaa w-full py-4">
           <div className="emblaa__viewport" ref={emblaRef}>
             <div className="emblaa__container">
               {songs.map((song, index) => (

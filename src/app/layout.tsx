@@ -4,6 +4,7 @@ import "@/app/globals.css";
 import { StoreProvider } from "./StoreProvider";
 import AppLayout from "../components/AppLayout";
 import AudioPlayer from "../components/Audioplayer";
+import Providers from "./providers";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -49,7 +50,9 @@ export default function RootLayout({
       <body className={inter.variable} suppressHydrationWarning>
         <StoreProvider>
           <AudioPlayer />
-          <AppLayout>{children}</AppLayout>
+          <Providers>
+            <AppLayout>{children}</AppLayout>
+          </Providers>
         </StoreProvider>
       </body>
     </html>
