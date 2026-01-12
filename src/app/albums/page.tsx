@@ -1,18 +1,17 @@
-"use client";
+"use server";
 import React from "react";
-import { useRouter } from "next/navigation";
 import albumsData from "@/arrays/albumsData.json";
+import Link from "next/link";
 
 const AlbumList: React.FC = () => {
-  const router = useRouter();
 
   return (
     <div className="grid grid-cols-2 gap-4 p-4">
       {albumsData.map((album) => (
-        <div
+        <Link
           key={album.id}
           className="cursor-pointer"
-          onClick={() => router.push(`/album/${album.id}`)}
+          href={`/album/${album.id}`}
         >
           <img
             src={album.imageSrc}
@@ -20,7 +19,7 @@ const AlbumList: React.FC = () => {
             className="rounded-lg w-full h-40 object-cover"
           />
           <p className="text-white text-center mt-2">{album.name}</p>
-        </div>
+        </Link>
       ))}
     </div>
   );
