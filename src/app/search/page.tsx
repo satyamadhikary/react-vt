@@ -20,15 +20,19 @@ import {
 
 export default function SearchPage() {
   const dispatch = useDispatch();
-  const { currentAudio, isPlaying } = useSelector((state: RootState) => state.audio);
+  const { currentAudio, isPlaying } = useSelector(
+    (state: RootState) => state.audio
+  );
   const [songs, setSongs] = useState<Audio[]>([]);
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
+  const [hasSearched, setHasSearched] = useState(false);
 
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
       if (!query.trim()) {
         setSongs([]);
+        setHasSearched(false);
         return;
       }
 
@@ -48,11 +52,23 @@ export default function SearchPage() {
             ? data
             : data.data || data.results || [];
 
-          setSongs(results);
-          dispatch(setPlaylist(results));
+          // Normalize imageSrc to ensure it's always an array
+          const normalizedResults = results.map((song: Audio) => ({
+            ...song,
+            imageSrc: Array.isArray(song.imageSrc)
+              ? song.imageSrc
+              : song.imageSrc
+              ? [song.imageSrc]
+              : [],
+          }));
+
+          setSongs(normalizedResults);
+          dispatch(setPlaylist(normalizedResults));
+          setHasSearched(true);
         } catch (error) {
           console.error("Error fetching songs:", error);
           setSongs([]);
+          setHasSearched(true);
         } finally {
           setLoading(false);
         }
@@ -74,6 +90,7 @@ export default function SearchPage() {
     }
   };
 
+  console.log(songs);
   return (
     <section className="md:px-4">
       <div className="flex flex-col w-full items-center md:px-4 pb-6 sticky top-0 md:pt-10 pt-5 bg-background">
@@ -97,6 +114,11 @@ export default function SearchPage() {
       </div>
 
       <div className="md:px-2">
+        {!loading && hasSearched && songs.length === 0 && query.trim() && (
+          <p className="text-center text-gray-400">
+            No songs found for "{query}"
+          </p>
+        )}
         {loading ? (
           <div className="flex items-start justify-center h-[40vh]">
             <p className="text-white text-lg">Loading songs...</p>
@@ -130,7 +152,7 @@ export default function SearchPage() {
                     </div>
                     <img
                       className="song-image w-14 h-14 object-cover rounded-md"
-                      src={song.imageSrc[0] || ""}
+                      src={song.imageSrc as string || ""}
                       alt={song.title || song.name || "Unknown Song"}
                     />
                     <h1 className="song-name text-white font-semibold truncate">
@@ -138,11 +160,6 @@ export default function SearchPage() {
                     </h1>
                   </div>
                 ))}
-                {!loading && songs.length === 0 && query.trim() && (
-                  <p className="text-center text-gray-400">
-                    No songs found for “{query}”
-                  </p>
-                )}
               </div>
             </div>
           </motion.div>

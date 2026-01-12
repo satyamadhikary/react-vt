@@ -39,14 +39,23 @@ const DrawerPage = () => {
 
     /* ---------------- PLAY / PAUSE HANDLING ---------------- */
     useEffect(() => {
-        if (audioRef.current) {
-            if (isPlaying) {
-                audioRef.current.play().catch((err) => console.error("Playback error:", err));
-            } else {
-                audioRef.current.pause();
+        if (!audioRef.current || !currentAudio) return;
+        
+        const audio = audioRef.current;
+        
+        if (isPlaying) {
+            // Only play if audio is ready, otherwise onCanPlay will handle it
+            if (audio.readyState >= 2) {
+                audio.play().catch((err) => {
+                    if (err.name !== 'AbortError' && err.name !== 'NotAllowedError') {
+                        console.error("Playback error:", err);
+                    }
+                });
             }
+        } else {
+            audio.pause();
         }
-    }, [isPlaying, currentAudio]);
+    }, [isPlaying]);
 
     const handlePlayPause = (event: React.MouseEvent) => {
         event.stopPropagation();
@@ -126,7 +135,11 @@ const DrawerPage = () => {
                         onClick={() => isWideScreen && setIsDrawerOpen(true)}
                     >
                         <div style={{ height: "100%", display: "flex", alignItems: "center" }}>
-                            <img className="songbar-cover" src={currentAudio.imageSrc[0]} alt="Album Cover" />
+                            {currentAudio.imageSrc ? (
+                                <img className="songbar-cover" src={currentAudio.imageSrc as string} alt="Album Cover" />
+                            ): (
+                                <Skeleton className="w-14 h-14 rounded-lg mx-auto" />
+                            )}
 
                             <div className="songbar-content">
                                 <p className="song-title">{currentAudio.name || currentAudio.title}</p>
@@ -139,8 +152,8 @@ const DrawerPage = () => {
                                 <div className="songbar-control">
                                     <div className="songbar-text">
                                         <div className="marquee">
-                                            <p className="songbar-title">{currentAudio.name}</p>
-                                            <p className="songbar-artist">{currentAudio.name}</p>
+                                            <p className="songbar-title">{currentAudio.name || currentAudio.title}</p>
+                                            <p className="songbar-artist">{currentAudio.name || currentAudio.title}</p>
                                         </div>
                                     </div>
 
@@ -218,12 +231,16 @@ const DrawerPage = () => {
                 {currentAudio ? (
                     <div className="drawer-content">
                         <DrawerHeader>
-                            <img className="album-cover" src={currentAudio.imageSrc[0]} alt="Album Cover" />
+                            {currentAudio.imageSrc ? (
+                                <img className="album-cover" src={currentAudio.imageSrc as string} alt="Album Cover" />
+                            ) : (
+                                <Skeleton className="w-64 h-64 rounded-lg mx-auto" />
+                            )}
                         </DrawerHeader>
 
                         <div className="song-details">
                             <DrawerHeader>
-                                <DrawerTitle className="song-title">{currentAudio.name}</DrawerTitle>
+                                <DrawerTitle className="song-title">{currentAudio.name || currentAudio.title}</DrawerTitle>
                                 <DrawerDescription className="song-artist">Now Playing</DrawerDescription>
                             </DrawerHeader>
 
@@ -295,6 +312,16 @@ const DrawerPage = () => {
             <audio
                 ref={audioRef}
                 src={currentAudio?.audioSrc}
+                onCanPlay={() => {
+                    // Auto-play when audio is ready and isPlaying is true
+                    if (audioRef.current && isPlaying) {
+                        audioRef.current.play().catch((err) => {
+                            if (err.name !== 'AbortError' && err.name !== 'NotAllowedError') {
+                                console.error("Playback error:", err);
+                            }
+                        });
+                    }
+                }}
                 onTimeUpdate={() => {
                     if (audioRef.current) {
                         const progress =

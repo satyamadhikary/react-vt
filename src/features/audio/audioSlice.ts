@@ -48,7 +48,17 @@ const audioSlice = createSlice({
     nextAudio: (state) => {
       if (state.playlist.length > 0) {
         const nextIndex = (state.currentIndex + 1) % state.playlist.length; // Loops back to first song
-        state.currentAudio = state.playlist[nextIndex];
+        const nextSong = state.playlist[nextIndex];
+        
+        // Normalize imageSrc to ensure it's always an array
+        state.currentAudio = {
+          ...nextSong,
+          imageSrc: Array.isArray(nextSong.imageSrc) 
+            ? nextSong.imageSrc 
+            : nextSong.imageSrc 
+            ? [nextSong.imageSrc] 
+            : [],
+        };
         state.currentIndex = nextIndex;
         state.isPlaying = true;
         state.currentTime = 0;
@@ -58,7 +68,17 @@ const audioSlice = createSlice({
     prevAudio: (state) => {
       if (state.playlist.length > 0) {
         const prevIndex = (state.currentIndex - 1 + state.playlist.length) % state.playlist.length; // Loops back to last song
-        state.currentAudio = state.playlist[prevIndex];
+        const prevSong = state.playlist[prevIndex];
+        
+        // Normalize imageSrc to ensure it's always an array
+        state.currentAudio = {
+          ...prevSong,
+          imageSrc: Array.isArray(prevSong.imageSrc) 
+            ? prevSong.imageSrc 
+            : prevSong.imageSrc 
+            ? [prevSong.imageSrc] 
+            : [],
+        };
         state.currentIndex = prevIndex;
         state.isPlaying = true;
         state.currentTime = 0;
