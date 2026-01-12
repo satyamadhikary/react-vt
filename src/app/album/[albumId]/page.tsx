@@ -27,7 +27,6 @@ interface Album {
   songs: Song[];
 }
 const Page = () => {
-  console.log("🔥 Album page rendered");
   const params = useParams();
   const albumId = Array.isArray(params.albumId)
     ? params.albumId[0]
@@ -36,9 +35,7 @@ const Page = () => {
   const { currentAudio, isPlaying } = useSelector(
     (state: RootState) => state.audio
   );
-  console.log("Album ID from params:", albumId);
   const album: Album | undefined = albumsData.find((a) => a.id === albumId);
-  console.log("Found album:", album);
   useEffect(() => {
     if (album) {
       const audioSongs: Audio[] = album.songs.map((song) => ({
