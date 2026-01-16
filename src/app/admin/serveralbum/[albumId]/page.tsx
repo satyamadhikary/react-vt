@@ -10,7 +10,7 @@ import {
 } from "@/features/audio/audioSlice";
 import { Audio } from "@/features/audio/types";
 import { IoMdPlay, IoMdPause } from "react-icons/io";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import "@/app/css/songlist.css";
 import { useAlbums } from "@/hooks/tanstack-query-hook";
@@ -22,11 +22,18 @@ const ServeralbumDetails = () => {
     : params.albumId;
   const { data: albums, isLoading, error } = useAlbums();
 
-  const albumsData = albums?.find((a: any) => a._id === albumId);
+  // Memoize albumsData to prevent recalculation on every render
+  const albumsData = useMemo(() => {
+    return albums?.find((a: any) => a._id === albumId);
+  }, [albums, albumId]);
 
   const dispatch = useDispatch();
-  const { currentAudio, isPlaying } = useSelector(
-    (state: RootState) => state.audio
+  // Use a more selective selector to only subscribe to what we need
+  const currentAudio = useSelector(
+    (state: RootState) => state.audio.currentAudio
+  );
+  const isPlaying = useSelector(
+    (state: RootState) => state.audio.isPlaying
   );
 
   useEffect(() => {
@@ -55,7 +62,6 @@ const ServeralbumDetails = () => {
       dispatch(setAudio({ audio: updatedSong, index }));
     }
   };
-  console.log(albumsData);
   if (isLoading)
     return <p className="text-white text-center mt-10">Loading album...</p>;
   if (!albumsData)

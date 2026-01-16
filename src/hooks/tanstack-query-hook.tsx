@@ -6,5 +6,9 @@ export const useAlbums = () => {
     queryKey: ["albums"],
     queryFn: fetchAlbums,
     staleTime: 1000 * 60 * 5, // 5 minutes
+    gcTime: 1000 * 60 * 10, // 10 minutes (formerly cacheTime)
+    refetchOnMount: false, // Don't refetch when component mounts if data exists
+    refetchOnReconnect: false, // Don't refetch on network reconnect
+    refetchOnWindowFocus: false, // Don't refetch when window regains focus
   });
 };
