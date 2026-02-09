@@ -9,7 +9,6 @@ import { IoIosSearch, IoMdPause, IoMdPlay } from "react-icons/io";
 import { motion } from "motion/react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../app/store";
-import { useEffect, useState } from "react";
 import { Audio } from "../../features/audio/types";
 import {
   openDrawer,
@@ -17,147 +16,149 @@ import {
   setPlaylist,
   togglePlayPause,
 } from "../../features/audio/audioSlice";
+import { useSearch } from "@/hooks/tanstack-query-hook";
+import { useEffect, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function SearchPage() {
   const dispatch = useDispatch();
-  const { currentAudio, isPlaying } = useSelector(
-    (state: RootState) => state.audio
-  );
-  const [songs, setSongs] = useState<Audio[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [imgLoaded, setImgLoaded] = useState(false);
   const [query, setQuery] = useState("");
-  const [hasSearched, setHasSearched] = useState(false);
+  const [isDebouncing, setIsDebouncing] = useState(false);
+  const [debouncedQuery, setDebouncedQuery] = useState(query);
+  const { currentAudio, isPlaying } = useSelector(
+    (state: RootState) => state.audio,
+  );
 
   useEffect(() => {
-    const delayDebounce = setTimeout(() => {
-      if (!query.trim()) {
-        setSongs([]);
-        setHasSearched(false);
-        return;
-      }
+    setIsDebouncing(true);
 
-      const fetchSongs = async () => {
-        setLoading(true);
-        try {
-          const response = await fetch(
-            `https://test-flute.onrender.com/api/search?q=${encodeURIComponent(
-              query
-            )}`
-          );
+    const timer = setTimeout(() => {
+      setDebouncedQuery(query);
+      setIsDebouncing(false);
+    }, 500);
 
-          if (!response.ok) throw new Error("Failed to fetch songs");
-          const data = await response.json();
+    return () => clearTimeout(timer);
+  }, [query]);
 
-          const results = Array.isArray(data)
-            ? data
-            : data.data || data.results || [];
+  const { data: searchResults = [], isLoading } = useSearch(debouncedQuery);
 
-          // Normalize imageSrc to ensure it's always an array
-          const normalizedResults = results.map((song: Audio) => ({
-            ...song,
-            imageSrc: Array.isArray(song.imageSrc)
-              ? song.imageSrc
-              : song.imageSrc
+  const normalizedQuery = debouncedQuery.trim().toLowerCase();
+
+  const songs: Audio[] = Array.from(
+    new Map(
+      searchResults.map((song: Audio) => [
+        song.audioSrc || song.id || song.title, // unique key
+        {
+          ...song,
+          imageSrc: Array.isArray(song.imageSrc)
+            ? song.imageSrc
+            : song.imageSrc
               ? [song.imageSrc]
               : [],
-          }));
+        },
+      ]),
+    ).values(),
+  ).sort((a, b) => {
+    if (!normalizedQuery) return 0;
 
-          setSongs(normalizedResults);
-          dispatch(setPlaylist(normalizedResults));
-          setHasSearched(true);
-        } catch (error) {
-          console.error("Error fetching songs:", error);
-          setSongs([]);
-          setHasSearched(true);
-        } finally {
-          setLoading(false);
-        }
-      };
+    const titleA = (a.title || a.name || "").toLowerCase();
+    const titleB = (b.title || b.name || "").toLowerCase();
 
-      fetchSongs();
-    }, 600);
+    const aStarts = titleA.startsWith(normalizedQuery);
+    const bStarts = titleB.startsWith(normalizedQuery);
 
-    return () => clearTimeout(delayDebounce);
-  }, [query, dispatch]);
+    if (aStarts && !bStarts) return -1;
+    if (!aStarts && bStarts) return 1;
+
+    return 0;
+  });
 
   const togglePlayPauseHandler = (song: Audio, index: number) => {
+    dispatch(setPlaylist(songs));
     if (currentAudio?.title === song.title) {
       dispatch(togglePlayPause());
-      dispatch(openDrawer());
     } else {
       dispatch(setAudio({ audio: song, index }));
-      dispatch(openDrawer());
     }
+    dispatch(openDrawer());
   };
 
-  console.log(songs);
   return (
-    <section className="md:px-4">
-      <div className="flex flex-col w-full items-center md:px-4 pb-6 sticky top-0 md:pt-10 pt-5 bg-background">
-        <h2 className="md:mb-10 mb-5 text-xl text-center sm:text-5xl dark:text-white text-black">
+    <section>
+      {/* SEARCH BAR */}
+      <div className="flex flex-col w-full items-center md:px-4 pb-6 sticky top-0 md:pt-10 pt-5 bg-background z-10">
+        <h2 className="md:mb-10 mb-5 text-xl text-center sm:text-5xl ">
           Search for your Favourite Songs
         </h2>
 
-        <InputGroup className="h-12 w-full">
+        <InputGroup className="h-12 w-full bg-muted">
           <InputGroupAddon align="inline-start">
             <IoIosSearch className="text-xl" />
           </InputGroupAddon>
+
           <InputGroupInput
             placeholder="Search your favourite song"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
+
           <InputGroupAddon align="inline-end">
-            {loading && <Spinner />}
+            {isLoading || (isDebouncing && <Spinner />)}
           </InputGroupAddon>
         </InputGroup>
       </div>
 
+      {/* RESULTS */}
       <div className="md:px-2">
-        {!loading && hasSearched && songs.length === 0 && query.trim() && (
-          <p className="text-center text-gray-400">
-            No songs found for "{query}"
-          </p>
+        {/* EMPTY STATE */}
+        {!isLoading && query.trim() && songs.length === 0 && debouncedQuery && (
+          <p className="text-center">No songs found for "{query}"</p>
         )}
-        {loading ? (
-          <div className="flex items-start justify-center h-[40vh]">
-            <p className="text-white text-lg">Loading songs...</p>
-          </div>
-        ) : (
-          <motion.div
-            key={query}
-            initial={{ opacity: 0, translateY: 50 }}
-            animate={{ opacity: 1, translateY: 0 }}
-            transition={{ duration: 0.3 }}
-            exit={{ opacity: 0, translateY: 100 }}
-          >
-            {/* <p className="text-center text-gray-400 mb-4">
-              Found {songs.length} song{songs.length !== 1 ? "s" : ""}
-            </p> */}
 
+        {/* LIST */}
+        {!isLoading && songs.length > 0 && query.trim() && (
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+          >
             <div className="songlist-container overflow-y-auto">
-              <div className="flex flex-1 flex-col gap-4 md:p-2 pt-5">
+              <div className="flex flex-col gap-4 md:p-2 pt-5">
                 {songs.map((song, index) => (
                   <div
-                    key={index}
-                    className="song-container flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 cursor-pointer transition"
+                    key={`${song.title}-${index}`}
+                    className="flex items-center gap-4 px-4 py-2 rounded-lg bg-muted hover:bg-white/10 cursor-pointer transition"
                     onClick={() => togglePlayPauseHandler(song, index)}
                   >
-                    <div className="play-pause-btn text-2xl text-white">
+                    <div className="text-xl">
                       {currentAudio?.title === song.title && isPlaying ? (
                         <IoMdPause />
                       ) : (
                         <IoMdPlay />
                       )}
                     </div>
+
+                    {!imgLoaded && (
+                      <Skeleton className="w-12 h-12 rounded-md" />
+                    )}
+
                     <img
-                      className="song-image w-14 h-14 object-cover rounded-md"
-                      src={song.imageSrc as string || ""}
+                      className={`w-12 h-12 object-cover rounded-md ${
+                        !imgLoaded ? "hidden" : "block"
+                      }`}
+                      src={song.imageSrc[0] || ""}
                       alt={song.title || song.name || "Unknown Song"}
+                      onLoad={() => setImgLoaded(true)}
+                      onError={() => setImgLoaded(true)} // prevent infinite skeleton
                     />
-                    <h1 className="song-name text-white font-semibold truncate">
-                      {song.title || song.name || "Untitled"}
-                    </h1>
+                    <div className="flex flex-col gap-0">
+                      <h1 className=" font-semibold truncate">
+                        {song.title || song.name || "Untitled"}
+                      </h1>
+                      {/* <p>Song</p>
+                      <p>Album</p> */}
+                    </div>
                   </div>
                 ))}
               </div>
