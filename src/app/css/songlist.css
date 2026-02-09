@@ -7,10 +7,6 @@
     position: fixed;
 }
 
-.previous-btn button:hover {
-    background-color: hsl(0deg 0% 22.99%);
-}
-
 .song-container {
     display: flex;
     align-items: center;

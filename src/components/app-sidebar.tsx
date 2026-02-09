@@ -1,5 +1,5 @@
-import * as React from "react"
-import { useSelector } from "react-redux"
+import * as React from "react";
+import { useSelector } from "react-redux";
 import {
   AudioWaveform,
   BookOpen,
@@ -11,24 +11,19 @@ import {
   PieChart,
   Settings2,
   SquareTerminal,
-} from "lucide-react"
-import { Moon, Sun } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { useTheme } from "@/components/theme-provider"
-import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
-import { NavUser } from "@/components/nav-user"
+} from "lucide-react";
+import { DropdownMenu } from "@/components/ui/dropdown-menu";
+import { NavMain } from "@/components/nav-main";
+import { NavProjects } from "@/components/nav-projects";
+import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarRail,
-} from "@/components/ui/sidebar"
-import { RootState } from "@/app/store"
+} from "@/components/ui/sidebar";
+import { RootState } from "@/app/store";
+import { AnimatedThemeToggler } from "./ui/animated-theme-toggler";
 
 // This is sample data.
 const data = {
@@ -158,40 +153,40 @@ const data = {
       icon: Map,
     },
   ],
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { setTheme, theme} = useTheme()
-  const isDrawerOpen = useSelector((state : RootState) => state.audio.isDrawerOpen);
+  const isDrawerOpen = useSelector(
+    (state: RootState) => state.audio.isDrawerOpen,
+  );
 
   return (
-  <> 
-    <Sidebar style={{display: "flex",
-        overflowY: "hidden",
-        height: isDrawerOpen ? "85dvh" : "100dvh", 
-        transition: "height 0.5s ease-in-out"}} collapsible="icon" {...props}>
+    <>
+      <Sidebar
+        style={{
+          display: "flex",
+          overflowY: "hidden",
+          height: isDrawerOpen ? "85dvh" : "100dvh",
+          transition: "height 0.5s ease-in-out",
+        }}
+        collapsible="icon"
+        {...props}
+      >
+        <div style={{ padding: "10px", textAlign: "left" }}>
+          <DropdownMenu>
+            <AnimatedThemeToggler className="inline-flex h-full items-center justify-center p-1" />
+          </DropdownMenu>
+        </div>
 
-    <div style={{padding:"6px", textAlign:"left"}}>
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button onClick={() => setTheme(theme === "light" ? "dark" : "light" )} variant="outline" size="icon" style={{background:"transparent", border:"none"}}>
-          <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"/>
-          <span className="sr-only">Toggle theme</span>
-        </Button>
-      </DropdownMenuTrigger>
-    </DropdownMenu>
-    </div>
-      
-      <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
-      </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={data.user} />
-      </SidebarFooter>
-      <SidebarRail />
-    </Sidebar>
-  </>
-  )
+        <SidebarContent>
+          <NavMain items={data.navMain} />
+          <NavProjects projects={data.projects} />
+        </SidebarContent>
+        <SidebarFooter>
+          <NavUser user={data.user} />
+        </SidebarFooter>
+        <SidebarRail />
+      </Sidebar>
+    </>
+  );
 }

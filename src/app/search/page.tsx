@@ -128,7 +128,7 @@ export default function SearchPage() {
                 {songs.map((song, index) => (
                   <div
                     key={`${song.title}-${index}`}
-                    className="flex items-center gap-4 px-4 py-2 rounded-lg bg-muted hover:bg-white/10 cursor-pointer transition"
+                    className="flex items-center gap-4 px-4 py-2 rounded-lg bg-muted hover:bg-black/10 dark:hover:bg-muted/70 cursor-pointer transition"
                     onClick={() => togglePlayPauseHandler(song, index)}
                   >
                     <div className="text-xl">

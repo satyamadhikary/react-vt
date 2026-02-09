@@ -9,7 +9,6 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { ThemeProvider } from "@/components/theme-provider";
 import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
 import "../app/css/drawer.css";
 import DrawerPage from "@/components/drawer";
@@ -44,7 +43,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="theme">
       <SidebarProvider>
         <AppSidebar />
         <DrawerPage />
@@ -114,6 +112,5 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           </div>
         </SidebarInset>
       </SidebarProvider>
-    </ThemeProvider>
   );
 }
