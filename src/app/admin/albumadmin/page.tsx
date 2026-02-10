@@ -100,7 +100,7 @@ const AdminPanel: React.FC = () => {
     setLoading(true);
     try {
       const formattedData = {
-        title: albumTitle,
+        albumTitle: albumTitle,
         songs, // ✅ Songs are now an array of objects with title & audioSrc
         imageSrc: [albumImage], // ✅ Sent as an array
       };
@@ -186,7 +186,7 @@ const AdminPanel: React.FC = () => {
 
       <div className="flex gap-[10px]">
         <button
-          onClick={() => router.push("/admin/serveralbum")}
+          onClick={() => router.push("/album")}
           className="bg-blue-500 text-white p-2 rounded-md mt-4 relative"
         >
           View your Added Albums

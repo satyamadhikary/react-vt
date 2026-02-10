@@ -6,5 +6,7 @@ export interface Audio {
     background?:string;
     id?:string;
     _id?:string;
+    albumTitle?:string;
+    albumId?:string;
   }
   

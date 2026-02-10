@@ -8,104 +8,111 @@ import {
   setPlaylist,
   openDrawer,
 } from "@/features/audio/audioSlice";
-import albumsData from "@/arrays/albumsData.json";
 import { Audio } from "@/features/audio/types";
 import { IoMdPlay, IoMdPause } from "react-icons/io";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import "@/app/css/songlist.css";
-interface Song {
-  id: number;
-  name: string;
-  imageSrc: string;
-  audioSrc: string;
-}
-interface Album {
-  id: string;
-  name: string;
-  imageSrc: string;
-  songs: Song[];
-}
-const Page = () => {
+import { useAlbums } from "@/hooks/tanstack-query-hook";
+
+const AlbumList = () => {
   const params = useParams();
   const albumId = Array.isArray(params.albumId)
     ? params.albumId[0]
     : params.albumId;
+  const { data: albums, isLoading, error } = useAlbums();
+
+  // Memoize albumsData to prevent recalculation on every render
+  const albumsData = useMemo(() => {
+    return albums?.find((a: any) => a._id === albumId);
+  }, [albums, albumId]);
+
   const dispatch = useDispatch();
-  const { currentAudio, isPlaying } = useSelector(
-    (state: RootState) => state.audio
+  // Use a more selective selector to only subscribe to what we need
+  const currentAudio = useSelector(
+    (state: RootState) => state.audio.currentAudio,
   );
-  const album: Album | undefined = albumsData.find((a) => a.id === albumId);
+  const isPlaying = useSelector((state: RootState) => state.audio.isPlaying);
+
   useEffect(() => {
-    if (album) {
-      const audioSongs: Audio[] = album.songs.map((song) => ({
-        ...song,
-        id: song.id.toString(),
-        title: song.name,
-        imageSrc: [song.imageSrc],
-      }));
-      dispatch(setPlaylist(audioSongs));
-    }
-  }, [album, dispatch]);
-  const handleAlbumClick = (song: Song, index: number) => {
-    const audioSong: Audio = {
+    if (!albumsData) return;
+
+    const songsWithImageSrc = albumsData.songs.map((song: Audio) => ({
       ...song,
-      id: song.id.toString(),
-      title: song.name,
-      imageSrc: [song.imageSrc],
+      imageSrc: song.imageSrc || albumsData.imageSrc || [],
+      albumTitle: albumsData.albumTitle,
+      albumId: albumsData._id,
+    }));
+
+    dispatch(setPlaylist(songsWithImageSrc));
+  }, [albumsData, dispatch]);
+
+  const handleAlbumClick = (song: Audio, index: number) => {
+    if (!albumsData) return;
+
+    const updatedSong = {
+      ...song,
+      imageSrc: albumsData.imageSrc || song.imageSrc || [],
+      albumTitle: albumsData.albumTitle,
+      albumId: albumsData._id,
     };
-    if (currentAudio?.name === song.name) {
+
+    if (currentAudio?._id === song._id) {
       dispatch(togglePlayPause());
       dispatch(openDrawer());
     } else {
-      dispatch(setAudio({ audio: audioSong, index }));
+      dispatch(setAudio({ audio: updatedSong, index }));
     }
   };
-  if (!album) {
-    return <p className="text-white text-center mt-10">Album not found.</p>;
-  }
+
+  if (isLoading)
+    return <p className="text-white text-center mt-10">Loading album...</p>;
+  if (!albumsData)
+    return <p className="text-white text-center mt-10">song not found.</p>;
+  if (error)
+    return (
+      <p className="text-white text-center mt-10">Error: {error.message}</p>
+    );
+    
   return (
     <>
-      {" "}
       <div className="songlist-container overflow-y-auto">
-        {" "}
-        <h2 className="text-2xl p-4 text-center">{album.name}</h2>{" "}
+        <h2 className="text-2xl p-4 text-center">{albumsData.albumTitle}</h2>
+
         <motion.div
           initial={{ opacity: 0, translateY: 50 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ duration: 0.3 }}
           exit={{ opacity: 0, translateY: 100 }}
         >
-          {" "}
           <div className="flex flex-1 flex-col gap-4 p-2 pt-5">
-            {" "}
-            {album.songs.map((song, index) => (
+            {albumsData.songs.map((song: Audio, index: number) => (
               <div
                 key={index}
                 className="song-container"
                 onClick={() => handleAlbumClick(song, index)}
               >
-                {" "}
                 <div className="play-pause-btn">
-                  {" "}
-                  {currentAudio?.name === song.name && isPlaying ? (
+                  {currentAudio?.title === song.title && isPlaying ? (
                     <IoMdPause />
                   ) : (
                     <IoMdPlay />
-                  )}{" "}
-                </div>{" "}
+                  )}
+                </div>
+
                 <img
                   className="song-image"
-                  src={song.imageSrc}
-                  alt={song.name}
-                />{" "}
-                <h1 className="song-name">{song.name}</h1>{" "}
+                  src={albumsData.imageSrc[0]}
+                  alt={albumsData.title}
+                />
+                <h1 className="song-name">{song.title}</h1>
               </div>
-            ))}{" "}
-          </div>{" "}
-        </motion.div>{" "}
-      </div>{" "}
+            ))}
+          </div>
+        </motion.div>
+      </div>
     </>
   );
 };
-export default Page;
+
+export default AlbumList;

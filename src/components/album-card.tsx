@@ -14,7 +14,7 @@ type PropType = {
   options?: EmblaOptionsType;
 };
 
-const Serveralbum: React.FC<PropType> = () => {
+const AlbumCard: React.FC<PropType> = () => {
   const [emblaRef] = useEmblaCarousel({dragFree: true, loop: true}, [Autoplay()]);
   const dispatch = useDispatch();
   const [songs, setSongs] = useState<Audio[]>([]);
@@ -47,12 +47,12 @@ const Serveralbum: React.FC<PropType> = () => {
           <p className="text-white text-lg">Loading Albums...</p>
         </div>
       ) : (
-        <section className="emblaa w-full py-4">
+        <section className="emblaa w-full pb-4">
           <div className="emblaa__viewport" ref={emblaRef}>
             <div className="emblaa__container">
               {songs.map((song, index) => (
                 <Link
-                  href={`/admin/serveralbum/${song._id}`}
+                  href={`/album/${song._id}`}
                   className="emblaa__slide px-2"
                   key={index}
                 >
@@ -79,7 +79,7 @@ const Serveralbum: React.FC<PropType> = () => {
                       </div>
                     </div>
                     <p className="text-white text-sm mt-2 text-center line-clamp-2">
-                      {song.title}
+                      {song.albumTitle}
                     </p>
                   </div>
                 </Link>
@@ -92,4 +92,4 @@ const Serveralbum: React.FC<PropType> = () => {
   );
 };
 
-export default Serveralbum;
+export default AlbumCard;

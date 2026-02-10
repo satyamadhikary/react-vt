@@ -25,6 +25,7 @@ import { IoPlayCircleSharp } from "react-icons/io5";
 import { RiPlayList2Line } from "react-icons/ri";
 import { Skeleton } from "@/components/ui/skeleton";
 import "../app/css/drawer.css";
+import Link from "next/link";
 
 const DrawerPage = () => {
   const dispatch = useDispatch();
@@ -135,7 +136,7 @@ const DrawerPage = () => {
       <DrawerTrigger>
         {currentAudio ? (
           <div
-            className="fixed bottom-0 left-0 right-0 z-50 cursor-auto transform translate-y-0 transition-all duration-500 w-full flex justify-between items-center px-[30px] h-[15dvh] bg-black/10 dark:bg-muted/70"
+            className="fixed bottom-0 left-0 right-0 z-50 cursor-auto transform translate-y-0 transition-all duration-500 w-full flex justify-between items-center px-4 h-[15dvh] bg-black/10 dark:bg-muted/70"
             onClick={() => isWideScreen && setIsDrawerOpen(true)}
           >
             <div
@@ -153,13 +154,22 @@ const DrawerPage = () => {
                 onError={() => setImgLoaded(true)}
               />
 
-              <div className="songbar-content">
-                <p className="song-title">
+              <div className="songbar-content text-wrap text-left">
+                <p className="song-title line-clamp-1">
                   {currentAudio.name || currentAudio.title}
                 </p>
-                <p className="song-artist">
-                  {currentAudio.name || currentAudio.title}
-                </p>
+                {currentAudio.albumTitle && (
+                  <Link
+                    href={`/album/${currentAudio.albumId}`}
+                    className="text-sm text-black/80 dark:text-white/70 hover:text-black dark:hover:text-white transition duration-500 song-artist cursor-pointer hover:underline underline-offset-3"
+                  >
+                    {currentAudio.albumTitle}
+                  </Link>
+                )}
+
+                {!currentAudio.albumTitle && (
+                  <p className="song-artist">Single Track</p>
+                )}
               </div>
             </div>
 
@@ -171,9 +181,19 @@ const DrawerPage = () => {
                       <p className="songbar-title">
                         {currentAudio.name || currentAudio.title}
                       </p>
-                      <p className="songbar-artist">
-                        {currentAudio.name || currentAudio.title}
-                      </p>
+
+                      {currentAudio.albumTitle && (
+                        <Link
+                          href={`/album/${currentAudio.albumId}`}
+                          className="songbar-artist text-sm text-black/80 dark:text-white/70 hover:text-black dark:hover:text-white transition duration-500 cursor-pointer hover:underline underline-offset-3"
+                        >
+                          {currentAudio.albumTitle}
+                        </Link>
+                      )}
+
+                      {!currentAudio.albumTitle && (
+                        <p className="songbar-artist">Single Track</p>
+                      )}
                     </div>
                   </div>
 

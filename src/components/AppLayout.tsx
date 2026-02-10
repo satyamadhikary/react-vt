@@ -105,7 +105,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           >
             <div
               style={{ overflowY: "scroll" }}
-              className="flex flex-1 flex-col p-4 pt-0 w-full"
+              className="flex flex-1 flex-col p-4 pb-0 pt-0 w-full"
             >
               {children}
             </div>

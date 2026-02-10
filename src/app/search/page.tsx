@@ -19,6 +19,7 @@ import {
 import { useSearch } from "@/hooks/tanstack-query-hook";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import Link from "next/link";
 
 export default function SearchPage() {
   const dispatch = useDispatch();
@@ -142,7 +143,7 @@ export default function SearchPage() {
                     {!imgLoaded && (
                       <Skeleton className="w-12 h-12 rounded-md" />
                     )}
-
+                    {/* {song.albumTitle} */}
                     <img
                       className={`w-12 h-12 object-cover rounded-md ${
                         !imgLoaded ? "hidden" : "block"
@@ -156,6 +157,8 @@ export default function SearchPage() {
                       <h1 className=" font-semibold truncate">
                         {song.title || song.name || "Untitled"}
                       </h1>
+                      {song.albumTitle && <Link href={`/album/${song.albumId}`} className="hover:underline w-fit">{song.albumTitle}</Link>}
+                      {!song.albumTitle && <p>Song</p>}
                       {/* <p>Song</p>
                       <p>Album</p> */}
                     </div>
