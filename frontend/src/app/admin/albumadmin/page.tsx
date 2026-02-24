@@ -107,7 +107,7 @@ const AdminPanel: React.FC = () => {
 
       console.log("📤 Sending data to server:", JSON.stringify(formattedData, null, 2));
 
-      const response = await fetch("https://test-flute.onrender.com/save-urls/albums", {
+      const response = await fetch("https://flute-backend.onrender.com/save-urls/albums", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formattedData),

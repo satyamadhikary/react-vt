@@ -24,7 +24,7 @@ const AlbumCard: React.FC<PropType> = () => {
     const fetchSongs = async () => {
       try {
         const response = await fetch(
-          "https://test-flute.onrender.com/get-urls/albums"
+          "https://flute-backend.onrender.com/get-urls/albums"
         );
         if (!response.ok) throw new Error("Failed to fetch songs");
         const data = await response.json();

@@ -1,5 +1,5 @@
 export const fetchAlbums = async () => {
-  const res = await fetch("https://test-flute.onrender.com/get-urls/albums");
+  const res = await fetch("https://flute-backend.onrender.com/get-urls/albums");
   if (!res.ok) throw new Error("Failed to fetch albums");
 
   const json = await res.json();
@@ -8,7 +8,7 @@ export const fetchAlbums = async () => {
 
 export const fetchSongs = async (query: string) => {
   const res = await fetch(
-    `https://test-flute.onrender.com/api/search?q=${encodeURIComponent(query)}`,
+    `https://flute-backend.onrender.com/api/search?q=${encodeURIComponent(query)}`,
   );
 
   if (!res.ok) throw new Error("Failed to Search songs");
