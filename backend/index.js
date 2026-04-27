@@ -26,7 +26,7 @@ mongoose
 // 🔹 Define Schemas for Different Collections
 const schemas = {
   albums: new Schema({
-    title: { type: String, required: true },
+    albumTitle: { type: String, required: true },
     imageSrc: [{ type: String, required: true }],
     songs: [
       {
@@ -77,7 +77,9 @@ app.post("/save-urls/:collection", async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "❌ Error saving data", error });
   }
-});app.post("/save-urls/:collection", async (req, res) => {
+});
+
+app.post("/save-urls/:collection", async (req, res) => {
   try {
     const { collection } = req.params;
     if (!models[collection]) {

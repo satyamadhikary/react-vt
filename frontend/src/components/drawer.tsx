@@ -142,17 +142,16 @@ const DrawerPage = () => {
             <div
               style={{ height: "100%", display: "flex", alignItems: "center" }}
             >
-              {!imgLoaded && (
+              {currentAudio.imageSrc && !imgLoaded ? (
+                <img
+                  className="songbar-cover"
+                  src={currentAudio.imageSrc as string}
+                  alt="Album Cover"
+                  onError={() => setImgLoaded(true)}
+                />
+              ) : (
                 <Skeleton className="md:h-[75%] md:w-auto aspect-square h-[50%] w-[60px] rounded-[5px] mx-auto" />
               )}
-
-              <img
-                className={`songbar-cover ${!imgLoaded ? "hidden" : "block"}`}
-                src={currentAudio.imageSrc as string}
-                alt="Album Cover"
-                onLoad={() => setImgLoaded(true)}
-                onError={() => setImgLoaded(true)}
-              />
 
               <div className="songbar-content text-wrap text-left">
                 <p className="song-title line-clamp-1">
@@ -290,14 +289,15 @@ const DrawerPage = () => {
         {currentAudio ? (
           <div className="drawer-content">
             <DrawerHeader>
-              {currentAudio.imageSrc ? (
+              {currentAudio.imageSrc && !imgLoaded ? (
                 <img
                   className="album-cover"
                   src={currentAudio.imageSrc as string}
                   alt="Album Cover"
+                  onError={() => setImgLoaded(true)}
                 />
               ) : (
-                <Skeleton className="w-64 h-64 rounded-lg mx-auto" />
+                <Skeleton className="w-80 h-80 rounded-lg mx-auto" />
               )}
             </DrawerHeader>
 
