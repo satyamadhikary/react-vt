@@ -241,34 +241,32 @@ const AdminPanel: React.FC = () => {
 
   return (
     <div className="min-h-screen font-sans text-slate-900 transition-colors duration-300 dark:text-white">
-      <div className="relative z-10 mx-auto max-w-5xl px-4 py-10">
-        <div className="mb-12 text-center">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-purple-500/20 bg-purple-500/10 px-4 py-1.5 text-xs uppercase tracking-widest text-purple-600 dark:border-white/10 dark:bg-white/5 dark:text-purple-300">
-            <IoMdMusicalNote className="animate-bounce" />
-            Music Studio
+      <div className="relative z-10 mx-auto max-w-5xl md:px-4 px-0 py-10">
+        <div className="flex flex-col md:flex-row items-center md:items-end justify-between mb-12">
+          <div className="flex flex-col text-center md:text-left">
+            <h1 className="bg-gradient-to-r from-gray-900 via-purple-600 to-rose-500 bg-clip-text text-5xl font-black tracking-tight text-transparent dark:from-white dark:via-purple-200 dark:to-rose-300">
+              Publish your Album
+            </h1>
+            <p className="mt-3 mb-6 md:mb-0 text-sm text-slate-500 dark:text-white/40">
+              Upload, manage and preview your music albums
+            </p>
           </div>
-          <h1 className="bg-gradient-to-r from-gray-900 via-purple-600 to-rose-500 bg-clip-text text-5xl font-black tracking-tight text-transparent dark:from-white dark:via-purple-200 dark:to-rose-300">
-            Album Publisher
-          </h1>
-          <p className="mt-3 text-sm text-slate-500 dark:text-white/40">
-            Upload, manage and preview your music albums
-          </p>
-        </div>
 
-        <div className="mx-auto mb-8 flex w-fit gap-2 rounded-2xl border border-slate-300 bg-slate-200/50 p-1 dark:border-white/10 dark:bg-white/5">
-          {["upload", "preview"].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab as "upload" | "preview")}
-              className={`rounded-xl px-8 py-2.5 text-sm font-semibold capitalize transition-all duration-300 ${
-                activeTab === tab
-                  ? "bg-gradient-to-r from-purple-600 to-rose-500 text-white shadow-lg shadow-purple-900/20 dark:shadow-purple-900/50"
-                  : "text-slate-500 hover:text-slate-800 dark:text-white/40 dark:hover:text-white/70"
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
+          <div className="flex w-fit gap-2 rounded-2xl border border-slate-300 bg-slate-200/50 p-1 dark:border-white/10 dark:bg-white/5">
+            {["upload", "preview"].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab as "upload" | "preview")}
+                className={`rounded-xl px-8 py-2.5 text-sm font-semibold capitalize transition-all duration-300 ${
+                  activeTab === tab
+                    ? "bg-gradient-to-r from-purple-600 to-rose-500 text-white shadow-lg shadow-purple-900/20 dark:shadow-purple-900/50"
+                    : "text-slate-500 hover:text-slate-800 dark:text-white/40 dark:hover:text-white/70"
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
         </div>
 
         {activeTab === "upload" && (
@@ -550,7 +548,7 @@ const AdminPanel: React.FC = () => {
                   Review the current album before you publish it.
                 </p>
               </div>
-              <span className="rounded-full bg-purple-500/10 px-3 py-1 text-xs font-medium text-purple-600 dark:text-purple-400">
+              <span className="flex-shrink-0 rounded-full bg-purple-500/10 px-3 py-1 text-xs font-medium text-purple-600 dark:text-purple-400">
                 {draftReadySongs.length}/{songs.length} ready
               </span>
             </div>
@@ -579,7 +577,7 @@ const AdminPanel: React.FC = () => {
                   <p className="text-[11px] uppercase tracking-[0.22em] text-purple-200">
                     Upcoming Album
                   </p>
-                  <h3 className="mt-1 text-2xl font-black text-white sm:text-3xl">
+                  <h3 className="mt-1 text-2xl font-black text-white sm:text-3xl overflow-hidden text-ellipsis">
                     {albumTitle.trim() || "Untitled Album"}
                   </h3>
                   <p className="mt-1 text-xs text-white/65">
