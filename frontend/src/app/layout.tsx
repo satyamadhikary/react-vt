@@ -12,8 +12,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Flute Music",
-  description: "Free music for everyone",
+  title: "Flute Music | Free music for everyone",
 };
 
 export const dynamic = "force-dynamic";
