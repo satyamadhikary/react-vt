@@ -1,6 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { AppSidebar } from "@/components/app-sidebar";
 import { IoIosSearch } from "react-icons/io";
 import { Separator } from "@/components/ui/separator";
@@ -22,6 +23,18 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   );
   const router = useRouter();
   const pathname = usePathname();
+  const { status } = useSession();
+  const isAuthPage = pathname === "/login" || pathname === "/signup";
+
+  useEffect(() => {
+    if (status === "unauthenticated" && !isAuthPage) {
+      router.replace("/login");
+    }
+
+    if (status === "authenticated" && isAuthPage) {
+      router.replace("/");
+    }
+  }, [isAuthPage, router, status]);
 
   useEffect(() => {
     const homeButton = document.getElementById("home");
@@ -41,6 +54,18 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       router.back();
     }
   };
+
+  if (isAuthPage && status === "authenticated") {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        Loading...
+      </div>
+    );
+  }
+
+  if (isAuthPage || status !== "authenticated") {
+    return <>{children}</>;
+  }
 
   return (
       <SidebarProvider>

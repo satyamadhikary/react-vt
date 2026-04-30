@@ -5,9 +5,24 @@ import { EmblaOptionsType } from "embla-carousel";
 import { motion } from "motion/react";
 import carouselData from "@/arrays/CarouselData.json";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const Home = () => {
+  const router = useRouter();
+  const { status } = useSession();
   const options: EmblaOptionsType = { loop: true };
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.replace("/login");
+    }
+  }, [router, status]);
+
+  if (status === "loading" || status === "unauthenticated") {
+    return null;
+  }
 
   return (
     <motion.div
