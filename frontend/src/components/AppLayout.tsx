@@ -74,21 +74,19 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
         <SidebarInset>
           <header
+            className="app-header-glass"
             style={{
-              borderBottom: "1px solid rgb(33 33 33)",
-              position: "sticky",
-              width: "100%",
+              position: "fixed",
+              left: "0",
+              right: "0",
               top: "0",
-              zIndex: "11",
-              background: "rgba(255, 255, 255, 0.25)",
-              boxShadow: "0px 16px 40px 0px rgba(68, 70, 94, 0.37)",
-              backdropFilter: "blur(10px)",
-              WebkitBackdropFilter: "blur(10px)",
-              padding: "10px 0px",
-              transition: "width 0.7s ease-in-out",
+              zIndex: "30",
+              width: "100vw",
+              height: "56px",
+              transition: "background 0.3s ease, box-shadow 0.3s ease",
             }}
           >
-            <div className="flex items-center gap-2 px-4">
+            <div className="flex h-full items-center gap-2 px-4">
               <button
                 id="home"
                 style={{ cursor: "pointer", color: "#fff", fontSize: "20px" }}
@@ -124,7 +122,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             style={{
               display: "flex",
               overflowY: "hidden",
-              maxHeight: isDrawerOpen ? "85dvh" : "100dvh",
+              marginTop: "56px",
+              maxHeight: isDrawerOpen
+                ? "calc(85dvh - 56px)"
+                : "calc(100dvh - 56px)",
               transition: "height 0.5s ease-in-out",
             }}
           >
