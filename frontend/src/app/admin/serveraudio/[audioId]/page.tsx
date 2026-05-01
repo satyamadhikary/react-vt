@@ -66,7 +66,7 @@ const ServerAudioDetails = () => {
                     transition={{ duration: 0.3 }}
                     exit={{ opacity: 0, translateY: 100 }}
                 >
-                    <div className="flex flex-1 flex-col gap-4 p-2 pt-5">
+                    <div className="flex flex-1 flex-col gap-4 pb-2 px-0 pt-5">
                         <div className="song-container" onClick={() => handleAudioClick(audio)}>
                             <div className="play-pause-btn">
                                 {currentAudio?.title === audio.title && isPlaying ? <IoMdPause /> : <IoMdPlay />}

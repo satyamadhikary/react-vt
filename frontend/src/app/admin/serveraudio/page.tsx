@@ -58,7 +58,7 @@ const Serveraudio = () => {
           exit={{ opacity: 0, translateY: 100 }}
         >
           <div className="songlist-container overflow-y-auto">
-            <div className="flex flex-1 flex-col gap-4 p-2 pt-5">
+            <div className="flex flex-1 flex-col gap-4 pb-2 px-0 pt-5">
               {songs.map((song, index) => (
                 <div key={index} className="song-container">
                   <div className="play-pause-btn" onClick={() => togglePlayPauseHandler(song, index)}>

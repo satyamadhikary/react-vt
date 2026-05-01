@@ -182,9 +182,14 @@ const Sidebar = React.forwardRef<
   ) => {
     const { state, openMobile, setOpenMobile } = useSidebar()
     const isDrawerOpen = useSelector((state: RootState) => state.audio.isDrawerOpen)
+    const shellPadding = "10px"
+    const headerHeight = "56px"
+    const sidebarTopGap = "10px"
+    const sidebarTop = `calc(${shellPadding} + ${headerHeight} + ${sidebarTopGap})`
+    const drawerGap = "10px"
     const sidebarHeight = isDrawerOpen
-      ? "calc(85dvh - 56px)"
-      : "calc(100dvh - 56px)"
+      ? `calc(85dvh - ${sidebarTop} - ${shellPadding} - ${drawerGap})`
+      : `calc(100dvh - ${sidebarTop} - ${shellPadding})`
 
     if (collapsible === "none") {
       return (
@@ -207,13 +212,14 @@ const Sidebar = React.forwardRef<
         <SheetContent
           data-sidebar="sidebar"
           data-mobile="true"
-          className="sidebar-glass fixed bottom-0 top-14 h-[calc(100dvh-56px)] w-[--sidebar-width] overflow-hidden border p-0 text-sidebar-foreground data-[state=closed]:hidden md:hidden [&>button]:hidden"
+          className="sidebar-glass fixed w-[--sidebar-width] overflow-hidden border p-0 text-sidebar-foreground data-[state=closed]:hidden md:hidden [&>button]:hidden"
           overlayClassName="bg-transparent"
           style={
             {
               "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
-              top: "56px",
-              bottom: "0",
+              top: sidebarTop,
+              bottom: shellPadding,
+              left: shellPadding,
               height: sidebarHeight,
             } as React.CSSProperties
           }
@@ -237,33 +243,40 @@ const Sidebar = React.forwardRef<
         >
           <div
             className={cn(
-              "duration-200 relative w-[--sidebar-width] bg-transparent transition-[width] ease-linear",
+              "duration-200 relative w-[calc(var(--sidebar-width)_+_10px)] bg-transparent transition-[width] ease-linear ",
               "group-data-[collapsible=offcanvas]:w-0",
               "group-data-[side=right]:rotate-180",
               variant === "floating" || variant === "inset"
                 ? "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)_+_theme(spacing.4))]"
-                : "group-data-[collapsible=icon]:w-[--sidebar-width-icon]"
+                : "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)_+_10px)]"
             )}
             style={{ height: sidebarHeight }}
           />
           <div
             className={cn(
-              "duration-200 fixed bottom-0 top-14 z-10 hidden w-[--sidebar-width] transition-[left,right,width] ease-linear md:flex",
+              "duration-200 fixed z-10 rounded-[10px] hidden w-[--sidebar-width] transition-[left,right,width] ease-linear md:flex ring-1 ring-inset ring-gray-300 dark:ring-white/10",
               side === "left"
-                ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
-                : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
+                ? "group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
+                : "group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
               // Adjust the padding for floating and inset variants.
               variant === "floating" || variant === "inset"
                 ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)_+_theme(spacing.4)_+2px)]"
-                : "group-data-[collapsible=icon]:w-[--sidebar-width-icon] group-data-[side=left]:border-r group-data-[side=right]:border-l",
+                : "group-data-[collapsible=icon]:w-[--sidebar-width-icon]",
               className
             )}
-            style={{ ...style, height: sidebarHeight }}
+            style={{
+              ...style,
+              bottom: shellPadding,
+              height: sidebarHeight,
+              left: side === "left" ? shellPadding : undefined,
+              right: side === "right" ? shellPadding : undefined,
+              top: sidebarTop,
+            }}
             {...props}
           >
             <div
               data-sidebar="sidebar"
-              className="sidebar-glass relative flex h-full w-full flex-col overflow-hidden border group-data-[variant=floating]:rounded-lg"
+              className="sidebar-glass relative flex h-full w-full flex-col overflow-hidden"
             >
               {children}
             </div>

@@ -136,7 +136,7 @@ const DrawerPage = () => {
       <DrawerTrigger>
         {currentAudio ? (
           <div
-            className="fixed bottom-0 left-0 right-0 z-50 cursor-auto transform translate-y-0 transition-all duration-500 w-full flex justify-between items-center px-4 h-[15dvh] bg-black/10 dark:bg-muted/70"
+            className="fixed bottom-[10px] left-[10px] right-[10px] z-50 cursor-auto transform translate-y-0 transition-all duration-500 flex h-[15dvh] items-center justify-between rounded-[10px] bg-black/10 px-4 dark:bg-muted/70"
             onClick={() => isWideScreen && setIsDrawerOpen(true)}
           >
             <div
